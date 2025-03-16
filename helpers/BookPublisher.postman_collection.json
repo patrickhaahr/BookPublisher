@@ -1,0 +1,908 @@
+{
+	"info": {
+		"_postman_id": "35ade908-1b1b-411e-b1cb-145605a91ead",
+		"name": "Book Publisher",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42919586"
+	},
+	"item": [
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Get Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/books/91d673ed-2cb4-4245-94c0-6aef2a7143c6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"91d673ed-2cb4-4245-94c0-6aef2a7143c6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Sample Book2\",\r\n    \"publishDate\": \"2024-01-01T00:00:00\",\r\n    \"basePrice\": 119.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5094/api/v1/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Sample Book 22\",\r\n    \"publishDate\": \"2023-01-01T00:00:00\",\r\n    \"basePrice\": 19.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5094/api/v1/books/ee934050-51c1-458e-998f-9de09f8df786",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"ee934050-51c1-458e-998f-9de09f8df786"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/books/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authors",
+			"item": [
+				{
+					"name": "Get Authors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/authors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Author By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/authors/c0a80121-0001-4000-0000-000000000001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"c0a80121-0001-4000-0000-000000000001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Author",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/authors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Author",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/authors/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Author",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/authors/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Author's Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/authors/{id}/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"authors",
+								"{id}",
+								"books"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Artists",
+			"item": [
+				{
+					"name": "Get Artists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/artists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Artists By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/artists/c0a80121-0001-4000-0000-000000000003",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"c0a80121-0001-4000-0000-000000000003"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Artist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/artists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"artists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Artist",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/artists/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Artist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/artists/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"artists",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Artist's Covers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "api/v1/artists/{id}/covers",
+							"host": [
+								"api"
+							],
+							"path": [
+								"v1",
+								"artists",
+								"{id}",
+								"covers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Genres",
+			"item": [
+				{
+					"name": "Get Genres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/genres",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"genres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Genre By id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/genres/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"genres",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Genre",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/genres",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"genres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Genre",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/genres/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"genres",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Genre",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/genres/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"genres",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Genre Books",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/genres/{id}/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"genres",
+								"{id}",
+								"books"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/users/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/users/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/users/{id}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{id}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's Book Interactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/users/{id}/book-interactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{id}",
+								"book-interactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UserBookInteractions",
+			"item": [
+				{
+					"name": "Get User's Interactions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/user-book-interactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"user-book-interactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Interaction (Rating/Review)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/user-book-interactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"user-book-interactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Interaction",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/user-book-interactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"user-book-interactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Interaction",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/user-book-interactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"user-book-interactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Covers",
+			"item": [
+				{
+					"name": "Get Covers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/covers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"covers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Covers By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/covers/c0a80121-0001-4000-0000-000000000020",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"covers",
+								"c0a80121-0001-4000-0000-000000000020"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Cover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/covers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"covers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cover",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/covers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"covers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cover",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/covers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"covers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Persons",
+			"item": [
+				{
+					"name": "Get Persons",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5094/api/v1/persons",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5094",
+							"path": [
+								"api",
+								"v1",
+								"persons"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
