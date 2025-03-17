@@ -12,7 +12,7 @@ using Publisher.Infrastructure;
 namespace Publisher.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250316205026_InitialCreate")]
+    [Migration("20250317073025_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

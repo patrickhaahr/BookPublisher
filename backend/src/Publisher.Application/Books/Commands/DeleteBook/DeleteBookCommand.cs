@@ -1,7 +1,7 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Commands.DeleteBook;
 
-public record DeleteBookCommand(Guid Id) : IRequest<Book>;
+public record DeleteBookCommand(Guid Id) : IRequest<DeleteBookResponse>;
 

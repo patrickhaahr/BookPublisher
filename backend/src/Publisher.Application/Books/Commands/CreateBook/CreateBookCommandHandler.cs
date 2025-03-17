@@ -31,6 +31,24 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
         // Collection expression
         // Instead of using .ToList()
 
+        // Add covers and artists
+        book.Covers = [.. command.Covers.Select(coverRequest => {
+            var coverId = Guid.NewGuid();
+            return new Cover
+            {
+                CoverId = coverId,
+                BookId = book.BookId,
+                ImgBase64 = coverRequest.ImgBase64,
+                CreatedDate = DateTime.UtcNow,
+                CoverPersons = [.. coverRequest.ArtistIds.Select(artistId => new CoverPersons
+                {
+                    CoverId = coverId,
+                    PersonId = artistId,
+                    ArtistPersonId = artistId
+                })]
+            };
+        })];
+
         // Add genres
         book.BookGenres = [.. command.GenreIds.Select(gid => new BookGenres
         {
@@ -45,6 +63,9 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             PersonId = aid,
             AuthorPersonId = aid
         })];
+
+        // Save the book to the database
+        await bookRepository.CreateBookAsync(book);
 
         return new CreateBookResponse(
             book.BookId,

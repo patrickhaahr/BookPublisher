@@ -1,13 +1,23 @@
 using MediatR;
 using Publisher.Application.Interfaces;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Queries.GetBooks;
 
-public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHandler<GetBooksQuery, List<Book>>
+public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHandler<GetBooksQuery, GetBooksResponse>
 {
-    public async Task<List<Book>> Handle(GetBooksQuery query, CancellationToken token)
+    public async Task<GetBooksResponse> Handle(GetBooksQuery query, CancellationToken token)
     {
-        return await bookRepository.GetBooksAsync();
+        var books = await bookRepository.GetBooksAsync();
+        
+        var bookResponses = books.Select(book => new BookSummaryResponse(
+            book.BookId,
+            book.Title,
+            book.PublishDate,
+            book.BasePrice,
+            book.Slug
+        )).ToList();
+        
+        return new GetBooksResponse(bookResponses);
     }
 }

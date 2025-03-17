@@ -1,5 +1,5 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Commands.UpdateBook;
 
@@ -8,4 +8,4 @@ public record UpdateBookCommand(
     string Title,
     DateTime PublishDate,
     decimal BasePrice)
-    : IRequest<Book>;
+    : IRequest<UpdateBookResponse>;

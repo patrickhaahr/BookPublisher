@@ -1,15 +1,16 @@
 using MediatR;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
+using Publisher.Contracts.Responses;
 using Publisher.Domain.Entities;
 using Publisher.Domain.Exceptions;
 
 namespace Publisher.Application.Books.Commands.UpdateBook;
 
 public class UpdateBookCommandHandler(IBookRepository bookRepository) 
-    : IRequestHandler<UpdateBookCommand, Book>
+    : IRequestHandler<UpdateBookCommand, UpdateBookResponse>
 {
-    public async Task<Book> Handle(UpdateBookCommand command, CancellationToken token)
+    public async Task<UpdateBookResponse> Handle(UpdateBookCommand command, CancellationToken token)
     {
         var book = await bookRepository.GetBookByIdAsync(command.Id)
             ?? throw new NotFoundException(nameof(Book), command.Id);
@@ -27,8 +28,15 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
 
         var updatedBook = await bookRepository.UpdateBookAsync(command.Id, book);
 
-        return updatedBook is null
-            ? throw new NotFoundException(nameof(Book), command.Id)
-            : updatedBook;
+        if (updatedBook is null)
+            throw new NotFoundException(nameof(Book), command.Id);
+            
+        return new UpdateBookResponse(
+            updatedBook.BookId,
+            updatedBook.Title,
+            updatedBook.PublishDate,
+            updatedBook.BasePrice,
+            updatedBook.Slug
+        );
     }
 }
