@@ -1,7 +1,7 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Queries.GetBooks;
 
-public record GetBooksQuery : IRequest<List<Book>>;
+public record GetBooksQuery : IRequest<GetBooksResponse>;
 

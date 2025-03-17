@@ -7,6 +7,7 @@ using Publisher.Application.Books.Queries.GetBookById;
 using Publisher.Application.Books.Queries.GetBooks;
 using Publisher.Contracts.Requests;
 using Publisher.Contracts.Responses;
+using System.Text.Json;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -14,7 +15,7 @@ namespace Publisher.Presentation.Controllers;
 public class BooksController(ISender _sender) : ControllerBase
 {
     [HttpGet(ApiEndpoints.V1.Books.GetAll)]
-    public async Task<IActionResult> GetBooks( CancellationToken token)
+    public async Task<IActionResult> GetBooks(CancellationToken token)
     {
         return Ok(await _sender.Send(new GetBooksQuery(), token));
     }
@@ -30,12 +31,18 @@ public class BooksController(ISender _sender) : ControllerBase
     public async Task<IActionResult> CreateBook(
         [FromBody] CreateBookRequest request, CancellationToken token)
     {
+        var covers = request.Covers?.Select(c => new CoverData(c.ImgBase64, c.ArtistIds)).ToList() 
+            ?? []; // new List<CoverData>();
+
+        //var covers = new List<CoverData>();
+            
         var command = new CreateBookCommand(
             request.Title,
             request.PublishDate,
             request.BasePrice,
             request.GenreIds,
-            request.AuthorIds
+            request.AuthorIds,
+            covers
         );
         var result = await _sender.Send(command, token);
         return CreatedAtAction(nameof(GetBookById), new { id = result.BookId }, result);

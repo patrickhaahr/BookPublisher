@@ -5,5 +5,6 @@ public record CreateBookRequest(
     DateTime PublishDate,
     decimal BasePrice,
     List<int> GenreIds,
-    List<Guid> AuthorIds
+    List<Guid> AuthorIds,
+    List<CreateCoverRequest>? Covers
 );
