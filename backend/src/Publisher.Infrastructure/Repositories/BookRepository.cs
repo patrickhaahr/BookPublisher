@@ -57,5 +57,19 @@ public class BookRepository(AppDbContext _context) : IBookRepository
     {
         return await _context.Books.AnyAsync(b => b.Slug == slug);
     }
+    public async Task RemoveBookGenresAsync(Guid bookId)
+    {
+        var genres = await _context.BookGenres
+            .Where(bg => bg.BookId == bookId)
+            .ToListAsync();
+        
+        _context.BookGenres.RemoveRange(genres);
+        await _context.SaveChangesAsync();
+    }
+    public async Task AddBookGenresAsync(List<BookGenres> bookGenres)
+    {
+        await _context.BookGenres.AddRangeAsync(bookGenres);
+        await _context.SaveChangesAsync();
+    }
 }
 
