@@ -17,6 +17,12 @@ public static class ApiEndpoints
             public const string Create = Base;
             public const string Update = $"{Base}/{{id}}";
             public const string Delete = $"{Base}/{{id}}";
+
+            public const string BookGenres = $"{Base}/{{id}}/genres";
+            public const string BookPersons = $"{Base}/{{id}}/persons";
+            public const string BookCovers = $"{Base}/{{id}}/covers";
+            public const string BookAuthors = $"{Base}/{{id}}/authors";
+            public const string BookArtists = $"{Base}/{{id}}/artists";
         }
 
         public static class Authors

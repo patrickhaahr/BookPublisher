@@ -10,5 +10,7 @@ public interface IBookRepository
     Task<Book?> UpdateBookAsync(Guid id, Book book);
     Task<Book?> DeleteBookAsync(Guid id);
     Task<bool> SlugExistsAsync(string slug);
+    Task RemoveBookGenresAsync(Guid bookId);
+    Task AddBookGenresAsync(List<BookGenres> bookGenres);
 }
 

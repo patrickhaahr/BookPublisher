@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Publisher.Application.Books.Commands.CreateBook;
 using Publisher.Application.Books.Commands.DeleteBook;
 using Publisher.Application.Books.Commands.UpdateBook;
+using Publisher.Application.Books.Commands.UpdateBookGenres;
 using Publisher.Application.Books.Queries.GetBookById;
 using Publisher.Application.Books.Queries.GetBooks;
 using Publisher.Contracts.Requests;
@@ -61,6 +62,15 @@ public class BooksController(ISender _sender) : ControllerBase
         [FromRoute] Guid id, CancellationToken token)
     {
         return Ok(await _sender.Send(new DeleteBookCommand(id), token));
+    }
+    
+    [HttpPut(ApiEndpoints.V1.Books.BookGenres)]
+    public async Task<IActionResult> UpdateBookGenres(
+        [FromRoute] Guid id, [FromBody] UpdateBookGenresRequest request, CancellationToken token)
+    {
+        var command = new UpdateBookGenresCommand(id, request.GenreIds);
+        var response = await _sender.Send(command, token);
+        return Ok(response);
     }
 }
 
