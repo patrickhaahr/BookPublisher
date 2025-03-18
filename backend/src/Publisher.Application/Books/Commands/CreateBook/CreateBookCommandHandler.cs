@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using MediatR;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
@@ -12,6 +13,16 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
 {
     public async Task<CreateBookResponse> Handle(CreateBookCommand command, CancellationToken token)
     {
+        // Validate command
+        var validator = new CreateBookCommandValidator();
+
+        var validationResult = await validator.ValidateAsync(command, token);
+
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage)));
+        }
+
         // Generate slug from title
         var slug = SlugGenerator.GenerateSlug(command.Title);
         
