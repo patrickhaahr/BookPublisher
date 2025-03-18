@@ -4,8 +4,11 @@ using Publisher.Application.Books.Commands.CreateBook;
 using Publisher.Application.Books.Commands.DeleteBook;
 using Publisher.Application.Books.Commands.UpdateBook;
 using Publisher.Application.Books.Commands.UpdateBookGenres;
-using Publisher.Application.Books.Queries.GetBookById;
+using Publisher.Application.Books.Commands.UpdateBookCovers;
+using Publisher.Application.Books.Commands.UpdateBookAuthors;
+using Publisher.Application.Books.Commands.UpdateBookArtists;
 using Publisher.Application.Books.Queries.GetBooks;
+using Publisher.Application.Books.Queries.GetBookById;
 using Publisher.Contracts.Requests;
 using Publisher.Contracts.Responses;
 using System.Text.Json;
@@ -69,6 +72,33 @@ public class BooksController(ISender _sender) : ControllerBase
         [FromRoute] Guid id, [FromBody] UpdateBookGenresRequest request, CancellationToken token)
     {
         var command = new UpdateBookGenresCommand(id, request.GenreIds);
+        var response = await _sender.Send(command, token);
+        return Ok(response);
+    }
+    
+    [HttpPut(ApiEndpoints.V1.Books.BookCovers)]
+    public async Task<IActionResult> UpdateBookCovers(
+        [FromRoute] Guid id, [FromBody] UpdateBookCoversRequest request, CancellationToken token)
+    {
+        var command = new UpdateBookCoversCommand(id, request.Covers);
+        var response = await _sender.Send(command, token);
+        return Ok(response);
+    }
+    
+    [HttpPut(ApiEndpoints.V1.Books.BookAuthors)]
+    public async Task<IActionResult> UpdateBookAuthors(
+        [FromRoute] Guid id, [FromBody] UpdateBookAuthorsRequest request, CancellationToken token)
+    {
+        var command = new UpdateBookAuthorsCommand(id, request.AuthorIds);
+        var response = await _sender.Send(command, token);
+        return Ok(response);
+    }
+    
+    [HttpPut(ApiEndpoints.V1.Books.BookArtists)]
+    public async Task<IActionResult> UpdateBookArtists(
+        [FromRoute] Guid id, [FromBody] UpdateBookArtistsRequest request, CancellationToken token)
+    {
+        var command = new UpdateBookArtistsCommand(id, request.ArtistIds);
         var response = await _sender.Send(command, token);
         return Ok(response);
     }
