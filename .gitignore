@@ -12,6 +12,7 @@ obj/
 .vscode/
 *.sln.iml
 .idea/
+.cursor
 
 # Build results
 [Dd]ebug/
