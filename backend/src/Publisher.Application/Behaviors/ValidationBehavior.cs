@@ -20,8 +20,7 @@ public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? valid
         if (validationResult.IsValid) {
             return await next();
         }
-
-        var errors = string.Join(", ", validationResult.Errors.Select(e => e.ErrorMessage));
-        throw new FluentValidation.ValidationException(errors);
+        
+        throw new ValidationException(validationResult.Errors);
     }
 }
