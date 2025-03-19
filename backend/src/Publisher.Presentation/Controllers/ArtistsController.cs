@@ -5,6 +5,7 @@ using Publisher.Application.Artists.Commands.DeleteArtist;
 using Publisher.Application.Artists.Commands.UpdateArtist;
 using Publisher.Application.Artists.Queries.GetArtistById;
 using Publisher.Application.Artists.Queries.GetArtists;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +44,7 @@ public class ArtistsController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteArtist(
         [FromRoute] Guid id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteArtistCommand(id), token));
+        await _sender.Send(new DeleteArtistCommand(id), token);
+        return Ok(new DeleteResponse());
     }
 }

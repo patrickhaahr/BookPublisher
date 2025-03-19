@@ -5,6 +5,7 @@ using Publisher.Application.UserBookInteractions.Commands.DeleteUserBookInteract
 using Publisher.Application.UserBookInteractions.Commands.UpdateUserBookInteraction;
 using Publisher.Application.UserBookInteractions.Queries.GetUserBookInteractionById;
 using Publisher.Application.UserBookInteractions.Queries.GetUserBookInteractions;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +44,7 @@ public class UserBookInteractionsController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteUserBookInteraction(
         [FromRoute] Guid id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteUserBookInteractionCommand(id), token));
+        await _sender.Send(new DeleteUserBookInteractionCommand(id), token);
+        return Ok(new DeleteResponse());
     }
 }

@@ -5,6 +5,7 @@ using Publisher.Application.Covers.Commands.DeleteCover;
 using Publisher.Application.Covers.Commands.UpdateCover;
 using Publisher.Application.Covers.Queries.GetCoverById;
 using Publisher.Application.Covers.Queries.GetCovers;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +44,7 @@ public class CoversController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteCover(
         [FromRoute] Guid id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteCoverCommand(id), token));
+        await _sender.Send(new DeleteCoverCommand(id), token);
+        return Ok(new DeleteResponse());
     }
 }
