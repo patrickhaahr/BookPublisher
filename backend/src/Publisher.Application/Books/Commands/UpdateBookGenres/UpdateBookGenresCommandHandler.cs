@@ -12,7 +12,7 @@ public class UpdateBookGenresCommandHandler(IBookRepository bookRepository)
     public async Task<UpdateBookGenresResponse> Handle(UpdateBookGenresCommand command, CancellationToken token)
     {
         // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId) 
+        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
             ?? throw new NotFoundException(nameof(Book), command.BookId);
 
         // Remove existing genres

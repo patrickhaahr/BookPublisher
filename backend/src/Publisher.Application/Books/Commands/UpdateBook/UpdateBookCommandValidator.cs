@@ -7,14 +7,7 @@ public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
 {
     public UpdateBookCommandValidator()
     {
-         RuleFor(c => c.Id)
-             .NotEmpty()
-             .WithMessage("Book ID is required");
-        // model binding handles GUID format first, so we don't need to validate it here
-        //     .Must(Validation.IsValidGuid)
-        //     .WithMessage("Book ID must be a valid GUID");
-
-        RuleFor(c => c.Title)
+         RuleFor(c => c.Title)
             .NotEmpty()
             .WithMessage("Title is required")
             .MaximumLength(100)

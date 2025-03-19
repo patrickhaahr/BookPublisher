@@ -10,7 +10,7 @@ public class GetBookByIdQueryHandler(IBookRepository bookRepository) : IRequestH
 {
     public async Task<GetBookByIdResponse?> Handle(GetBookByIdQuery query, CancellationToken token)
     {
-        var book = await bookRepository.GetBookByIdAsync(query.Id)
+        var book = await bookRepository.GetBookByIdAsync(query.Id, token)
             ?? throw new NotFoundException(nameof(Book), query.Id);
 
         // [.. ] is a collection expression

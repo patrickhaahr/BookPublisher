@@ -7,12 +7,6 @@ public class UpdateBookGenresCommandValidator : AbstractValidator<UpdateBookGenr
 {
     public UpdateBookGenresCommandValidator()
     {
-        RuleFor(c => c.BookId)
-            .NotEmpty()
-            .WithMessage("Book ID is required")
-            .Must(Validation.IsValidGuid)
-            .WithMessage("Book ID must be a valid GUID");
-
         RuleFor(c => c.GenreIds)
             .NotEmpty()
             .WithMessage("At least one genre is required")

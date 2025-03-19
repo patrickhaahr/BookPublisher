@@ -4,27 +4,27 @@ namespace Publisher.Application.Interfaces;
 
 public interface IBookRepository
 {
-    Task<List<Book>> GetBooksAsync();
-    Task<Book?> GetBookByIdAsync(Guid id);
-    Task<Book> CreateBookAsync(Book book);
-    Task<Book?> UpdateBookAsync(Guid id, Book book);
-    Task<Book?> DeleteBookAsync(Guid id);
-    Task<bool> SlugExistsAsync(string slug);
-    Task RemoveBookGenresAsync(Guid bookId);
-    Task AddBookGenresAsync(List<BookGenres> bookGenres);
+    Task<List<Book>> GetBooksAsync(CancellationToken token = default);
+    Task<Book?> GetBookByIdAsync(Guid id, CancellationToken token = default);
+    Task<Book> CreateBookAsync(Book book, CancellationToken token = default);
+    Task<Book?> UpdateBookAsync(Guid id, Book book, CancellationToken token = default);
+    Task<Book?> DeleteBookAsync(Guid id, CancellationToken token = default);
+    Task<bool> SlugExistsAsync(string slug, CancellationToken token = default);
+    Task RemoveBookGenresAsync(Guid bookId, CancellationToken token = default);
+    Task AddBookGenresAsync(List<BookGenres> bookGenres, CancellationToken token = default);
     
     // Book Persons (Author) methods
-    Task RemoveBookPersonsAsync(Guid bookId);
-    Task AddBookPersonsAsync(List<BookPersons> bookPersons);
+    Task RemoveBookPersonsAsync(Guid bookId, CancellationToken token = default);
+    Task AddBookPersonsAsync(List<BookPersons> bookPersons, CancellationToken token = default);
     
     // Book Covers methods
-    Task RemoveBookCoversAsync(Guid bookId);
-    Task AddBookCoverAsync(Cover cover);
+    Task RemoveBookCoversAsync(Guid bookId, CancellationToken token = default);
+    Task AddBookCoverAsync(Cover cover, CancellationToken token = default);
     
     // Cover Artist methods
-    Task RemoveCoverPersonsAsync(Guid coverId);
-    Task AddCoverPersonsAsync(List<CoverPersons> coverPersons);
+    Task RemoveCoverPersonsAsync(Guid coverId, CancellationToken token = default);
+    Task AddCoverPersonsAsync(List<CoverPersons> coverPersons, CancellationToken token = default);
 
-    Task UpdateBookAsync(Book book);
+    Task UpdateBookAsync(Book book, CancellationToken token = default);
 }
 

@@ -4,9 +4,9 @@ namespace Publisher.Application.Interfaces;
 
 public interface IGenreRepository
 {
-    Task<List<Genre>> GetGenresAsync();
-    Task<Genre?> GetGenreByIdAsync(int id);
-    Task<Genre> CreateGenreAsync(Genre genre);
-    Task<Genre?> UpdateGenreAsync(int id, Genre genre);
-    Task<Genre?> DeleteGenreAsync(int id);
+    Task<List<Genre>> GetGenresAsync(CancellationToken token = default);
+    Task<Genre?> GetGenreByIdAsync(int id, CancellationToken token = default);
+    Task<Genre> CreateGenreAsync(Genre genre, CancellationToken token = default);
+    Task<Genre?> UpdateGenreAsync(int id, Genre genre, CancellationToken token = default);
+    Task<Genre?> DeleteGenreAsync(int id, CancellationToken token = default);
 } 

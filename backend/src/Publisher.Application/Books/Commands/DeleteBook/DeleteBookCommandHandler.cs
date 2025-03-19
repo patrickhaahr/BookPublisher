@@ -11,7 +11,7 @@ public class DeleteBookCommandHandler(IBookRepository bookRepository)
 {
     public async Task<DeleteBookResponse> Handle(DeleteBookCommand command, CancellationToken token)
     {
-        var deletedBook = await bookRepository.DeleteBookAsync(command.Id);
+        var deletedBook = await bookRepository.DeleteBookAsync(command.Id, token);
 
         if (deletedBook is null)
             throw new NotFoundException(nameof(Book), command.Id);

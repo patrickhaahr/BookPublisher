@@ -4,9 +4,9 @@ namespace Publisher.Application.Interfaces;
 
 public interface IUserBookInteractionRepository
 {
-    Task<List<UserBookInteraction>> GetUserBookInteractionsAsync();
-    Task<UserBookInteraction?> GetUserBookInteractionByIdAsync(Guid id);
-    Task<UserBookInteraction> CreateUserBookInteractionAsync(UserBookInteraction interaction);
-    Task<UserBookInteraction?> UpdateUserBookInteractionAsync(Guid id, UserBookInteraction interaction);
-    Task<UserBookInteraction?> DeleteUserBookInteractionAsync(Guid id);
+    Task<List<UserBookInteraction>> GetUserBookInteractionsAsync(CancellationToken token = default);
+    Task<UserBookInteraction?> GetUserBookInteractionByIdAsync(Guid id, CancellationToken token = default);
+    Task<UserBookInteraction> CreateUserBookInteractionAsync(UserBookInteraction interaction, CancellationToken token = default);
+    Task<UserBookInteraction?> UpdateUserBookInteractionAsync(Guid id, UserBookInteraction interaction, CancellationToken token = default);
+    Task<UserBookInteraction?> DeleteUserBookInteractionAsync(Guid id, CancellationToken token = default);
 } 

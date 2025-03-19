@@ -6,26 +6,26 @@ namespace Publisher.Infrastructure.Repositories;
 
 public class ArtistRepository(AppDbContext _context) : IArtistRepository
 {
-    public async Task<List<Artist>> GetArtistsAsync()
+    public async Task<List<Artist>> GetArtistsAsync(CancellationToken token = default)
     {
-        return await _context.Artists.ToListAsync();
+        return await _context.Artists.ToListAsync(token);
     }
 
-    public async Task<Artist?> GetArtistByIdAsync(Guid id)
+    public async Task<Artist?> GetArtistByIdAsync(Guid id, CancellationToken token = default)
     {
-        return await _context.Artists.FindAsync(id);
+        return await _context.Artists.FindAsync(id, token);
     }
 
-    public async Task<Artist> CreateArtistAsync(Artist artist)
+    public async Task<Artist> CreateArtistAsync(Artist artist, CancellationToken token = default)
     {
-        await _context.Artists.AddAsync(artist);
-        await _context.SaveChangesAsync();
+        await _context.Artists.AddAsync(artist, token);
+        await _context.SaveChangesAsync(token);
         return artist;
     }
 
-    public async Task<Artist?> UpdateArtistAsync(Guid id, Artist artist)
+    public async Task<Artist?> UpdateArtistAsync(Guid id, Artist artist, CancellationToken token = default)
     {
-        var existingArtist = await _context.Artists.FindAsync(id);
+        var existingArtist = await _context.Artists.FindAsync(id, token);
         
         if (existingArtist is null)
             return null;
@@ -35,9 +35,9 @@ public class ArtistRepository(AppDbContext _context) : IArtistRepository
         return existingArtist;
     }
 
-    public async Task<Artist?> DeleteArtistAsync(Guid id)
+    public async Task<Artist?> DeleteArtistAsync(Guid id, CancellationToken token = default)
     {
-        var artist = await GetArtistByIdAsync(id);
+        var artist = await GetArtistByIdAsync(id, token);
         if (artist is null)
             return null;
 

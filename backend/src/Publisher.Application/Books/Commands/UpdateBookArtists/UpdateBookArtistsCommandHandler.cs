@@ -12,12 +12,12 @@ public class UpdateBookArtistsCommandHandler(IBookRepository bookRepository)
     public async Task<UpdateBookArtistsResponse> Handle(UpdateBookArtistsCommand command, CancellationToken token)
     {
         // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId) 
+        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
             ?? throw new NotFoundException(nameof(Book), command.BookId);
 
         // This is a little more complex as artists are associated with covers
         // First, get all covers for this book
-        var bookCovers = await bookRepository.GetBookByIdAsync(command.BookId);
+        var bookCovers = await bookRepository.GetBookByIdAsync(command.BookId, token);
         if (bookCovers?.Covers == null || !bookCovers.Covers.Any())
         {
             // No covers to associate artists with
