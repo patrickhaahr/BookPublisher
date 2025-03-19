@@ -3,4 +3,4 @@ using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Queries.GetBookById;
 
-public record GetBookByIdQuery(Guid Id) : IRequest<GetBookByIdResponse>;
+public record GetBookByIdQuery(string IdOrSlug) : IRequest<GetBookByIdResponse>;

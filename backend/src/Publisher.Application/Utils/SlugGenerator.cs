@@ -15,4 +15,12 @@ public static class SlugGenerator
         // Trim hyphens from start/end
         return slug.Trim('-');
     }
+    
+    public static string MakeSlugUnique(string baseSlug, int attempt = 1)
+    {
+        if (attempt == 1)
+            return baseSlug;
+            
+        return $"{baseSlug}-{attempt}";
+    }
 }

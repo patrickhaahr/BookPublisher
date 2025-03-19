@@ -13,11 +13,17 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
     public async Task<CreateBookResponse> Handle(CreateBookCommand command, CancellationToken token)
     {
         // Generate slug from title
-        var slug = SlugGenerator.GenerateSlug(command.Title);
+        var baseSlug = SlugGenerator.GenerateSlug(command.Title);
         
-        // Check if slug exists
-        if (await bookRepository.SlugExistsAsync(slug)) 
-            throw new DuplicateSlugException(slug);
+        // Find a unique slug by appending number if needed
+        var slug = baseSlug;
+        var slugAttempt = 1;
+        
+        while (await bookRepository.SlugExistsAsync(slug, token))
+        {
+            slugAttempt++;
+            slug = SlugGenerator.MakeSlugUnique(baseSlug, slugAttempt);
+        }
 
         var book = new Book
         {
@@ -57,20 +63,19 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
         })];
 
         // Add authors
-        book.BookPersons = [.. command.AuthorIds.Select(aid => new BookPersons
+        book.BookPersons = [.. command.AuthorIds.Select(authorId => new BookPersons
         {
-            BookId = book.BookId,
-            PersonId = aid,
-            AuthorPersonId = aid
+            BookId = book.BookId, 
+            PersonId = authorId,
+            AuthorPersonId = authorId
         })];
 
-        // Save the book to the database
-        await bookRepository.CreateBookAsync(book, token);
+        var createdBook = await bookRepository.CreateBookAsync(book, token);
 
         return new CreateBookResponse(
-            book.BookId,
-            book.Title,
-            book.Slug
+            createdBook.BookId,
+            createdBook.Title,
+            createdBook.Slug
         );
     }
 }

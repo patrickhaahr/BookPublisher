@@ -15,16 +15,31 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         var book = await bookRepository.GetBookByIdAsync(command.Id, token)
             ?? throw new NotFoundException(nameof(Book), command.Id);
 
-        var newSlug = SlugGenerator.GenerateSlug(command.Title);
+        var baseSlug = SlugGenerator.GenerateSlug(command.Title);
         
-        // Check if new slug exists and it's not the same book
-        if (newSlug != book.Slug && await bookRepository.SlugExistsAsync(newSlug))
-            throw new DuplicateSlugException(newSlug);
+        var slug = baseSlug;
+        var slugAttempt = 1;
+        
+        // If the title has changed or the slug is different from the base slug
+        if (baseSlug != book.Slug)
+        {
+            // Find a unique slug
+            while (await bookRepository.SlugExistsAsync(slug, token) && slug != book.Slug)
+            {
+                slugAttempt++;
+                slug = SlugGenerator.MakeSlugUnique(baseSlug, slugAttempt);
+            }
+        }
+        else
+        {
+            // Keep the existing slug if title hasn't changed
+            slug = book.Slug;
+        }
 
         book.Title = command.Title;
         book.PublishDate = command.PublishDate;
         book.BasePrice = command.BasePrice;
-        book.SetSlug(newSlug);
+        book.SetSlug(slug);
 
         var updatedBook = await bookRepository.UpdateBookAsync(command.Id, book, token);
 

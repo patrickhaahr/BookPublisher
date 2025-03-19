@@ -22,6 +22,18 @@ public class BookRepository(AppDbContext _context) : IBookRepository
                 .ThenInclude(bg => bg.Genre)
             .FirstOrDefaultAsync(b => b.BookId == id, token);
     }
+    public async Task<Book?> GetBookBySlugAsync(string slug, CancellationToken token = default)
+    {
+        return await _context.Books
+            .Include(b => b.Covers)
+                .ThenInclude(c => c.CoverPersons)
+                .ThenInclude(cp => cp.Artist)
+            .Include(b => b.BookPersons)
+                .ThenInclude(bp => bp.Author)
+            .Include(b => b.BookGenres)
+                .ThenInclude(bg => bg.Genre)
+            .FirstOrDefaultAsync(b => b.Slug == slug, token);
+    }
     public async Task<Book> CreateBookAsync(Book book, CancellationToken token = default)
     {
         await _context.Books.AddAsync(book, token);
