@@ -1,12 +1,21 @@
 using FluentValidation;
+using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
 
 namespace Publisher.Application.Books.Commands.CreateBook;
 
 public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
 {
-    public CreateBookCommandValidator()
+    private readonly IGenreRepository _genreRepository;
+    private readonly IAuthorRepository _authorRepository;
+    private readonly IArtistRepository _artistRepository;
+
+    public CreateBookCommandValidator(IGenreRepository genreRepository, IAuthorRepository authorRepository, IArtistRepository artistRepository)
     {
+        _genreRepository = genreRepository;
+        _authorRepository = authorRepository;
+        _artistRepository = artistRepository;
+
         RuleFor(c => c.Title)
             .NotEmpty()
             .WithMessage("Title is required")
@@ -33,16 +42,22 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
             .NotEmpty()
             .WithMessage("At least one author is required")
             .Must(authorIds => authorIds.All(Validation.IsValidGuid))
-            .WithMessage("Author IDs must be valid GUIDs");
+            .WithMessage("Author IDs must be valid GUIDs")
+            .MustAsync(async (authorIds, token) => 
+                await Validation.AllEntitiesExistAsync(authorIds, _authorRepository.GetAuthorByIdAsync, token))
+            .WithMessage("All author IDs must exist in the database");
 
         RuleFor(c => c.Covers)
             .NotEmpty()
             .WithMessage("At least one cover is required")
-            .Must(covers => covers.All(c => !string.IsNullOrEmpty(c.ImgBase64)))
+            .Must(covers => covers.All(c => Validation.IsValidBase64Image(c.ImgBase64)))
             .WithMessage("All covers must have a valid base64 image string")
             .Must(covers => covers.All(c => c.ArtistIds is not null && c.ArtistIds.Count > 0))
             .WithMessage("Each cover must have at least one artist")
             .Must(covers => covers.All(c => c.ArtistIds.All(Validation.IsValidGuid)))
-            .WithMessage("Artist IDs must be valid GUIDs");
+            .WithMessage("Artist IDs must be valid GUIDs")
+            .MustAsync(async (covers, token) => 
+                await Validation.AllEntitiesExistAsync(covers.Select(c => c.ArtistIds.First()), _artistRepository.GetArtistByIdAsync, token))
+            .WithMessage("All artist IDs must exist in the database");
     }
 }

@@ -12,7 +12,7 @@ public class UpdateBookAuthorsCommandHandler(IBookRepository bookRepository)
     public async Task<UpdateBookAuthorsResponse> Handle(UpdateBookAuthorsCommand command, CancellationToken token)
     {
         // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId) 
+        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
             ?? throw new NotFoundException(nameof(Book), command.BookId);
 
         // Remove existing book authors relationships

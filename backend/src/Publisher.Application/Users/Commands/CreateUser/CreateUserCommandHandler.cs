@@ -17,6 +17,6 @@ public class CreateUserCommandHandler(IUserRepository _userRepository)
             PasswordHash = command.PasswordHash,
             Role = command.Role
         };
-        return await _userRepository.CreateUserAsync(user);
+        return await _userRepository.CreateUserAsync(user, token);
     }
 } 

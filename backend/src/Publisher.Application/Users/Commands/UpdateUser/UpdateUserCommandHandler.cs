@@ -10,7 +10,7 @@ public class UpdateUserCommandHandler(IUserRepository _userRepository)
 {
     public async Task<User> Handle(UpdateUserCommand command, CancellationToken token)
     {
-        var user = await _userRepository.GetUserByIdAsync(command.Id)
+        var user = await _userRepository.GetUserByIdAsync(command.Id, token)
             ?? throw new NotFoundException(nameof(User), command.Id);
 
         user.Username = command.Username;
@@ -18,7 +18,7 @@ public class UpdateUserCommandHandler(IUserRepository _userRepository)
         user.PasswordHash = command.PasswordHash;
         user.Role = command.Role;
 
-        var updatedUser = await _userRepository.UpdateUserAsync(command.Id, user);
+        var updatedUser = await _userRepository.UpdateUserAsync(command.Id, user, token);
 
         return updatedUser is null
             ? throw new NotFoundException(nameof(User), command.Id)

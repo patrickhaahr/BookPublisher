@@ -12,7 +12,7 @@ public class UpdateBookCoversCommandHandler(IBookRepository bookRepository)
     public async Task<UpdateBookCoversResponse> Handle(UpdateBookCoversCommand command, CancellationToken token)
     {
         // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId) 
+        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
             ?? throw new NotFoundException(nameof(Book), command.BookId);
 
         // Remove all existing covers and their artists

@@ -4,10 +4,10 @@ namespace Publisher.Application.Interfaces;
 
 public interface IAuthorRepository
 {
-    Task<List<Author>> GetAuthorsAsync();
-    Task<Author?> GetAuthorByIdAsync(Guid id);
-    Task<Author> CreateAuthorAsync(Author author);
-    Task<Author?> UpdateAuthorAsync(Guid id, Author author);
-    Task<Author?> DeleteAuthorAsync(Guid id);
+    Task<List<Author>> GetAuthorsAsync(CancellationToken token = default);
+    Task<Author?> GetAuthorByIdAsync(Guid id, CancellationToken token = default);
+    Task<Author> CreateAuthorAsync(Author author, CancellationToken token = default);
+    Task<Author?> UpdateAuthorAsync(Guid id, Author author, CancellationToken token = default);
+    Task<Author?> DeleteAuthorAsync(Guid id, CancellationToken token = default);
 }
 

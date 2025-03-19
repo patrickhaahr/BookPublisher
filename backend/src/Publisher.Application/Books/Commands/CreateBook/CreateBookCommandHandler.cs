@@ -65,7 +65,7 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
         })];
 
         // Save the book to the database
-        await bookRepository.CreateBookAsync(book);
+        await bookRepository.CreateBookAsync(book, token);
 
         return new CreateBookResponse(
             book.BookId,

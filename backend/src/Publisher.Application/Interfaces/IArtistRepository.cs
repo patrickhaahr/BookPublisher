@@ -4,9 +4,9 @@ namespace Publisher.Application.Interfaces;
 
 public interface IArtistRepository
 {
-    Task<List<Artist>> GetArtistsAsync();
-    Task<Artist?> GetArtistByIdAsync(Guid id);
-    Task<Artist> CreateArtistAsync(Artist artist);
-    Task<Artist?> UpdateArtistAsync(Guid id, Artist artist);
-    Task<Artist?> DeleteArtistAsync(Guid id);
+    Task<List<Artist>> GetArtistsAsync(CancellationToken token = default);
+    Task<Artist?> GetArtistByIdAsync(Guid id, CancellationToken token = default);
+    Task<Artist> CreateArtistAsync(Artist artist, CancellationToken token = default);
+    Task<Artist?> UpdateArtistAsync(Guid id, Artist artist, CancellationToken token = default);
+    Task<Artist?> DeleteArtistAsync(Guid id, CancellationToken token = default);
 } 
