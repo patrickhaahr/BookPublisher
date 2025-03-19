@@ -10,8 +10,13 @@ public class GetBookByIdQueryHandler(IBookRepository bookRepository) : IRequestH
 {
     public async Task<GetBookByIdResponse?> Handle(GetBookByIdQuery query, CancellationToken token)
     {
-        var book = await bookRepository.GetBookByIdAsync(query.Id, token)
-            ?? throw new NotFoundException(nameof(Book), query.Id);
+        // Try to parse as GUID first, if successful use GetBookByIdAsync, otherwise use GetBookBySlugAsync
+        Book? book = Guid.TryParse(query.IdOrSlug, out var id)
+            ? await bookRepository.GetBookByIdAsync(id, token)
+            : await bookRepository.GetBookBySlugAsync(query.IdOrSlug, token);
+
+        if (book is null)
+            throw new NotFoundException(nameof(Book), query.IdOrSlug);
 
         // [.. ] is a collection expression
         // Instead of using .ToList()

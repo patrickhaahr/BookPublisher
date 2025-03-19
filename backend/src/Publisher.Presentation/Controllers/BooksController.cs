@@ -26,7 +26,7 @@ public class BooksController(ISender _sender) : ControllerBase
 
     [HttpGet(ApiEndpoints.V1.Books.GetById)]
     public async Task<IActionResult> GetBookById(
-        [FromRoute] Guid id, CancellationToken token)
+        [FromRoute] string id, CancellationToken token)
     {
         return Ok(await _sender.Send(new GetBookByIdQuery(id), token));
     }
