@@ -5,6 +5,7 @@ using Publisher.Application.Genres.Commands.DeleteGenre;
 using Publisher.Application.Genres.Commands.UpdateGenre;
 using Publisher.Application.Genres.Queries.GetGenreById;
 using Publisher.Application.Genres.Queries.GetGenres;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +44,7 @@ public class GenresController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteGenre(
         [FromRoute] int id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteGenreCommand(id), token));
+        await _sender.Send(new DeleteGenreCommand(id), token);
+        return Ok(new DeleteResponse());
     }
 }

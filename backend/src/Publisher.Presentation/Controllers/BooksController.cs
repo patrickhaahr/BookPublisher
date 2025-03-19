@@ -64,7 +64,8 @@ public class BooksController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteBook(
         [FromRoute] Guid id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteBookCommand(id), token));
+        await _sender.Send(new DeleteBookCommand(id), token);
+        return Ok(new DeleteResponse());
     }
     
     [HttpPut(ApiEndpoints.V1.Books.BookGenres)]

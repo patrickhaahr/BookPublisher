@@ -5,6 +5,7 @@ using Publisher.Application.Users.Commands.DeleteUser;
 using Publisher.Application.Users.Commands.UpdateUser;
 using Publisher.Application.Users.Queries.GetUserById;
 using Publisher.Application.Users.Queries.GetUsers;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +44,7 @@ public class UsersController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteUser(
         [FromRoute] Guid id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteUserCommand(id), token));
+        await _sender.Send(new DeleteUserCommand(id), token);
+        return Ok(new DeleteResponse());
     }
 }

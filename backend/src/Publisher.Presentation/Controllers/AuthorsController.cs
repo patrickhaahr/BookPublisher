@@ -5,6 +5,7 @@ using Publisher.Application.Authors.Commands.DeleteAuthor;
 using Publisher.Application.Authors.Commands.UpdateAuthor;
 using Publisher.Application.Authors.Queries.GetAuthorById;
 using Publisher.Application.Authors.Queries.GetAuthors;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +44,7 @@ public class AuthorsController(ISender _sender) : ControllerBase
     public async Task<IActionResult> DeleteAuthor(
         [FromRoute] Guid id, CancellationToken token)
     {
-        return Ok(await _sender.Send(new DeleteAuthorCommand(id), token));
+        await _sender.Send(new DeleteAuthorCommand(id), token);
+        return Ok(new DeleteResponse());
     }
 }
