@@ -40,7 +40,7 @@ public class BooksController(ISender _sender) : ControllerBase
 
         //var covers = new List<CoverData>();
             
-        var command = new CreateBookCommand(
+            var command = new CreateBookCommand(
             request.Title,
             request.PublishDate,
             request.BasePrice,
@@ -54,15 +54,20 @@ public class BooksController(ISender _sender) : ControllerBase
 
     [HttpPut(ApiEndpoints.V1.Books.Update)]
     public async Task<IActionResult> UpdateBook(
-        [FromRoute] Guid id, [FromBody] UpdateBookCommand command, CancellationToken token)
+        [FromRoute] string id, [FromBody] UpdateBookRequest request, CancellationToken token)
     {
-        var updateCommand = command with { Id = id };
-        return Ok(await _sender.Send(updateCommand, token));
+        var command = new UpdateBookCommand(
+            IdOrSlug: id,
+            Title: request.Title,
+            PublishDate: request.PublishDate,
+            BasePrice: request.BasePrice
+        );
+        return Ok(await _sender.Send(command, token));
     }
 
     [HttpDelete(ApiEndpoints.V1.Books.Delete)]
     public async Task<IActionResult> DeleteBook(
-        [FromRoute] Guid id, CancellationToken token)
+        [FromRoute] string id, CancellationToken token)
     {
         await _sender.Send(new DeleteBookCommand(id), token);
         return Ok(new DeleteResponse());
@@ -70,7 +75,7 @@ public class BooksController(ISender _sender) : ControllerBase
     
     [HttpPut(ApiEndpoints.V1.Books.BookGenres)]
     public async Task<IActionResult> UpdateBookGenres(
-        [FromRoute] Guid id, [FromBody] UpdateBookGenresRequest request, CancellationToken token)
+        [FromRoute] string id, [FromBody] UpdateBookGenresRequest request, CancellationToken token)
     {
         var command = new UpdateBookGenresCommand(id, request.GenreIds);
         var response = await _sender.Send(command, token);
@@ -79,7 +84,7 @@ public class BooksController(ISender _sender) : ControllerBase
     
     [HttpPut(ApiEndpoints.V1.Books.BookCovers)]
     public async Task<IActionResult> UpdateBookCovers(
-        [FromRoute] Guid id, [FromBody] UpdateBookCoversRequest request, CancellationToken token)
+        [FromRoute] string id, [FromBody] UpdateBookCoversRequest request, CancellationToken token)
     {
         var command = new UpdateBookCoversCommand(id, request.Covers);
         var response = await _sender.Send(command, token);
@@ -88,7 +93,7 @@ public class BooksController(ISender _sender) : ControllerBase
     
     [HttpPut(ApiEndpoints.V1.Books.BookAuthors)]
     public async Task<IActionResult> UpdateBookAuthors(
-        [FromRoute] Guid id, [FromBody] UpdateBookAuthorsRequest request, CancellationToken token)
+        [FromRoute] string id, [FromBody] UpdateBookAuthorsRequest request, CancellationToken token)
     {
         var command = new UpdateBookAuthorsCommand(id, request.AuthorIds);
         var response = await _sender.Send(command, token);
@@ -97,7 +102,7 @@ public class BooksController(ISender _sender) : ControllerBase
     
     [HttpPut(ApiEndpoints.V1.Books.BookArtists)]
     public async Task<IActionResult> UpdateBookArtists(
-        [FromRoute] Guid id, [FromBody] UpdateBookArtistsRequest request, CancellationToken token)
+        [FromRoute] string id, [FromBody] UpdateBookArtistsRequest request, CancellationToken token)
     {
         var command = new UpdateBookArtistsCommand(id, request.ArtistIds);
         var response = await _sender.Send(command, token);

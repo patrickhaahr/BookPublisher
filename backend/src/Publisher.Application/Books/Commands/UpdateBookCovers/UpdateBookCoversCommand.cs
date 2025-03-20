@@ -5,6 +5,6 @@ using Publisher.Contracts.Responses;
 namespace Publisher.Application.Books.Commands.UpdateBookCovers;
 
 public record UpdateBookCoversCommand(
-    Guid BookId,
+    string IdOrSlug,
     List<CoverUpdateData> Covers
 ) : IRequest<UpdateBookCoversResponse>;

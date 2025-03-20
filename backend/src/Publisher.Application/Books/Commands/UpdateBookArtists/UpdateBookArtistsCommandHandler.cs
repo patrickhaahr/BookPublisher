@@ -11,39 +11,52 @@ public class UpdateBookArtistsCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookArtistsResponse> Handle(UpdateBookArtistsCommand command, CancellationToken token)
     {
-        // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
-            ?? throw new NotFoundException(nameof(Book), command.BookId);
-
-        // This is a little more complex as artists are associated with covers
-        // First, get all covers for this book
-        var bookCovers = await bookRepository.GetBookByIdAsync(command.BookId, token);
-        if (bookCovers?.Covers == null || !bookCovers.Covers.Any())
+        // Resolve the book using ID or slug
+        Book? book;
+        Guid bookId;
+        
+        if (Guid.TryParse(command.IdOrSlug, out bookId))
         {
-            // No covers to associate artists with
-            return new UpdateBookArtistsResponse(command.BookId, new List<Guid>());
+            book = await bookRepository.GetBookByIdAsync(bookId, token);
         }
-
-        // For each cover, remove existing artist associations and add new ones
-        foreach (var cover in bookCovers.Covers)
+        else
         {
-            // Remove existing artist associations
-            await bookRepository.RemoveCoverPersonsAsync(cover.CoverId);
-
-            // Add new artist associations
-            var coverPersons = command.ArtistIds.Select(artistId => new CoverPersons
+            book = await bookRepository.GetBookBySlugAsync(command.IdOrSlug, token);
+            if (book != null)
             {
-                CoverId = cover.CoverId,
-                PersonId = artistId,
-                ArtistPersonId = artistId
-            }).ToList();
-
-            if (coverPersons.Any())
+                bookId = book.BookId;
+            }
+            else
             {
-                await bookRepository.AddCoverPersonsAsync(coverPersons);
+                throw new NotFoundException(nameof(Book), command.IdOrSlug);
             }
         }
 
-        return new UpdateBookArtistsResponse(command.BookId, command.ArtistIds);
+        if (book == null)
+            throw new NotFoundException(nameof(Book), command.IdOrSlug);
+
+        // Update the artists for all covers of this book
+        foreach (var cover in book.Covers)
+        {
+            // Remove existing cover artists
+            await bookRepository.RemoveCoverPersonsAsync(cover.CoverId);
+            
+            // Add new cover artists
+            var coverPersons = command.ArtistIds
+                .Select(artistId => new CoverPersons
+                {
+                    CoverId = cover.CoverId,
+                    PersonId = artistId,
+                    ArtistPersonId = artistId
+                })
+                .ToList();
+                
+            await bookRepository.AddCoverPersonsAsync(coverPersons);
+        }
+
+        return new UpdateBookArtistsResponse(
+            bookId,
+            command.ArtistIds
+        );
     }
 } 

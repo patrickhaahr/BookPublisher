@@ -4,6 +4,6 @@ using Publisher.Contracts.Responses;
 namespace Publisher.Application.Books.Commands.UpdateBookAuthors;
 
 public record UpdateBookAuthorsCommand(
-    Guid BookId,
+    string IdOrSlug,
     List<Guid> AuthorIds
 ) : IRequest<UpdateBookAuthorsResponse>; 

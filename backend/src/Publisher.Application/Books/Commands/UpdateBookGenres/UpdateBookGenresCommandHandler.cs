@@ -11,22 +11,51 @@ public class UpdateBookGenresCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookGenresResponse> Handle(UpdateBookGenresCommand command, CancellationToken token)
     {
-        // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
-            ?? throw new NotFoundException(nameof(Book), command.BookId);
+        // Resolve the book using ID or slug
+        Book? book;
+        Guid bookId;
+        
+        if (Guid.TryParse(command.IdOrSlug, out bookId))
+        {
+            book = await bookRepository.GetBookByIdAsync(bookId, token);
+        }
+        else
+        {
+            book = await bookRepository.GetBookBySlugAsync(command.IdOrSlug, token);
+            if (book != null)
+            {
+                bookId = book.BookId;
+            }
+            else
+            {
+                throw new NotFoundException(nameof(Book), command.IdOrSlug);
+            }
+        }
 
-        // Remove existing genres
-        await bookRepository.RemoveBookGenresAsync(command.BookId);
+        if (book == null)
+            throw new NotFoundException(nameof(Book), command.IdOrSlug);
+
+        // Remove all existing genres
+        await bookRepository.RemoveBookGenresAsync(bookId, token);
 
         // Add new genres
-        var bookGenres = command.GenreIds.Select(gid => new BookGenres
-        {
-            BookId = command.BookId,
-            GenreId = gid
-        }).ToList();
+        var bookGenres = command.GenreIds
+            .Select(genreId => new BookGenres
+            {
+                BookId = bookId,
+                GenreId = genreId
+            })
+            .ToList();
 
-        await bookRepository.AddBookGenresAsync(bookGenres);
+        await bookRepository.AddBookGenresAsync(bookGenres, token);
 
-        return new UpdateBookGenresResponse(command.BookId, command.GenreIds);
+        // Reload the book to get the updated genres
+        book = await bookRepository.GetBookByIdAsync(bookId, token)
+            ?? throw new NotFoundException(nameof(Book), command.IdOrSlug);
+
+        return new UpdateBookGenresResponse(
+            book.BookId,
+            book.BookGenres.Select(bg => bg.GenreId).ToList()
+        );
     }
 }

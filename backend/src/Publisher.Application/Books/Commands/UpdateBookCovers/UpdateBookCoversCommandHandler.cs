@@ -11,12 +11,32 @@ public class UpdateBookCoversCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookCoversResponse> Handle(UpdateBookCoversCommand command, CancellationToken token)
     {
-        // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
-            ?? throw new NotFoundException(nameof(Book), command.BookId);
+        // Resolve the book using ID or slug
+        Book? book;
+        Guid bookId;
+        
+        if (Guid.TryParse(command.IdOrSlug, out bookId))
+        {
+            book = await bookRepository.GetBookByIdAsync(bookId, token);
+        }
+        else
+        {
+            book = await bookRepository.GetBookBySlugAsync(command.IdOrSlug, token);
+            if (book != null)
+            {
+                bookId = book.BookId;
+            }
+            else
+            {
+                throw new NotFoundException(nameof(Book), command.IdOrSlug);
+            }
+        }
+
+        if (book == null)
+            throw new NotFoundException(nameof(Book), command.IdOrSlug);
 
         // Remove all existing covers and their artists
-        await bookRepository.RemoveBookCoversAsync(command.BookId);
+        await bookRepository.RemoveBookCoversAsync(bookId);
 
         // Add or update covers
         var updatedCovers = new List<Cover>();
@@ -26,7 +46,7 @@ public class UpdateBookCoversCommandHandler(IBookRepository bookRepository)
             var cover = new Cover
             {
                 CoverId = coverId,
-                BookId = command.BookId,
+                BookId = bookId,
                 ImgBase64 = coverRequest.ImgBase64,
                 CreatedDate = DateTime.UtcNow
             };
@@ -48,6 +68,9 @@ public class UpdateBookCoversCommandHandler(IBookRepository bookRepository)
         book.Covers = updatedCovers; // Update the book's cover collection
         await bookRepository.UpdateBookAsync(book);
 
-        return new UpdateBookCoversResponse(command.BookId, command.Covers);
+        return new UpdateBookCoversResponse(
+            bookId,
+            command.Covers
+        );
     }
 } 
