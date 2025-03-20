@@ -12,8 +12,19 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookResponse> Handle(UpdateBookCommand command, CancellationToken token)
     {
-        var book = await bookRepository.GetBookByIdAsync(command.Id, token)
-            ?? throw new NotFoundException(nameof(Book), command.Id);
+        // Resolve the book using ID or slug
+        Book? book;
+        if (Guid.TryParse(command.IdOrSlug, out var bookId))
+        {
+            book = await bookRepository.GetBookByIdAsync(bookId, token);
+        }
+        else
+        {
+            book = await bookRepository.GetBookBySlugAsync(command.IdOrSlug, token);
+        }
+
+        if (book == null)
+            throw new NotFoundException(nameof(Book), command.IdOrSlug);
 
         var baseSlug = SlugGenerator.GenerateSlug(command.Title);
         
@@ -41,10 +52,10 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         book.BasePrice = command.BasePrice;
         book.SetSlug(slug);
 
-        var updatedBook = await bookRepository.UpdateBookAsync(command.Id, book, token);
+        var updatedBook = await bookRepository.UpdateBookAsync(book.BookId, book, token);
 
         if (updatedBook is null)
-            throw new NotFoundException(nameof(Book), command.Id);
+            throw new NotFoundException(nameof(Book), command.IdOrSlug);
             
         return new UpdateBookResponse(
             updatedBook.BookId,

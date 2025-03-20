@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Publisher.Application;
 using Publisher.Infrastructure;
 using Publisher.Presentation.Middleware;
@@ -16,6 +17,12 @@ builder.Services.AddControllers()
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);
+
+// Upload image size limit
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 1024 * 1024; // 1 MB
+});
 
 var app = builder.Build();
 

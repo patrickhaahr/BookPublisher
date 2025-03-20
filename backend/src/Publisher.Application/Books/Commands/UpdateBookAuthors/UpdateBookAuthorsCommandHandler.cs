@@ -11,23 +11,48 @@ public class UpdateBookAuthorsCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookAuthorsResponse> Handle(UpdateBookAuthorsCommand command, CancellationToken token)
     {
-        // Verify book exists
-        var book = await bookRepository.GetBookByIdAsync(command.BookId, token) 
-            ?? throw new NotFoundException(nameof(Book), command.BookId);
-
-        // Remove existing book authors relationships
-        await bookRepository.RemoveBookPersonsAsync(command.BookId);
-
-        // Add new book authors relationships
-        var bookPersons = command.AuthorIds.Select(authorId => new BookPersons
+        // Resolve the book using ID or slug
+        Book? book;
+        Guid bookId;
+        
+        if (Guid.TryParse(command.IdOrSlug, out bookId))
         {
-            BookId = command.BookId,
-            PersonId = authorId,
-            AuthorPersonId = authorId
-        }).ToList();
+            book = await bookRepository.GetBookByIdAsync(bookId, token);
+        }
+        else
+        {
+            book = await bookRepository.GetBookBySlugAsync(command.IdOrSlug, token);
+            if (book != null)
+            {
+                bookId = book.BookId;
+            }
+            else
+            {
+                throw new NotFoundException(nameof(Book), command.IdOrSlug);
+            }
+        }
 
-        await bookRepository.AddBookPersonsAsync(bookPersons);
+        if (book == null)
+            throw new NotFoundException(nameof(Book), command.IdOrSlug);
 
-        return new UpdateBookAuthorsResponse(command.BookId, command.AuthorIds);
+        // Remove all existing authors
+        await bookRepository.RemoveBookPersonsAsync(bookId, token);
+
+        // Add new authors
+        var bookPersons = command.AuthorIds
+            .Select(authorId => new BookPersons
+            {
+                BookId = bookId,
+                PersonId = authorId,
+                AuthorPersonId = authorId
+            })
+            .ToList();
+
+        await bookRepository.AddBookPersonsAsync(bookPersons, token);
+
+        return new UpdateBookAuthorsResponse(
+            bookId,
+            command.AuthorIds
+        );
     }
 } 

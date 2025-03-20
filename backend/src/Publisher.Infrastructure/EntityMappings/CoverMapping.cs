@@ -9,7 +9,7 @@ public class CoverMapping : IEntityTypeConfiguration<Cover>
     public void Configure(EntityTypeBuilder<Cover> builder)
     {
         // Fluent API
-        builder.Property(c => c.ImgBase64).HasMaxLength(10000);
+        builder.Property(c => c.ImgBase64).HasColumnType("NVARCHAR(MAX)");
 
         // Seed data
         builder.HasData(

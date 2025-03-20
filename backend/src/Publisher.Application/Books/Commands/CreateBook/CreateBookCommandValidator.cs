@@ -50,6 +50,8 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
         RuleFor(c => c.Covers)
             .NotEmpty()
             .WithMessage("At least one cover is required")
+            .Must(covers => covers.All(c => c.ImgBase64.Length <= 1500000))
+            .WithMessage("Cover image must be less than 1 MB")
             .Must(covers => covers.All(c => Validation.IsValidBase64Image(c.ImgBase64)))
             .WithMessage("All covers must have a valid base64 image string")
             .Must(covers => covers.All(c => c.ArtistIds is not null && c.ArtistIds.Count > 0))
