@@ -7,6 +7,7 @@ public record UpdateBookCommand(
     string IdOrSlug,
     string Title,
     DateTime PublishDate,
-    decimal BasePrice
+    decimal BasePrice,
+    List<string>? Genres
 ) : IRequest<UpdateBookResponse>;
         

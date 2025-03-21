@@ -30,7 +30,8 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             BookId = Guid.NewGuid(),
             Title = command.Title,
             PublishDate = command.PublishDate,
-            BasePrice = command.BasePrice
+            BasePrice = command.BasePrice,
+            Genres = command.Genres.Select(g => Enum.Parse<Genre>(g)).ToList() // Map strings to enum
         };
         book.SetSlug(slug);
 
@@ -55,13 +56,6 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             };
         })];
 
-        // Add genres
-        book.BookGenres = [.. command.GenreIds.Select(gid => new BookGenres
-        {
-            BookId = book.BookId,
-            GenreId = gid
-        })];
-
         // Add authors
         book.BookPersons = [.. command.AuthorIds.Select(authorId => new BookPersons
         {
@@ -75,7 +69,8 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
         return new CreateBookResponse(
             createdBook.BookId,
             createdBook.Title,
-            createdBook.Slug
+            createdBook.Slug,
+            createdBook.Genres.Select(g => g.ToString()).ToList()
         );
     }
 }

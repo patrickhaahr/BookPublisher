@@ -1,5 +1,5 @@
 using FluentValidation;
-using Publisher.Application.Utils;
+using Publisher.Domain.Entities;
 
 namespace Publisher.Application.Books.Commands.UpdateBook;
 
@@ -22,5 +22,9 @@ public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
         RuleFor(c => c.BasePrice)
             .GreaterThan(0)
             .WithMessage("Base price must be greater than 0");
+
+        RuleFor(c => c.Genres)
+            .Must(genres => genres is null || genres.All(g => Enum.TryParse<Genre>(g, out _)))
+            .WithMessage("All genres must be valid enum values (e.g., 'ScienceFiction', 'Mystery')");
     }
 }

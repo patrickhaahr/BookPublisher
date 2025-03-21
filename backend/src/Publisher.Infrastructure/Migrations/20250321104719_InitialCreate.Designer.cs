@@ -12,8 +12,8 @@ using Publisher.Infrastructure;
 namespace Publisher.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250320232017_ImgBase64NVCHARMAX")]
-    partial class ImgBase64NVCHARMAX
+    [Migration("20250321104719_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,10 @@ namespace Publisher.Infrastructure.Migrations
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Genres")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
@@ -59,6 +63,7 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
                             BasePrice = 19.99m,
+                            Genres = "[4]",
                             PublishDate = new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "the-great-adventure",
                             Title = "The Great Adventure"
@@ -67,6 +72,7 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
                             BasePrice = 24.99m,
+                            Genres = "[2]",
                             PublishDate = new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "mystery-of-the-lost-city",
                             Title = "Mystery of the Lost City"
@@ -75,46 +81,10 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
                             BasePrice = 29.99m,
+                            Genres = "[1]",
                             PublishDate = new DateTime(2023, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "future-technologies",
                             Title = "Future Technologies"
-                        });
-                });
-
-            modelBuilder.Entity("Publisher.Domain.Entities.BookGenres", b =>
-                {
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BookId", "GenreId");
-
-                    b.HasIndex("GenreId");
-
-                    b.ToTable("BookGenres", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
-                            GenreId = 3
-                        },
-                        new
-                        {
-                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
-                            GenreId = 2
-                        },
-                        new
-                        {
-                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
-                            GenreId = 1
-                        },
-                        new
-                        {
-                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
-                            GenreId = 4
                         });
                 });
 
@@ -248,51 +218,6 @@ namespace Publisher.Infrastructure.Migrations
                             CoverId = new Guid("c0a80121-0001-4000-0000-000000000022"),
                             PersonId = new Guid("c0a80121-0001-4000-0000-000000000004"),
                             ArtistPersonId = new Guid("c0a80121-0001-4000-0000-000000000004")
-                        });
-                });
-
-            modelBuilder.Entity("Publisher.Domain.Entities.Genre", b =>
-                {
-                    b.Property<int>("GenreId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GenreId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("GenreId");
-
-                    b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            GenreId = 1,
-                            Name = "Science Fiction"
-                        },
-                        new
-                        {
-                            GenreId = 2,
-                            Name = "Mystery"
-                        },
-                        new
-                        {
-                            GenreId = 3,
-                            Name = "Fantasy"
-                        },
-                        new
-                        {
-                            GenreId = 4,
-                            Name = "Non-Fiction"
-                        },
-                        new
-                        {
-                            GenreId = 5,
-                            Name = "Biography"
                         });
                 });
 
@@ -549,25 +474,6 @@ namespace Publisher.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Publisher.Domain.Entities.BookGenres", b =>
-                {
-                    b.HasOne("Publisher.Domain.Entities.Book", "Book")
-                        .WithMany("BookGenres")
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Publisher.Domain.Entities.Genre", "Genre")
-                        .WithMany("BookGenres")
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Genre");
-                });
-
             modelBuilder.Entity("Publisher.Domain.Entities.BookPersons", b =>
                 {
                     b.HasOne("Publisher.Domain.Entities.Author", "Author")
@@ -638,8 +544,6 @@ namespace Publisher.Infrastructure.Migrations
 
             modelBuilder.Entity("Publisher.Domain.Entities.Book", b =>
                 {
-                    b.Navigation("BookGenres");
-
                     b.Navigation("BookPersons");
 
                     b.Navigation("Covers");
@@ -650,11 +554,6 @@ namespace Publisher.Infrastructure.Migrations
             modelBuilder.Entity("Publisher.Domain.Entities.Cover", b =>
                 {
                     b.Navigation("CoverPersons");
-                });
-
-            modelBuilder.Entity("Publisher.Domain.Entities.Genre", b =>
-                {
-                    b.Navigation("BookGenres");
                 });
 
             modelBuilder.Entity("Publisher.Domain.Entities.User", b =>

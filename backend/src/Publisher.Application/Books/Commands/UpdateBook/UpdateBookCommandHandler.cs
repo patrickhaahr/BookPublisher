@@ -50,6 +50,7 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         book.Title = command.Title;
         book.PublishDate = command.PublishDate;
         book.BasePrice = command.BasePrice;
+        book.Genres = command.Genres?.Select(g => Enum.Parse<Genre>(g)).ToList() ?? new List<Genre>();
         book.SetSlug(slug);
 
         var updatedBook = await bookRepository.UpdateBookAsync(book.BookId, book, token);
@@ -62,7 +63,8 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             updatedBook.Title,
             updatedBook.PublishDate,
             updatedBook.BasePrice,
-            updatedBook.Slug
+            updatedBook.Slug,
+            updatedBook.Genres.Select(g => g.ToString()).ToList()
         );
     }
 }

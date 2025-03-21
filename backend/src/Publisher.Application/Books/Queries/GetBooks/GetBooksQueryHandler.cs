@@ -15,7 +15,8 @@ public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHand
             book.Title,
             book.PublishDate,
             book.BasePrice,
-            book.Slug
+            book.Slug,
+            book.Genres.Select(g => g.ToString()).ToList()
         )).ToList();
         
         return new GetBooksResponse(bookResponses);
