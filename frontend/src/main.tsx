@@ -6,7 +6,11 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
 // Create a new router instance
-const router = createRouter({ routeTree })
+const router = createRouter({ 
+  routeTree,
+  // Turn off default preloading during development
+  defaultPreload: false,
+})
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
@@ -15,13 +19,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// Make sure the router is ready before rendering
+await router.load()
+
 // Render the app
-const rootElement = document.getElementById('root')!
-if (!rootElement) {
-  const root = ReactDOM.createRoot(rootElement)
-  root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
-  )
-}
+const rootElement = document.getElementById('root')
+if (!rootElement) throw new Error('Root element not found')
+
+const root = ReactDOM.createRoot(rootElement)
+root.render(
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>
+)

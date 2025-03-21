@@ -6,8 +6,9 @@ export const Route = createFileRoute('/')({
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Welcome to Book Publisher</h1>
+      <p>This is the home page of our application.</p>
     </div>
   )
 }
