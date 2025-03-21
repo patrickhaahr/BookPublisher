@@ -22,6 +22,7 @@ namespace Publisher.Infrastructure.Migrations
                     PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Mediums = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Genres = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -163,12 +164,13 @@ namespace Publisher.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Books",
-                columns: new[] { "BookId", "BasePrice", "Genres", "PublishDate", "Slug", "Title" },
+                columns: new[] { "BookId", "BasePrice", "Genres", "Mediums", "PublishDate", "Slug", "Title" },
                 values: new object[,]
                 {
-                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 19.99m, "[4]", new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-great-adventure", "The Great Adventure" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 24.99m, "[2]", new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "mystery-of-the-lost-city", "Mystery of the Lost City" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 29.99m, "[1]", new DateTime(2023, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "future-technologies", "Future Technologies" }
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 19.99m, "[2,10]", "[1,3]", new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-great-adventure", "The Great Adventure" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 24.99m, "[5,10]", "[1]", new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "mystery-of-the-lost-city", "Mystery of the Lost City" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 29.99m, "[4,16]", "[3]", new DateTime(2023, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "future-technologies", "Future Technologies" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 14.99m, "[10,3]", "[10,3]", new DateTime(1999, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "one-piece", "One Piece" }
                 });
 
             migrationBuilder.InsertData(

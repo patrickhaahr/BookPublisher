@@ -18,7 +18,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
             // Suppress the warning about dynamic data in seeding
             options.ConfigureWarnings(warnings => 
                 warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));

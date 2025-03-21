@@ -47,7 +47,8 @@ public class GetBookByIdQueryHandler(IBookRepository bookRepository) : IRequestH
                 bp.Author.Phone ?? string.Empty,
                 bp.Author.RoyaltyRate
             ))],
-            book.Genres.Select(g => g.ToString()).ToList() // Enum to string
+            [.. book.Mediums.Select(m => m.ToString())],
+            [.. book.Genres.Select(g => g.ToString())]
         );
     }
 }

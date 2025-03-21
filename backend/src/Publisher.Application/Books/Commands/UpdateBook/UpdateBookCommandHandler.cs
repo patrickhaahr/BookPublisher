@@ -26,7 +26,7 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         if (book == null)
             throw new NotFoundException(nameof(Book), command.IdOrSlug);
 
-        var baseSlug = SlugGenerator.GenerateSlug(command.Title);
+        var baseSlug = SlugGenerator.GenerateSlug(command.Title ?? book.Title);
         
         var slug = baseSlug;
         var slugAttempt = 1;
@@ -47,10 +47,11 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             slug = book.Slug;
         }
 
-        book.Title = command.Title;
-        book.PublishDate = command.PublishDate;
-        book.BasePrice = command.BasePrice;
-        book.Genres = command.Genres?.Select(g => Enum.Parse<Genre>(g)).ToList() ?? new List<Genre>();
+        book.Title = command.Title ?? book.Title;
+        book.PublishDate = command.PublishDate ?? book.PublishDate;
+        book.BasePrice = command.BasePrice ?? book.BasePrice;
+        book.Mediums = command.Mediums?.Select(m => Enum.Parse<Medium>(m, ignoreCase: true)).ToList() ?? book.Mediums;
+        book.Genres = command.Genres?.Select(g => Enum.Parse<Genre>(g, ignoreCase: true)).ToList() ?? book.Genres;
         book.SetSlug(slug);
 
         var updatedBook = await bookRepository.UpdateBookAsync(book.BookId, book, token);
@@ -64,7 +65,8 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             updatedBook.PublishDate,
             updatedBook.BasePrice,
             updatedBook.Slug,
-            updatedBook.Genres.Select(g => g.ToString()).ToList()
+            [.. updatedBook.Mediums.Select(m => m.ToString())],
+            [.. updatedBook.Genres.Select(g => g.ToString())]
         );
     }
 }

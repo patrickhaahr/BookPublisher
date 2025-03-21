@@ -30,11 +30,17 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
         RuleFor(c => c.BasePrice)
             .GreaterThan(0)
             .WithMessage("Base price must be greater than 0");
+        
+        RuleFor(c => c.Mediums)
+            .NotEmpty()
+            .WithMessage("At least one medium is required")
+            .Must(mediums => mediums.All(m => Enum.TryParse<Medium>(m, ignoreCase: true, out _)))
+            .WithMessage("All mediums must be valid enum values (e.g., 'Print', 'EBook')");
 
         RuleFor(c => c.Genres)
             .NotEmpty()
             .WithMessage("At least one genre is required")
-            .Must(genres => genres.All(g => Enum.TryParse<Genre>(g, out _)))
+            .Must(genres => genres.All(g => Enum.TryParse<Genre>(g, ignoreCase: true, out _)))
             .WithMessage("All genres must be valid enum values (e.g., 'ScienceFiction', 'Mystery')");
 
         RuleFor(c => c.AuthorIds)
