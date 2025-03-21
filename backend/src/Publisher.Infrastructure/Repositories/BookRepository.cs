@@ -18,8 +18,6 @@ public class BookRepository(AppDbContext _context) : IBookRepository
                 .ThenInclude(cp => cp.Artist)
             .Include(b => b.BookPersons)
                 .ThenInclude(bp => bp.Author)
-            .Include(b => b.BookGenres)
-                .ThenInclude(bg => bg.Genre)
             .FirstOrDefaultAsync(b => b.BookId == id, token);
     }
     public async Task<Book?> GetBookBySlugAsync(string slug, CancellationToken token = default)
@@ -30,8 +28,6 @@ public class BookRepository(AppDbContext _context) : IBookRepository
                 .ThenInclude(cp => cp.Artist)
             .Include(b => b.BookPersons)
                 .ThenInclude(bp => bp.Author)
-            .Include(b => b.BookGenres)
-                .ThenInclude(bg => bg.Genre)
             .FirstOrDefaultAsync(b => b.Slug == slug, token);
     }
     public async Task<Book> CreateBookAsync(Book book, CancellationToken token = default)
@@ -52,38 +48,25 @@ public class BookRepository(AppDbContext _context) : IBookRepository
             return null!; // Let Application layer handle not found case
 
         _context.Entry(existingBook).CurrentValues.SetValues(book);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
         return existingBook;
     }
     public async Task<Book?> DeleteBookAsync(Guid id, CancellationToken token = default)
     {
         var book = await GetBookByIdAsync(id, token);
+
         if (book is null)
             return null;
 
         _context.Books.Remove(book);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
         return book;
     }
     public async Task<bool> SlugExistsAsync(string slug, CancellationToken token = default)
     {
         return await _context.Books.AnyAsync(b => b.Slug == slug, token);
     }
-    public async Task RemoveBookGenresAsync(Guid bookId, CancellationToken token = default)
-    {
-        var genres = await _context.BookGenres
-            .Where(bg => bg.BookId == bookId)
-            .ToListAsync();
-        
-        _context.BookGenres.RemoveRange(genres);
-        await _context.SaveChangesAsync();
-    }
-    public async Task AddBookGenresAsync(List<BookGenres> bookGenres, CancellationToken token = default)
-    {
-        await _context.BookGenres.AddRangeAsync(bookGenres, token);
-        await _context.SaveChangesAsync(token);
-    }
-    
+
     // Book Persons (Author) methods
     public async Task RemoveBookPersonsAsync(Guid bookId, CancellationToken token = default)
     {
@@ -92,7 +75,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
             .ToListAsync();
         
         _context.BookPersons.RemoveRange(bookPersons);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
     }
     
     public async Task AddBookPersonsAsync(List<BookPersons> bookPersons, CancellationToken token = default)
@@ -115,7 +98,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
         }
         
         _context.Covers.RemoveRange(covers);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
     }
     
     public async Task AddBookCoverAsync(Cover cover, CancellationToken token = default)
@@ -132,7 +115,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
             .ToListAsync();
         
         _context.CoverPersons.RemoveRange(coverPersons);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
     }
     
     public async Task AddCoverPersonsAsync(List<CoverPersons> coverPersons, CancellationToken token = default)
@@ -147,4 +130,3 @@ public class BookRepository(AppDbContext _context) : IBookRepository
         await _context.SaveChangesAsync(token);
     }
 }
-

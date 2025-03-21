@@ -5,7 +5,8 @@ public record BookSummaryResponse(
     string Title,
     DateTime PublishDate,
     decimal BasePrice,
-    string Slug
+    string Slug,
+    List<string> Genres
 );
 
 public record GetBooksResponse(

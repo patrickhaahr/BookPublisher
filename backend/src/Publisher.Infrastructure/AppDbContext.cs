@@ -17,8 +17,6 @@ public class AppDbContext : DbContext
     public DbSet<UserBookInteraction> UserBookInteractions => Set<UserBookInteraction>();
     public DbSet<BookPersons> BookPersons => Set<BookPersons>();
     public DbSet<CoverPersons> CoverPersons => Set<CoverPersons>();
-    public DbSet<Genre> Genres => Set<Genre>();
-    public DbSet<BookGenres> BookGenres => Set<BookGenres>();
     public DbSet<BookSummary> BookSummaries => Set<BookSummary>();
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }

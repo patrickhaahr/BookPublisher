@@ -21,24 +21,12 @@ namespace Publisher.Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Genres = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.BookId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Genres",
-                columns: table => new
-                {
-                    GenreId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Genres", x => x.GenreId);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,7 +67,7 @@ namespace Publisher.Infrastructure.Migrations
                 columns: table => new
                 {
                     CoverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ImgBase64 = table.Column<string>(type: "nvarchar(max)", maxLength: 10000, nullable: true),
+                    ImgBase64 = table.Column<string>(type: "NVARCHAR(MAX)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -91,30 +79,6 @@ namespace Publisher.Infrastructure.Migrations
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "BookId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "BookGenres",
-                columns: table => new
-                {
-                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookGenres", x => new { x.BookId, x.GenreId });
-                    table.ForeignKey(
-                        name: "FK_BookGenres_Books_BookId",
-                        column: x => x.BookId,
-                        principalTable: "Books",
-                        principalColumn: "BookId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BookGenres_Genres_GenreId",
-                        column: x => x.GenreId,
-                        principalTable: "Genres",
-                        principalColumn: "GenreId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -199,24 +163,12 @@ namespace Publisher.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Books",
-                columns: new[] { "BookId", "BasePrice", "PublishDate", "Slug", "Title" },
+                columns: new[] { "BookId", "BasePrice", "Genres", "PublishDate", "Slug", "Title" },
                 values: new object[,]
                 {
-                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 19.99m, new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-great-adventure", "The Great Adventure" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 24.99m, new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "mystery-of-the-lost-city", "Mystery of the Lost City" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 29.99m, new DateTime(2023, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "future-technologies", "Future Technologies" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Genres",
-                columns: new[] { "GenreId", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Science Fiction" },
-                    { 2, "Mystery" },
-                    { 3, "Fantasy" },
-                    { 4, "Non-Fiction" },
-                    { 5, "Biography" }
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 19.99m, "[4]", new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-great-adventure", "The Great Adventure" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 24.99m, "[2]", new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "mystery-of-the-lost-city", "Mystery of the Lost City" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 29.99m, "[1]", new DateTime(2023, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "future-technologies", "Future Technologies" }
                 });
 
             migrationBuilder.InsertData(
@@ -244,17 +196,6 @@ namespace Publisher.Infrastructure.Migrations
                 {
                     { new Guid("c0a80121-0001-4000-0000-000000000030"), "user1@example.com", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "User", "user1" },
                     { new Guid("c0a80121-0001-4000-0000-000000000031"), "user2@example.com", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", "User", "user2" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "BookGenres",
-                columns: new[] { "BookId", "GenreId" },
-                values: new object[,]
-                {
-                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 3 },
-                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 2 },
-                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 1 },
-                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 4 }
                 });
 
             migrationBuilder.InsertData(
@@ -298,11 +239,6 @@ namespace Publisher.Infrastructure.Migrations
                     { new Guid("c0a80121-0001-4000-0000-000000000022"), new Guid("c0a80121-0001-4000-0000-000000000003"), new Guid("c0a80121-0001-4000-0000-000000000003") },
                     { new Guid("c0a80121-0001-4000-0000-000000000022"), new Guid("c0a80121-0001-4000-0000-000000000004"), new Guid("c0a80121-0001-4000-0000-000000000004") }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookGenres_GenreId",
-                table: "BookGenres",
-                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookPersons_AuthorPersonId",
@@ -352,9 +288,6 @@ namespace Publisher.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BookGenres");
-
-            migrationBuilder.DropTable(
                 name: "BookPersons");
 
             migrationBuilder.DropTable(
@@ -362,9 +295,6 @@ namespace Publisher.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserBookInteractions");
-
-            migrationBuilder.DropTable(
-                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Covers");

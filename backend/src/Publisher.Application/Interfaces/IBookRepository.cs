@@ -11,9 +11,7 @@ public interface IBookRepository
     Task<Book?> UpdateBookAsync(Guid id, Book book, CancellationToken token = default);
     Task<Book?> DeleteBookAsync(Guid id, CancellationToken token = default);
     Task<bool> SlugExistsAsync(string slug, CancellationToken token = default);
-    Task RemoveBookGenresAsync(Guid bookId, CancellationToken token = default);
-    Task AddBookGenresAsync(List<BookGenres> bookGenres, CancellationToken token = default);
-    
+
     // Book Persons (Author) methods
     Task RemoveBookPersonsAsync(Guid bookId, CancellationToken token = default);
     Task AddBookPersonsAsync(List<BookPersons> bookPersons, CancellationToken token = default);

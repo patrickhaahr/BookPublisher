@@ -1,18 +1,17 @@
 using FluentValidation;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
+using Publisher.Domain.Entities;
 
 namespace Publisher.Application.Books.Commands.CreateBook;
 
 public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
 {
-    private readonly IGenreRepository _genreRepository;
     private readonly IAuthorRepository _authorRepository;
     private readonly IArtistRepository _artistRepository;
 
-    public CreateBookCommandValidator(IGenreRepository genreRepository, IAuthorRepository authorRepository, IArtistRepository artistRepository)
+    public CreateBookCommandValidator(IAuthorRepository authorRepository, IArtistRepository artistRepository)
     {
-        _genreRepository = genreRepository;
         _authorRepository = authorRepository;
         _artistRepository = artistRepository;
 
@@ -32,11 +31,11 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
             .GreaterThan(0)
             .WithMessage("Base price must be greater than 0");
 
-        RuleFor(c => c.GenreIds)
+        RuleFor(c => c.Genres)
             .NotEmpty()
             .WithMessage("At least one genre is required")
-            .Must(genreIds => genreIds.All(g => g > 0))
-            .WithMessage("Genre IDs must be positive integers");
+            .Must(genres => genres.All(g => Enum.TryParse<Genre>(g, out _)))
+            .WithMessage("All genres must be valid enum values (e.g., 'ScienceFiction', 'Mystery')");
 
         RuleFor(c => c.AuthorIds)
             .NotEmpty()

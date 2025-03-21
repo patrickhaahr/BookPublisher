@@ -9,7 +9,7 @@ public record CreateBookCommand(
     string Title,
     DateTime PublishDate,
     decimal BasePrice,
-    List<int> GenreIds,
+    List<string> Genres,
     List<Guid> AuthorIds,
     List<CoverData> Covers
 ) : IRequest<CreateBookResponse>;
