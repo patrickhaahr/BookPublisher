@@ -3,7 +3,6 @@ using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
 using Publisher.Contracts.Responses;
 using Publisher.Domain.Entities;
-using Publisher.Domain.Exceptions;
 
 namespace Publisher.Application.Books.Commands.CreateBook;
 
@@ -31,7 +30,8 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             Title = command.Title,
             PublishDate = command.PublishDate,
             BasePrice = command.BasePrice,
-            Genres = command.Genres.Select(g => Enum.Parse<Genre>(g)).ToList() // Map strings to enum
+            Mediums = [.. command.Mediums.Select(m => Enum.Parse<Medium>(m, ignoreCase: true))], // Map strings to enum
+            Genres = [.. command.Genres.Select(g => Enum.Parse<Genre>(g, ignoreCase: true))], // Map strings to enum
         };
         book.SetSlug(slug);
 
@@ -70,7 +70,8 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             createdBook.BookId,
             createdBook.Title,
             createdBook.Slug,
-            createdBook.Genres.Select(g => g.ToString()).ToList()
+            [.. createdBook.Mediums.Select(m => m.ToString())],
+            [.. createdBook.Genres.Select(g => g.ToString())]
         );
     }
 }

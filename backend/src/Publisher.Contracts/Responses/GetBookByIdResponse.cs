@@ -8,5 +8,6 @@ public record GetBookByIdResponse(
     string Slug,
     List<CoverResponse> Covers,
     List<AuthorResponse> Authors,
+    List<string> Mediums,
     List<string> Genres
 );

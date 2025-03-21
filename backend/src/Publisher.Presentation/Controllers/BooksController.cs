@@ -10,7 +10,6 @@ using Publisher.Application.Books.Queries.GetBooks;
 using Publisher.Application.Books.Queries.GetBookById;
 using Publisher.Contracts.Requests;
 using Publisher.Contracts.Responses;
-using System.Text.Json;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -43,6 +42,7 @@ public class BooksController(ISender _sender) : ControllerBase
             request.Title,
             request.PublishDate,
             request.BasePrice,
+            request.Mediums,
             request.Genres,
             request.AuthorIds,
             covers
@@ -56,11 +56,12 @@ public class BooksController(ISender _sender) : ControllerBase
         [FromRoute] string id, [FromBody] UpdateBookRequest request, CancellationToken token)
     {
         var command = new UpdateBookCommand(
-            IdOrSlug: id,
-            Title: request.Title,
-            PublishDate: request.PublishDate,
-            BasePrice: request.BasePrice,
-            Genres: request.Genres
+            id,
+            request.Title,
+            request.PublishDate,
+            request.BasePrice,
+            request.Mediums,
+            request.Genres
         );
         return Ok(await _sender.Send(command, token));
     }

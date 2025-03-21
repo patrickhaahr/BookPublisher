@@ -12,7 +12,7 @@ using Publisher.Infrastructure;
 namespace Publisher.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250321104719_InitialCreate")]
+    [Migration("20250321113954_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -35,6 +35,10 @@ namespace Publisher.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Genres")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mediums")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -63,7 +67,8 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
                             BasePrice = 19.99m,
-                            Genres = "[4]",
+                            Genres = "[2,10]",
+                            Mediums = "[1,3]",
                             PublishDate = new DateTime(2023, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "the-great-adventure",
                             Title = "The Great Adventure"
@@ -72,7 +77,8 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
                             BasePrice = 24.99m,
-                            Genres = "[2]",
+                            Genres = "[5,10]",
+                            Mediums = "[1]",
                             PublishDate = new DateTime(2023, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "mystery-of-the-lost-city",
                             Title = "Mystery of the Lost City"
@@ -81,10 +87,21 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
                             BasePrice = 29.99m,
-                            Genres = "[1]",
+                            Genres = "[4,16]",
+                            Mediums = "[3]",
                             PublishDate = new DateTime(2023, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "future-technologies",
                             Title = "Future Technologies"
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            BasePrice = 14.99m,
+                            Genres = "[10,3]",
+                            Mediums = "[10,3]",
+                            PublishDate = new DateTime(1999, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Slug = "one-piece",
+                            Title = "One Piece"
                         });
                 });
 

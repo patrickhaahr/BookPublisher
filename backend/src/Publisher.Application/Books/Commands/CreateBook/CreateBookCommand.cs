@@ -9,6 +9,7 @@ public record CreateBookCommand(
     string Title,
     DateTime PublishDate,
     decimal BasePrice,
+    List<string> Mediums,
     List<string> Genres,
     List<Guid> AuthorIds,
     List<CoverData> Covers

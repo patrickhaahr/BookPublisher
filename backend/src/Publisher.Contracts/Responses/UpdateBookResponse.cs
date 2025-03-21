@@ -6,5 +6,6 @@ public record UpdateBookResponse(
     DateTime PublishDate,
     decimal BasePrice,
     string Slug,
+    List<string> Mediums,
     List<string> Genres
 ); 

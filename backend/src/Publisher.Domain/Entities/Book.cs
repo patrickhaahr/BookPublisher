@@ -6,6 +6,7 @@ public class Book
     public DateTime PublishDate { get; set; }
     public decimal BasePrice { get; set; }
     public string Slug { get; private set; } = string.Empty;
+    public List<Medium> Mediums { get; set; } = new();
     public List<Genre> Genres { get; set; } = new();
         
     // Navigation properties - Initialize with empty collection

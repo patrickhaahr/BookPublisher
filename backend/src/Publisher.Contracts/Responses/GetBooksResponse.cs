@@ -6,6 +6,7 @@ public record BookSummaryResponse(
     DateTime PublishDate,
     decimal BasePrice,
     string Slug,
+    List<string> Mediums,
     List<string> Genres
 );
 
