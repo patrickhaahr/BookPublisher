@@ -25,6 +25,12 @@ export const Route = createRootRoute({
                     Home
                   </Link>
                   <Link
+                    to="/books"
+                    className="transition-colors hover:text-foreground/80 text-foreground/60 [&.active]:text-foreground"
+                  >
+                    Books
+                  </Link>
+                  <Link
                     to="/about"
                     className="transition-colors hover:text-foreground/80 text-foreground/60 [&.active]:text-foreground"
                   >
