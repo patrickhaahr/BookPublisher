@@ -1,7 +1,7 @@
 import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ThemeProvider } from '@/components/theme-provider'
-import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { SearchBar } from '@/components/search-bar'
 import { Book } from 'lucide-react'
 
