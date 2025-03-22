@@ -2,6 +2,7 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/ui/theme-toggle'
+import { Book } from 'lucide-react'
 
 export const Route = createRootRoute({
   component: () => (
@@ -12,6 +13,7 @@ export const Route = createRootRoute({
             <div className="flex h-14 items-center justify-between">
               <div className="flex items-center gap-6">
                 <Link to="/" className="flex items-center space-x-2">
+                  <Book className="h-5 w-5" />
                   <span className="font-bold">Book Publisher</span>
                 </Link>
                 <nav className="hidden sm:flex items-center space-x-6 text-sm font-medium">
