@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { BookCard } from '@/components/book-card'
+import { BookCard, BookCardSkeleton } from '@/components/book-card'
+import { useQuery } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/books/')({
   component: Books,
@@ -45,11 +46,38 @@ const exampleBooks = [
   }
 ]
 
+// Simulate API call
+const fetchBooks = async () => {
+  // Simulate network delay
+  await new Promise(resolve => setTimeout(resolve, 1500))
+  return exampleBooks
+}
+
 function Books() {
+  const { data: books, isLoading } = useQuery({
+    queryKey: ['books'],
+    queryFn: fetchBooks,
+  })
+
+  if (isLoading || !books?.length) {
+    return (
+      <div className="space-y-8">
+        {!books?.length && !isLoading && (
+          <p className="text-center text-lg font-semibold text-red-500">Error: Failed to load books</p>
+        )}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <BookCardSkeleton key={index} />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-        {exampleBooks.map((book) => (
+        {books.map((book) => (
           <BookCard key={book.id} {...book} />
         ))}
       </div>

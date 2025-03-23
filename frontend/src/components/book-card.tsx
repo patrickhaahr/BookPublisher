@@ -1,10 +1,25 @@
 import { Link } from '@tanstack/react-router'
+import { Skeleton } from './ui/skeleton'
 
 interface BookCardProps {
   id: string
   title: string
   coverUrl: string
   author: string
+}
+
+export function BookCardSkeleton() {
+  return (
+    <div className="group overflow-hidden rounded-lg border bg-card">
+      <div className="aspect-[3/4] overflow-hidden bg-muted">
+        <Skeleton className="h-full w-full" />
+      </div>
+      <div className="p-4">
+        <Skeleton className="h-5 w-full" />
+        <Skeleton className="mt-2 h-4 w-3/4" />
+      </div>
+    </div>
+  )
 }
 
 export function BookCard({ id, title, coverUrl, author }: BookCardProps) {

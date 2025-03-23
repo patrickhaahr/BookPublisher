@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/')({
@@ -20,8 +20,12 @@ function Index() {
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4">
-          <Button size="lg">Get Started</Button>
-          <Button size="lg" variant="outline">Learn More</Button>
+          <Link to="/books">
+            <Button size="lg">Get Started</Button>
+          </Link>
+          <Link to="/about">
+            <Button size="lg" variant="outline">Learn More</Button>
+          </Link>
         </div>
       </div>
     </section>
