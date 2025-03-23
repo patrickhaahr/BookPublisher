@@ -6,9 +6,11 @@ import tseslint from 'typescript-eslint'
 import reactX from 'eslint-plugin-react-x'
 import reactDom from 'eslint-plugin-react-dom'
 import pluginQuery from '@tanstack/eslint-plugin'
+import pluginRouter from '@tanstack/eslint-plugin-router'
 
 export default tseslint.config(
   ...pluginQuery.configs['flat/recommended'],
+  ...pluginRouter.configs['flat/recommended'], 
   { ignores: ['dist'] },
   {
     extends: [

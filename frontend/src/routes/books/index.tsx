@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { BookCard } from '@/components/book-card'
 
-export const Route = createFileRoute('/books')({
+export const Route = createFileRoute('/books/')({
   component: Books,
 })
 
