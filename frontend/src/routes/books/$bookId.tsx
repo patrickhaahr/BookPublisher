@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/books/$bookId')({
-  component: BooksId,
+  component: BookId,
   loader: async ({ params }) => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     return {
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/books/$bookId')({
   errorComponent: () => <div>Error</div>,
 })
 
-function BooksId() {
+function BookId() {
   const { data } = Route.useLoaderData()
 
   return <div>Hello "/$booksId"! {data}</div>
