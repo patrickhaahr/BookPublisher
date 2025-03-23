@@ -9,3 +9,10 @@ Tanstack Libraries: Query, Router, Form
 bun install
 bun run dev
 bun pm cache rm
+
+## Tanstack Notes
+
+### Tanstack Query
+IsPending - if there is no cache data
+IsFetching - if we want to see data, if its cached or not. (everytime we save a file or click refetch it will fetch the data) - whenever the query function is running at all
+IsLoading - executing for the first time
