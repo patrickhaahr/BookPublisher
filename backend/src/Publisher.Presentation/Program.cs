@@ -31,7 +31,21 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
 });
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", builder =>
+    {
+        builder.WithOrigins("http://localhost:5173") // Allow frontend
+            .AllowAnyMethod()                        // Allow all HTTP methods
+            .AllowAnyHeader()                        // Allow all headers
+            .AllowCredentials();                     // Allow credentials (cookies, auth headers)
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowFrontend");
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
