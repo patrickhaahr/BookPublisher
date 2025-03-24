@@ -50,6 +50,8 @@ app.UseCors("AllowFrontend");
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 //app.UseHttpsRedirection(); // Always redirect to HTTPS (safest port)
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

@@ -1,7 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Publisher.Application.Interfaces;
+using Publisher.Application.Interfaces.Authentication;
+using Publisher.Infrastructure.Authentication;
 using Publisher.Infrastructure.Repositories;
 
 namespace Publisher.Infrastructure;
@@ -32,6 +37,32 @@ public static class DependencyInjection
         services.AddScoped<IPersonRepository, PersonRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserBookInteractionRepository, UserBookInteractionRepository>();
+
+        // Register authentication services
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton(configuration.GetSection("JwtSettings").Get<JwtSettings>() 
+            ?? throw new InvalidOperationException("JWT settings are not configured in the application configuration."));
+
+        // JWT Authentication
+        var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>() 
+            ?? throw new InvalidOperationException("JWT settings are not configured in the application configuration.");
+            
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+                };
+            });
         
 
         return services;
