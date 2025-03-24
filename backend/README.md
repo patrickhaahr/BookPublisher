@@ -7,3 +7,6 @@ dotnet ef database update --project ../Publisher.Infrastructure
 
 # Run Server
 dotnet run
+
+// TODO
+Update ApiEndpoints to configure Authentication endpoints
