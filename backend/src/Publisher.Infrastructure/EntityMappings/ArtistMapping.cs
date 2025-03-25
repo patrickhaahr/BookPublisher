@@ -18,7 +18,7 @@ public class ArtistMapping : IEntityTypeConfiguration<Artist>
         builder.HasData(
             new Artist
             {
-                PersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000003"),
+                PersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000001"),
                 FirstName = "Michael",
                 LastName = "Johnson",
                 Email = "michael.johnson@example.com",
@@ -27,7 +27,7 @@ public class ArtistMapping : IEntityTypeConfiguration<Artist>
             },
             new Artist
             {
-                PersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000004"),
+                PersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000002"),
                 FirstName = "Sarah",
                 LastName = "Williams",
                 Email = "sarah.williams@example.com",

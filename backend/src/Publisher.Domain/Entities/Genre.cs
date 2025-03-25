@@ -19,5 +19,9 @@ public enum Genre
     Poetry = 15,          // Verse and lyrical works
     Science = 16,         // Scientific exploration
     Travel = 17,          // Journeys, cultures
-    Humor = 18            // Comedy, lighthearted tales
+    Humor = 18,           // Comedy, lighthearted tales
+    Programming = 19,     // Programming books
+    Finance = 20,         // Finance books
+    Epic = 21,            // Epic
+    DarkFantasy = 22,     // Dark fantasy
 }
