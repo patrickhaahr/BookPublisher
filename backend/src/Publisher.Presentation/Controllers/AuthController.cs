@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Publisher.Application.Authentication.Commands.Logout;
 using Publisher.Application.Authentication.Commands.RefreshToken;
 using Publisher.Application.Authentication.Commands.Register;
 using Publisher.Application.Authentication.Queries.Login;
@@ -25,6 +27,15 @@ public class AuthController(ISender sender) : ControllerBase
         var query = new LoginQuery(request.Email, request.Password);
         var authResult = await sender.Send(query, token);
         return Ok(new AuthenticationResponse(authResult.User.UserId, authResult.User.Username, authResult.User.Email, authResult.AccessToken, authResult.RefreshToken));
+    }
+
+    [Authorize]
+    [HttpPost(ApiEndpoints.V1.Auth.Logout)]
+    public async Task<IActionResult> Logout(CancellationToken token)
+    {
+        var command = new LogoutCommand();
+        await sender.Send(command, token);
+        return Ok(new { message = "Logged out successfully" });
     }
 
     [HttpPost(ApiEndpoints.V1.Auth.RefreshToken)]

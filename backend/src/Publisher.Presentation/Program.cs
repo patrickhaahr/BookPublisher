@@ -15,6 +15,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services
     .AddApplication()
     .AddInfrastructure(builder.Configuration);

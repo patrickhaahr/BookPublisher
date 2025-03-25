@@ -42,6 +42,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddHttpContextAccessor();
         services.AddSingleton(configuration.GetSection("JwtSettings").Get<JwtSettings>() 
             ?? throw new InvalidOperationException("JWT settings are not configured in the application configuration."));
 
