@@ -25,26 +25,26 @@ public class CoverPersonsMapping : IEntityTypeConfiguration<CoverPersons>
             new CoverPersons
             {
                 CoverId = Guid.Parse("c0a80121-0001-4000-0000-000000000020"),
-                PersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000003"),
-                ArtistPersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000003")
+                PersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000001"),
+                ArtistPersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000001")
+            },
+            new CoverPersons
+            {
+                CoverId = Guid.Parse("c0a80121-0001-4000-0000-000000000020"),
+                PersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000002"),
+                ArtistPersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000002")
             },
             new CoverPersons
             {
                 CoverId = Guid.Parse("c0a80121-0001-4000-0000-000000000021"),
-                PersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000004"),
-                ArtistPersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000004")
+                PersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000001"),
+                ArtistPersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000001")
             },
             new CoverPersons
             {
                 CoverId = Guid.Parse("c0a80121-0001-4000-0000-000000000022"),
-                PersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000003"),
-                ArtistPersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000003")
-            },
-            new CoverPersons
-            {
-                CoverId = Guid.Parse("c0a80121-0001-4000-0000-000000000022"),
-                PersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000004"),
-                ArtistPersonId = Guid.Parse("c0a80121-0001-4000-0000-000000000004")
+                PersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000002"),
+                ArtistPersonId = Guid.Parse("c0a80121-0001-4100-0000-000000000002")
             }
         );
     }
