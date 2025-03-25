@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Publisher.Domain.Entities;
 
-namespace Publisher.Infrastructure.EntityMappings;
+namespace Publisher.Infrastructure.EntityConfigurations;
 
-public class UserBookInteractionMapping : IEntityTypeConfiguration<UserBookInteraction>
+public class UserBookInteractionConfigurations : IEntityTypeConfiguration<UserBookInteraction>
 {
     public void Configure(EntityTypeBuilder<UserBookInteraction> builder)
     {
