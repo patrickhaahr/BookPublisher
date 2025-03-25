@@ -27,6 +27,7 @@ interface BooksResponse {
 }
 
 function Books() {
+  // TODO: Use useQueries to fetch books and covers in parallel
   const { data: booksData, isPending: isBooksLoading, error: booksError } = useQuery({
     queryKey: ['books'],
     queryFn: getBooks

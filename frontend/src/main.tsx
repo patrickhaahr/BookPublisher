@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
+import { AuthProvider } from './contexts/AuthContext'
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
@@ -32,7 +33,9 @@ const queryClient = new QueryClient()
 root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
     </QueryClientProvider>
   </StrictMode>
 )
