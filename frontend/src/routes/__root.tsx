@@ -110,7 +110,7 @@ export const Route = createRootRoute({
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex h-14 items-center justify-between">
                 <p className="text-sm text-muted-foreground">
-                  ©patrickhaahr2025
+                  ©patrickhaahr
                 </p>
               </div>
             </div>

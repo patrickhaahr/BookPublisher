@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { BookCard, BookCardSkeleton } from '@/components/book-card'
@@ -76,7 +75,6 @@ function Books() {
 
   return (
     <div className="space-y-8">
-      <Button onClick={() => window.location.reload()} className="mb-4">Refresh Data</Button>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {booksWithCovers.map((book) => (
           <BookCard key={book.id} {...book} />
