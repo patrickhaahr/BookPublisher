@@ -99,6 +99,14 @@ public static class ApiEndpoints
             private const string Base = $"{VersionBase}/persons";
             public const string GetAll = Base;
         }
-        
+
+        public static class Auth
+        {
+            private const string Base = $"{VersionBase}/auth";
+            public const string Login = $"{Base}/login";
+            public const string Register = $"{Base}/register";
+            public const string Logout = $"{Base}/logout";
+            public const string RefreshToken = $"{Base}/refresh-token";
+        }
     }
 }

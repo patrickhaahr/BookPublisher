@@ -8,11 +8,10 @@ using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
 public class AuthController(ISender sender) : ControllerBase
 {
-    [HttpPost("register")]
+    [HttpPost(ApiEndpoints.V1.Auth.Register)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken token)
     {
         var command = new RegisterCommand(request.Username, request.Email, request.Password, request.Role);
@@ -20,7 +19,7 @@ public class AuthController(ISender sender) : ControllerBase
         return Ok(new AuthenticationResponse(authResult.User.UserId, authResult.User.Username, authResult.User.Email, authResult.AccessToken, authResult.RefreshToken));
     }
 
-    [HttpPost("login")]
+    [HttpPost(ApiEndpoints.V1.Auth.Login)]
     public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken token)
     {
         var query = new LoginQuery(request.Email, request.Password);
@@ -28,7 +27,7 @@ public class AuthController(ISender sender) : ControllerBase
         return Ok(new AuthenticationResponse(authResult.User.UserId, authResult.User.Username, authResult.User.Email, authResult.AccessToken, authResult.RefreshToken));
     }
 
-    [HttpPost("refresh-token")]
+    [HttpPost(ApiEndpoints.V1.Auth.RefreshToken)]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request, CancellationToken token)
     {
         var command = new RefreshTokenCommand(request.UserId, request.RefreshToken);
