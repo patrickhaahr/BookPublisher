@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Publisher.Domain.Entities;
 
-namespace Publisher.Infrastructure.EntityMappings;
+namespace Publisher.Infrastructure.EntityConfigurations;
 
-public class ArtistMapping : IEntityTypeConfiguration<Artist>
+public class ArtistConfigurations : IEntityTypeConfiguration<Artist>
 {
     public void Configure(EntityTypeBuilder<Artist> builder)
     {

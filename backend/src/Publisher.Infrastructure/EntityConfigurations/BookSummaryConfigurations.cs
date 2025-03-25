@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Publisher.Domain.Entities.ViewModels;
 
-namespace Publisher.Infrastructure.EntityMappings;
+namespace Publisher.Infrastructure.EntityConfigurations;
 
-public class BookSummaryMapping : IEntityTypeConfiguration<BookSummary>
+public class BookSummaryConfigurations : IEntityTypeConfiguration<BookSummary>
 {
     public void Configure(EntityTypeBuilder<BookSummary> builder)
     {

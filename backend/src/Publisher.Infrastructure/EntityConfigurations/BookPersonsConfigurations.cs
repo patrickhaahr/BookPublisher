@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Publisher.Domain.Entities;
 
-namespace Publisher.Infrastructure.EntityMappings;
+namespace Publisher.Infrastructure.EntityConfigurations;
 
-public class BookPersonsMapping : IEntityTypeConfiguration<BookPersons>
+public class BookPersonsConfigurations : IEntityTypeConfiguration<BookPersons>
 {
     public void Configure(EntityTypeBuilder<BookPersons> builder)
     {

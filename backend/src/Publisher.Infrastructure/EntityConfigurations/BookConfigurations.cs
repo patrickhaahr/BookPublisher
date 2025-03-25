@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Publisher.Domain.Entities;
 
-namespace Publisher.Infrastructure.EntityMappings;
+namespace Publisher.Infrastructure.EntityConfigurations;
 
-public class BookMapping : IEntityTypeConfiguration<Book>
+public class BookConfigurations : IEntityTypeConfiguration<Book>
 {
     private static readonly JsonSerializerOptions _jsonOptions = new();
 

@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Publisher.Domain.Entities;
 
-namespace Publisher.Infrastructure.EntityMappings;
+namespace Publisher.Infrastructure.EntityConfigurations;
 
-public class CoverPersonsMapping : IEntityTypeConfiguration<CoverPersons>
+public class CoverPersonsConfigurations : IEntityTypeConfiguration<CoverPersons>
 {
     public void Configure(EntityTypeBuilder<CoverPersons> builder)
     {
