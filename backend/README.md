@@ -9,4 +9,4 @@ dotnet ef database update --project ../Publisher.Infrastructure
 dotnet run
 
 // TODO
-Update ApiEndpoints to configure Authentication endpoints
+Update Register endpoint, so i dont need to request with Roles. Roles should be automaticly assigned with User
