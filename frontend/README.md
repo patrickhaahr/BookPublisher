@@ -16,6 +16,3 @@ bun pm cache rm
 IsPending - if there is no cache data
 IsFetching - if we want to see data, if its cached or not. (everytime we save a file or click refetch it will fetch the data) - whenever the query function is running at all
 IsLoading - executing for the first time
-
-// TODO
-ADD REGISTER AND LOGIC UI

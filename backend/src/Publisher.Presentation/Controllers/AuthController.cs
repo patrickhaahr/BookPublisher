@@ -16,7 +16,7 @@ public class AuthController(ISender sender) : ControllerBase
     [HttpPost(ApiEndpoints.V1.Auth.Register)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request, CancellationToken token)
     {
-        var command = new RegisterCommand(request.Username, request.Email, request.Password, request.Role);
+        var command = new RegisterCommand(request.Username, request.Email, request.Password, "User");
         var authResult = await sender.Send(command, token);
         return Ok(new AuthenticationResponse(authResult.User.UserId, authResult.User.Username, authResult.User.Email, authResult.AccessToken, authResult.RefreshToken));
     }

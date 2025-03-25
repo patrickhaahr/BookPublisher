@@ -1,12 +1,10 @@
-'use client'
-
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { Button } from '@/components/ui/button'; // Shadcn Button
-import { Input } from '@/components/ui/input'; // Shadcn Input
-import { Label } from '@/components/ui/label'; // Shadcn Label
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'; // Shadcn Card
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 
 export const Route = createFileRoute('/auth/register')({
@@ -17,6 +15,7 @@ export const Route = createFileRoute('/auth/register')({
 interface RegisterResponse {
   userId: string;
   username: string;
+  email: string;
   accessToken: string;
   refreshToken: string;
 }
@@ -26,19 +25,13 @@ const registerUser = async (data: {
   username: string;
   email: string;
   password: string;
-  role: string;
 }): Promise<RegisterResponse> => {
   const response = await fetch('http://localhost:5094/api/v1/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      username: data.username,
-      email: data.email,
-      password: data.password,
-      role: 'User', // Default to "User" if not provided
-    }),
+    body: JSON.stringify(data),
   });
 
   if (!response.ok) {
@@ -60,11 +53,11 @@ function Register() {
       email: '',
       password: '',
       confirmPassword: '',
-      role: 'User' as const
     },
     onSubmit: async ({ value }) => {
-      // Trigger the mutation on form submission
-      mutate(value);
+      // Remove confirmPassword before sending to API
+      const { confirmPassword, ...registrationData } = value;
+      mutate(registrationData);
     },
   });
 
