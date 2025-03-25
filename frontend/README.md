@@ -16,3 +16,9 @@ bun pm cache rm
 IsPending - if there is no cache data
 IsFetching - if we want to see data, if its cached or not. (everytime we save a file or click refetch it will fetch the data) - whenever the query function is running at all
 IsLoading - executing for the first time
+
+// TODO
+Add Query Caching.
+Add pagination - only fetch 10 books at a time.
+Implement search functionality
+ADMIN PANEL: CRUD BOOKS, CRUD AUTHOR, CRUD ARTISTS
