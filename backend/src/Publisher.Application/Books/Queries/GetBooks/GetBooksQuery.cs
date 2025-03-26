@@ -3,5 +3,5 @@ using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Queries.GetBooks;
 
-public record GetBooksQuery : IRequest<GetBooksResponse>;
+public record GetBooksQuery(int Page = 1, int PageSize = 12) : IRequest<PagedResponse<GetBooksResponse>>;
 
