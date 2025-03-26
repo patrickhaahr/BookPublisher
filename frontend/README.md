@@ -18,7 +18,6 @@ IsFetching - if we want to see data, if its cached or not. (everytime we save a 
 IsLoading - executing for the first time
 
 // TODO
-Add Query Caching.
 Add pagination - only fetch 10 books at a time.
 Implement search functionality
 ADMIN PANEL: CRUD BOOKS, CRUD AUTHOR, CRUD ARTISTS

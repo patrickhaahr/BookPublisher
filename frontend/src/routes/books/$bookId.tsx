@@ -51,6 +51,8 @@ function BookId() {
   const { data: book, isLoading, error } = useQuery({
     queryKey: ['book', bookId],
     queryFn: () => getBookById(bookId),
+    staleTime: 1000 * 60 * 5, // Store cached data for 5 minutes
+    gcTime: 1000 * 60 * 5, // Remove unused cached data after 5 minutes
   })
 
   if (error) {

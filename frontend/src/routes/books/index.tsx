@@ -29,12 +29,16 @@ function Books() {
   // TODO: Use useQueries to fetch books and covers in parallel
   const { data: booksData, isPending: isBooksLoading, error: booksError } = useQuery({
     queryKey: ['books'],
-    queryFn: getBooks
+    queryFn: getBooks,
+    staleTime: 1000 * 60 * 5, // Store cached data for 5 minutes
+    gcTime: 1000 * 60 * 5, // Remove unused cached data after 5 minutes
   })
 
   const { data: coversData, isPending: isCoversLoading, error: coversError } = useQuery({
     queryKey: ['covers'],
-    queryFn: getCovers
+    queryFn: getCovers,
+    staleTime: 1000 * 60 * 5, // Store cached data for 5 minutes
+    gcTime: 1000 * 60 * 5, // Remove unused cached data after 5 minutes
   })
 
   const isLoading = isBooksLoading || isCoversLoading

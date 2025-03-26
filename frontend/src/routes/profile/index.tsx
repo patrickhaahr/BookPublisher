@@ -41,7 +41,9 @@ function RouteComponent() {
   const { data: profile, isLoading, error } = useQuery<UserProfile>({
     queryKey: ['profile', userId],
     queryFn: () => getUserProfile(userId),
-    enabled: !!userId && isAuthenticated
+    enabled: !!userId && isAuthenticated,
+    staleTime: 1000 * 60 * 5, // Store cached data for 5 minutes
+    gcTime: 1000 * 60 * 5, // Remove unused cached data after 5 minutes
   })
 
   if (!isAuthenticated) {
