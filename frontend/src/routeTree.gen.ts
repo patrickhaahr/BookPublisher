@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
+import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as BooksIndexImport } from './routes/books/index'
 import { Route as BooksBookIdImport } from './routes/books/$bookId'
 import { Route as AuthRegisterImport } from './routes/auth/register'
@@ -29,6 +30,12 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileIndexRoute = ProfileIndexImport.update({
+  id: '/profile/',
+  path: '/profile/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BooksIndexImport
       parentRoute: typeof rootRoute
     }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -114,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/books': typeof BooksIndexRoute
+  '/profile': typeof ProfileIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -123,6 +138,7 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/books': typeof BooksIndexRoute
+  '/profile': typeof ProfileIndexRoute
 }
 
 export interface FileRoutesById {
@@ -133,6 +149,7 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/books/': typeof BooksIndexRoute
+  '/profile/': typeof ProfileIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -144,6 +161,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/books/$bookId'
     | '/books'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -152,6 +170,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/books/$bookId'
     | '/books'
+    | '/profile'
   id:
     | '__root__'
     | '/'
@@ -160,6 +179,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/books/$bookId'
     | '/books/'
+    | '/profile/'
   fileRoutesById: FileRoutesById
 }
 
@@ -170,6 +190,7 @@ export interface RootRouteChildren {
   AuthRegisterRoute: typeof AuthRegisterRoute
   BooksBookIdRoute: typeof BooksBookIdRoute
   BooksIndexRoute: typeof BooksIndexRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -179,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRegisterRoute: AuthRegisterRoute,
   BooksBookIdRoute: BooksBookIdRoute,
   BooksIndexRoute: BooksIndexRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -196,7 +218,8 @@ export const routeTree = rootRoute
         "/auth/login",
         "/auth/register",
         "/books/$bookId",
-        "/books/"
+        "/books/",
+        "/profile/"
       ]
     },
     "/": {
@@ -216,6 +239,9 @@ export const routeTree = rootRoute
     },
     "/books/": {
       "filePath": "books/index.tsx"
+    },
+    "/profile/": {
+      "filePath": "profile/index.tsx"
     }
   }
 }
