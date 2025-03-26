@@ -17,9 +17,12 @@ namespace Publisher.Presentation.Controllers;
 public class BooksController(ISender _sender) : ControllerBase
 {
     [HttpGet(ApiEndpoints.V1.Books.GetAll)]
-    public async Task<IActionResult> GetBooks(CancellationToken token)
+    public async Task<IActionResult> GetBooks(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 12,
+        CancellationToken token = default)
     {
-        return Ok(await _sender.Send(new GetBooksQuery(), token));
+        return Ok(await _sender.Send(new GetBooksQuery(page, pageSize), token));
     }
 
     [HttpGet(ApiEndpoints.V1.Books.GetById)]

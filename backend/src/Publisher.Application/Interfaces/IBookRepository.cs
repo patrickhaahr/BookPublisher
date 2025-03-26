@@ -5,6 +5,7 @@ namespace Publisher.Application.Interfaces;
 public interface IBookRepository
 {
     Task<List<Book>> GetBooksAsync(CancellationToken token = default);
+    Task<(List<Book>, int totalCount)> GetBooksPaginatedAsync(int page, int pageSize, CancellationToken token = default);
     Task<Book?> GetBookByIdAsync(Guid id, CancellationToken token = default);
     Task<Book?> GetBookBySlugAsync(string slug, CancellationToken token = default);
     Task<Book> CreateBookAsync(Book book, CancellationToken token = default);

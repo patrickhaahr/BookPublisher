@@ -6,6 +6,25 @@ namespace Publisher.Infrastructure.Repositories;
 
 public class BookRepository(AppDbContext _context) : IBookRepository
 {
+    public async Task<(List<Book>, int totalCount)> GetBooksPaginatedAsync(int page, int pageSize, CancellationToken token = default)
+    {
+        var query = _context.Books
+            .Include(b => b.Covers)
+            .Include(b => b.BookPersons)
+                .ThenInclude(bp => bp.Author);
+
+        // Get the total count of books
+        var totalCount = await query.CountAsync(token);
+
+        // Fetch the books for the current page
+        var books = await query
+            .OrderBy(b => b.Title) // Order by title
+            .Skip((page - 1) * pageSize) // Ensures only the requested page is returned
+            .Take(pageSize) // Take only the requested number of records
+            .ToListAsync(token);
+
+        return (books, totalCount);
+    }
     public async Task<List<Book>> GetBooksAsync(CancellationToken token = default)
     {
         return await _context.Books.ToListAsync(token);
