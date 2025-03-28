@@ -10,6 +10,6 @@ public record GetBooksQuery(
     string? Author = null,
     string? Genre = null,
     string? Medium = null,
-    int? Year = null
+    string? Year = null
 ) : IRequest<PagedResponse<GetBooksResponse>>;
 

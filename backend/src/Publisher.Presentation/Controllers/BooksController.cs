@@ -24,7 +24,7 @@ public class BooksController(ISender _sender) : ControllerBase
         [FromQuery] string? author = null,
         [FromQuery] string? genre = null,
         [FromQuery] string? medium = null,
-        [FromQuery] int? year = null,
+        [FromQuery] string? year = null,
         CancellationToken token = default)
     {
         return Ok(await _sender.Send(new GetBooksQuery(page, pageSize, title, author, genre, medium, year), token));
