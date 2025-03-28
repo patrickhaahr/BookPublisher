@@ -20,9 +20,14 @@ public class BooksController(ISender _sender) : ControllerBase
     public async Task<IActionResult> GetBooks(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 12,
+        [FromQuery] string? title = null,   
+        [FromQuery] string? author = null,
+        [FromQuery] string? genre = null,
+        [FromQuery] string? medium = null,
+        [FromQuery] int? year = null,
         CancellationToken token = default)
     {
-        return Ok(await _sender.Send(new GetBooksQuery(page, pageSize), token));
+        return Ok(await _sender.Send(new GetBooksQuery(page, pageSize, title, author, genre, medium, year), token));
     }
 
     [HttpGet(ApiEndpoints.V1.Books.GetById)]
