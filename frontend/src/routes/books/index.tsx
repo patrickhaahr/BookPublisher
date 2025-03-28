@@ -64,6 +64,8 @@ function Books() {
   const [page, setPage] = useState(1);
   const [titleFilter, setTitleFilter] = useState('');
   const [debouncedTitleFilter] = useDebounce(titleFilter, 300); // Debounce by 300ms
+  const [authorFilter, setAuthorFilter] = useState('');
+  const [debouncedAuthorFilter] = useDebounce(authorFilter, 300); // Debounce by 300ms
   const [genreFilter, setGenreFilter] = useState<string | undefined>(undefined);
   const [mediumFilter, setMediumFilter] = useState<string | undefined>(undefined);
   const [yearFilter, setYearFilter] = useState<string | undefined>(undefined);
@@ -72,9 +74,11 @@ function Books() {
 
   const titleInputRef = useRef<HTMLInputElement>(null);
   const yearInputRef = useRef<HTMLInputElement>(null);
+  const authorInputRef = useRef<HTMLInputElement>(null);
+
   const { data: booksData, isPending, error } = useQuery({
-    queryKey: ['books', page, debouncedTitleFilter, genreFilter, mediumFilter, debouncedYearFilter],
-    queryFn: () => getBooks(page, pageSize, debouncedTitleFilter, genreFilter, mediumFilter, debouncedYearFilter),
+    queryKey: ['books', page, debouncedTitleFilter, debouncedAuthorFilter, genreFilter, mediumFilter, debouncedYearFilter],
+    queryFn: () => getBooks(page, pageSize, debouncedTitleFilter, debouncedAuthorFilter, genreFilter, mediumFilter, debouncedYearFilter),
     staleTime: 1000 * 60 * 5,
     gcTime: 1000 * 60 * 5,
   });
@@ -84,7 +88,13 @@ function Books() {
     if (document.activeElement === titleInputRef.current) {
       titleInputRef.current?.focus();
     }
-  }, [titleFilter]);
+    if (document.activeElement === authorInputRef.current) {
+      authorInputRef.current?.focus();
+    }
+    if (document.activeElement === yearInputRef.current) {
+      yearInputRef.current?.focus();
+    }
+  }, [titleFilter, authorFilter, yearFilter]);
 
   const booksWithCovers = booksData?.items.map((book: Book) => ({
     id: book.slug,
@@ -116,6 +126,23 @@ function Books() {
               setPage(1);
             }}
             placeholder="Enter book title..."
+            className="w-full"
+          />
+        </div>
+
+        <div className="flex-1">
+          <Label htmlFor="author-filter" className="block mb-2 text-sm font-medium">
+            Search by Author
+          </Label>
+          <Input
+            id="author-filter"
+            ref={authorInputRef}
+            value={authorFilter}
+            onChange={(e) => {
+              setAuthorFilter(e.target.value);
+              setPage(1);
+            }}
+            placeholder="Enter author name..."
             className="w-full"
           />
         </div>
@@ -317,6 +344,7 @@ const getBooks = async (
   page: number,
   pageSize: number,
   title?: string,
+  author?: string,
   genre?: string,
   medium?: string,
   year?: string
@@ -325,6 +353,7 @@ const getBooks = async (
     page: page.toString(),
     pageSize: pageSize.toString(),
     ...(title && { title }),
+    ...(author && { author }),
     ...(genre && { genre }),
     ...(medium && { medium }),
     ...(year && { year }),

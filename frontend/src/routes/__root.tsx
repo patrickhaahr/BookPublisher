@@ -2,7 +2,6 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { SearchBar } from '@/components/search-bar'
 import { Book, User } from 'lucide-react'
 import { useLogout } from '@/hooks/useLogout'
 import { useAuth } from '@/hooks/useAuth'
@@ -64,13 +63,8 @@ export const Route = createRootRoute({
                     </Link>
                   </nav>
                 </div>
-                <div className="flex-1 max-w-sm hidden md:block">
-                  <SearchBar />
-                </div>
+                
                 <div className="flex items-center gap-4">
-                  <div className="md:hidden">
-                    <SearchBar />
-                  </div>
                   <nav className="flex items-center space-x-6 text-sm font-medium">
                     {!isAuthenticated ? (
                       <>
