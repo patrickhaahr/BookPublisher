@@ -9,7 +9,15 @@ public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHand
     public async Task<PagedResponse<GetBooksResponse>> Handle(GetBooksQuery query, CancellationToken token)
     {
         // Fetch paginated books and total count
-        var (books, totalCount) = await bookRepository.GetBooksPaginatedAsync(query.Page, query.PageSize, token);
+        var (books, totalCount) = await bookRepository.GetBooksPaginatedAsync(
+            query.Page,
+            query.PageSize,
+            query.Title,
+            query.Author,
+            query.Genre,
+            query.Medium,
+            query.Year,
+            token);
 
         // Map books to responses
         var bookResponses = books.Select(book => new GetBooksResponse(
