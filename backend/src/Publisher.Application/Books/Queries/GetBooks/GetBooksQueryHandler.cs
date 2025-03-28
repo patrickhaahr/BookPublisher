@@ -26,8 +26,8 @@ public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHand
             book.PublishDate,
             book.BasePrice,
             book.Slug,
-            [.. book.Mediums.Select(m => m.ToString())],
-            [.. book.Genres.Select(g => g.ToString())],
+            [.. book.BookMediums.Select(m => m.Medium.Name)],
+            [.. book.BookGenres.Select(g => g.Genre.Name)],
             [.. book.Covers.Select(c => new CoversResponse(c.CoverId, c.ImgBase64 ?? string.Empty))],
             [.. book.BookPersons.Select(bp => new BookAuthorResponse(bp.Author.PersonId, bp.Author.FirstName, bp.Author.LastName))]
         )).ToList();

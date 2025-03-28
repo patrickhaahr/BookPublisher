@@ -3,6 +3,7 @@ using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
 using Publisher.Contracts.Responses;
 using Publisher.Domain.Entities;
+using Publisher.Domain.Enums;
 using Publisher.Domain.Exceptions;
 
 namespace Publisher.Application.Books.Commands.UpdateBook;
@@ -50,8 +51,8 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         book.Title = command.Title ?? book.Title;
         book.PublishDate = command.PublishDate ?? book.PublishDate;
         book.BasePrice = command.BasePrice ?? book.BasePrice;
-        book.Mediums = command.Mediums?.Select(m => Enum.Parse<Medium>(m, ignoreCase: true)).ToList() ?? book.Mediums;
-        book.Genres = command.Genres?.Select(g => Enum.Parse<Genre>(g, ignoreCase: true)).ToList() ?? book.Genres;
+        book.BookMediums = command.Mediums?.Select(m => new BookMedium { MediumId = (int)Enum.Parse<MediumEnum>(m, ignoreCase: true) }).ToList() ?? book.BookMediums;
+        book.BookGenres = command.Genres?.Select(g => new BookGenre { GenreId = (int)Enum.Parse<GenreEnum>(g, ignoreCase: true) }).ToList() ?? book.BookGenres;
         book.SetSlug(slug);
 
         var updatedBook = await bookRepository.UpdateBookAsync(book.BookId, book, token);
@@ -65,8 +66,8 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             updatedBook.PublishDate,
             updatedBook.BasePrice,
             updatedBook.Slug,
-            [.. updatedBook.Mediums.Select(m => m.ToString())],
-            [.. updatedBook.Genres.Select(g => g.ToString())]
+            [.. updatedBook.BookMediums.Select(m => m.Medium.Name)],
+            [.. updatedBook.BookGenres.Select(g => g.Genre.Name)]
         );
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Publisher.Application.Interfaces;
 using Publisher.Domain.Entities;
+using Publisher.Domain.Enums;
 
 namespace Publisher.Infrastructure.Repositories;
 
@@ -21,6 +22,10 @@ public class BookRepository(AppDbContext _context) : IBookRepository
             .Include(b => b.Covers)
             .Include(b => b.BookPersons)
                 .ThenInclude(bp => bp.Author)
+            .Include(b => b.BookGenres)
+                .ThenInclude(bg => bg.Genre)
+            .Include(b => b.BookMediums)
+                .ThenInclude(bm => bm.Medium)
             .AsQueryable();
 
         // Apply filters that EF Core can translate to SQL - if provided
@@ -32,31 +37,27 @@ public class BookRepository(AppDbContext _context) : IBookRepository
             bp.Author.FirstName.Contains(author, StringComparison.OrdinalIgnoreCase) ||
             bp.Author.LastName.Contains(author, StringComparison.OrdinalIgnoreCase) ||
             (bp.Author.FirstName + " " + bp.Author.LastName).Contains(author, StringComparison.OrdinalIgnoreCase)));
+
+        if (!string.IsNullOrEmpty(genre) && Enum.TryParse<GenreEnum>(genre, true, out var genreEnum))
+        query = query.Where(b => b.BookGenres.Any(bg => bg.GenreId == (int)genreEnum));
+
+        if (!string.IsNullOrEmpty(medium) && Enum.TryParse<MediumEnum>(medium, true, out var mediumEnum))
+            query = query.Where(b => b.BookMediums.Any(bm => bm.MediumId == (int)mediumEnum));
         
         if (year.HasValue)
             query = query.Where(b => b.PublishDate.Year == year.Value);
 
-        // Materialize the query into memory after SQL-compatible filters are applied
-        var books = await query.ToListAsync(token);
-
-        // Apply filters on JSON collections (Genres and Mediums) in memory
-        if (!string.IsNullOrEmpty(genre) && Enum.TryParse<Genre>(genre, true, out var genreEnum))
-            books = books.Where(b => b.Genres.Contains(genreEnum)).ToList();
-
-        if (!string.IsNullOrEmpty(medium) && Enum.TryParse<Medium>(medium, true, out var mediumEnum))
-            books = books.Where(b => b.Mediums.Contains(mediumEnum)).ToList();
-
         // Get the total count of books
-        var totalCount = books.Count;
+        var totalCount = await query.CountAsync(token);
 
         // Fetch the books for the current page
-        var paginatedBooks = books
+        var books = await query
             .OrderBy(b => b.Title) // Order by title
             .Skip((page - 1) * pageSize) // Ensures only the requested page is returned
             .Take(pageSize) // Take only the requested number of records
-            .ToList();
+            .ToListAsync(token);
 
-        return (paginatedBooks, totalCount);
+        return (books, totalCount);
     }
     public async Task<List<Book>> GetBooksAsync(CancellationToken token = default)
     {

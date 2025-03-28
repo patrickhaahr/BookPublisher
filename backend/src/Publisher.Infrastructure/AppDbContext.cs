@@ -9,6 +9,8 @@ public class AppDbContext : DbContext
     // Expression-Bodied Property with Set<T>()
     // Expresses the intent of the property
     public DbSet<Book> Books => Set<Book>();
+    public DbSet<GenreEntity> Genres => Set<GenreEntity>();
+    public DbSet<MediumEntity> Mediums => Set<MediumEntity>();
     public DbSet<Person> Persons => Set<Person>();
     public DbSet<Author> Authors => Set<Author>();
     public DbSet<Artist> Artists => Set<Artist>();
@@ -18,6 +20,9 @@ public class AppDbContext : DbContext
     public DbSet<BookPersons> BookPersons => Set<BookPersons>();
     public DbSet<CoverPersons> CoverPersons => Set<CoverPersons>();
     public DbSet<BookSummary> BookSummaries => Set<BookSummary>();
+    public DbSet<BookMedium> BookMediums => Set<BookMedium>();
+    public DbSet<BookGenre> BookGenres => Set<BookGenre>();
+
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

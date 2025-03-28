@@ -21,13 +21,37 @@ namespace Publisher.Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BasePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Mediums = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Genres = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Slug = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Books", x => x.BookId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Mediums",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Mediums", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,6 +106,54 @@ namespace Publisher.Infrastructure.Migrations
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookGenres",
+                columns: table => new
+                {
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookGenres", x => new { x.BookId, x.GenreId });
+                    table.ForeignKey(
+                        name: "FK_BookGenres_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookGenres_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BookMediums",
+                columns: table => new
+                {
+                    BookId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MediumId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookMediums", x => new { x.BookId, x.MediumId });
+                    table.ForeignKey(
+                        name: "FK_BookMediums_Books_BookId",
+                        column: x => x.BookId,
+                        principalTable: "Books",
+                        principalColumn: "BookId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookMediums_Mediums_MediumId",
+                        column: x => x.MediumId,
+                        principalTable: "Mediums",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -166,25 +238,73 @@ namespace Publisher.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Books",
-                columns: new[] { "BookId", "BasePrice", "Genres", "Mediums", "PublishDate", "Slug", "Title" },
+                columns: new[] { "BookId", "BasePrice", "PublishDate", "Slug", "Title" },
                 values: new object[,]
                 {
-                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 19.99m, "[21,15]", "[1,3,4]", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-odyssey", "The Oddyssey" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 9.99m, "[10,22,1]", "[10,3,1]", new DateTime(1990, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "berserk", "Berserk" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 29.99m, "[3,1]", "[5,3,1]", new DateTime(1997, 6, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "harry-potter", "Harry Potter" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 9.99m, "[10,3,1]", "[10,3,1]", new DateTime(1999, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "one-piece", "One Piece" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000014"), 29.99m, "[19,2]", "[3,1]", new DateTime(1999, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-pragmatic-programmer", "The Pragmatic Programmer" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 9.99m, "[10,3,1]", "[9,8,3,1]", new DateTime(2003, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "invincible", "Invincible" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 9.99m, "[10,3,1]", "[10,3,1]", new DateTime(2002, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "naruto", "Naruto" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 9.99m, "[10,3,1]", "[5,3,1]", new DateTime(1965, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "dune", "Dune" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 29.99m, "[14,2]", "[3,1,4]", new DateTime(2018, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "cant-hurt-me", "Cant hurt me" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 29.99m, "[14,2]", "[3,1,4]", new DateTime(2022, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "never-finished", "Never Finished" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 9.99m, "[10,3,1]", "[5,3,1]", new DateTime(1937, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-hobbit", "The Hobbit" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 9.99m, "[10,3,1]", "[5,3,1]", new DateTime(1954, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-lord-of-the-rings", "The Lord of the Rings" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000022"), 9.99m, "[20,2]", "[3,1]", new DateTime(1997, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "rich-dad-poor-dad", "Rich Dad Poor Dad" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 9.99m, "[14,2]", "[3,1,4]", new DateTime(1998, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "48-laws-of-power", "48 Laws of Power" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000024"), 15.99m, "[2,14]", "[3,1]", new DateTime(2023, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "how-to-scam-people", "How to Scam People in 8 Easy Steps" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000025"), 0m, "[19,2]", "[3,1]", new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "bogen-om-c-sharp", "Bogen om C#" }
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 19.99m, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-odyssey", "The Oddyssey" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 9.99m, new DateTime(1990, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "berserk", "Berserk" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 29.99m, new DateTime(1997, 6, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), "harry-potter", "Harry Potter" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 9.99m, new DateTime(1999, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified), "one-piece", "One Piece" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000014"), 29.99m, new DateTime(1999, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-pragmatic-programmer", "The Pragmatic Programmer" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 9.99m, new DateTime(2003, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "invincible", "Invincible" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 9.99m, new DateTime(2002, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "naruto", "Naruto" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 9.99m, new DateTime(1965, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "dune", "Dune" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 29.99m, new DateTime(2018, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "cant-hurt-me", "Cant hurt me" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 29.99m, new DateTime(2022, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "never-finished", "Never Finished" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 9.99m, new DateTime(1937, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-hobbit", "The Hobbit" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 9.99m, new DateTime(1954, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "the-lord-of-the-rings", "The Lord of the Rings" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000022"), 9.99m, new DateTime(1997, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "rich-dad-poor-dad", "Rich Dad Poor Dad" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 9.99m, new DateTime(1998, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), "48-laws-of-power", "48 Laws of Power" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000024"), 15.99m, new DateTime(2023, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "how-to-scam-people", "How to Scam People in 8 Easy Steps" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000025"), 0m, new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "bogen-om-c-sharp", "Bogen om C#" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Genres",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Fiction" },
+                    { 2, "NonFiction" },
+                    { 3, "Fantasy" },
+                    { 4, "ScienceFiction" },
+                    { 5, "Mystery" },
+                    { 6, "Romance" },
+                    { 7, "Thriller" },
+                    { 8, "Horror" },
+                    { 9, "HistoricalFiction" },
+                    { 10, "Adventure" },
+                    { 11, "YoungAdult" },
+                    { 12, "Childrens" },
+                    { 13, "Biography" },
+                    { 14, "SelfHelp" },
+                    { 15, "Poetry" },
+                    { 16, "Science" },
+                    { 17, "Travel" },
+                    { 18, "Humor" },
+                    { 19, "Programming" },
+                    { 20, "Finance" },
+                    { 21, "Epic" },
+                    { 22, "DarkFantasy" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Mediums",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Print" },
+                    { 2, "Magazine" },
+                    { 3, "EBook" },
+                    { 4, "AudioBook" },
+                    { 5, "Novel" },
+                    { 6, "LightNovel" },
+                    { 7, "WebNovel" },
+                    { 8, "GraphicNovel" },
+                    { 9, "Comic" },
+                    { 10, "Manga" },
+                    { 11, "Manhwa" },
+                    { 12, "Manhua" }
                 });
 
             migrationBuilder.InsertData(
@@ -225,6 +345,104 @@ namespace Publisher.Infrastructure.Migrations
                 {
                     { new Guid("c0a80121-0001-4000-0000-000000000030"), "user1@example.com", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", null, null, "User", "user1" },
                     { new Guid("c0a80121-0001-4000-0000-000000000031"), "user2@example.com", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", null, null, "User", "user2" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "BookGenres",
+                columns: new[] { "BookId", "GenreId" },
+                values: new object[,]
+                {
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 15 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 21 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 22 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000014"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000014"), 19 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 14 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 14 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000022"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000022"), 20 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 14 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000024"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000024"), 14 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000025"), 2 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000025"), 19 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "BookMediums",
+                columns: new[] { "BookId", "MediumId" },
+                values: new object[,]
+                {
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000010"), 4 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000011"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000012"), 5 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000013"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000014"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000014"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 8 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000015"), 9 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000016"), 10 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000017"), 5 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000018"), 4 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000019"), 4 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000020"), 5 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000021"), 5 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000022"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000022"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000023"), 4 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000024"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000024"), 3 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000025"), 1 },
+                    { new Guid("c0a80121-0001-4000-0000-000000000025"), 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -296,6 +514,16 @@ namespace Publisher.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookGenres_GenreId",
+                table: "BookGenres",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookMediums_MediumId",
+                table: "BookMediums",
+                column: "MediumId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookPersons_AuthorPersonId",
                 table: "BookPersons",
                 column: "AuthorPersonId");
@@ -343,6 +571,12 @@ namespace Publisher.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "BookGenres");
+
+            migrationBuilder.DropTable(
+                name: "BookMediums");
+
+            migrationBuilder.DropTable(
                 name: "BookPersons");
 
             migrationBuilder.DropTable(
@@ -350,6 +584,12 @@ namespace Publisher.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserBookInteractions");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Mediums");
 
             migrationBuilder.DropTable(
                 name: "Covers");

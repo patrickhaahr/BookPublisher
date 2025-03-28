@@ -47,8 +47,8 @@ public class GetBookByIdQueryHandler(IBookRepository bookRepository) : IRequestH
                 bp.Author.Phone ?? string.Empty,
                 bp.Author.RoyaltyRate
             ))],
-            [.. book.Mediums.Select(m => m.ToString())],
-            [.. book.Genres.Select(g => g.ToString())]
+            [.. book.BookMediums.Select(m => m.Medium.Name)],
+            [.. book.BookGenres.Select(g => g.Genre.Name)]
         );
     }
 }

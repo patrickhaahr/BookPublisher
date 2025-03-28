@@ -1,6 +1,6 @@
-namespace Publisher.Domain.Entities;
+namespace Publisher.Domain.Enums;
 
-public enum Genre
+public enum GenreEnum
 {
     Fiction = 1,          // Broad catch-all for narrative stories
     NonFiction = 2,       // Broad factual works

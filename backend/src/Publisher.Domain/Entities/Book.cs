@@ -7,14 +7,13 @@ public class Book
     public decimal BasePrice { get; set; }
     public string Slug { get; private set; } = string.Empty;
 
-    // Stored as JSON in the database
-    public List<Medium> Mediums { get; set; } = new();
-    public List<Genre> Genres { get; set; } = new();
-
     // Navigation properties - Initialize with empty collection
     // Many-to-Many or One-to-Many (Collection side)
+    public List<BookMedium> BookMediums { get; set; } = new();
+    public List<BookGenre> BookGenres { get; set; } = new();
     public List<UserBookInteraction> UserBookInteractions { get; set; } = new();
     public List<Cover> Covers { get; set; } = new();
     public List<BookPersons> BookPersons { get; set; } = new();
+    
     public void SetSlug(string slug) => Slug = slug;
 } 

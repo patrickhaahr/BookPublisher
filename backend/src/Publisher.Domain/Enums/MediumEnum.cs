@@ -1,6 +1,6 @@
-namespace Publisher.Domain.Entities;
+namespace Publisher.Domain.Enums;
 
-public enum Medium
+public enum MediumEnum
 {
     // Physical formats
     Print = 1, // Physical book
