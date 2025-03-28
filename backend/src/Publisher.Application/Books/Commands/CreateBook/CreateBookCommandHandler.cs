@@ -3,7 +3,7 @@ using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
 using Publisher.Contracts.Responses;
 using Publisher.Domain.Entities;
-
+using Publisher.Domain.Enums;
 namespace Publisher.Application.Books.Commands.CreateBook;
 
 public class CreateBookCommandHandler(IBookRepository bookRepository) 
@@ -30,8 +30,8 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             Title = command.Title,
             PublishDate = command.PublishDate,
             BasePrice = command.BasePrice,
-            Mediums = [.. command.Mediums.Select(m => Enum.Parse<Medium>(m, ignoreCase: true))], // Map strings to enum
-            Genres = [.. command.Genres.Select(g => Enum.Parse<Genre>(g, ignoreCase: true))], // Map strings to enum
+            BookMediums = [.. command.Mediums.Select(m => new BookMedium { MediumId = (int)Enum.Parse<MediumEnum>(m, ignoreCase: true) })], // Map strings to enum
+            BookGenres = [.. command.Genres.Select(g => new BookGenre { GenreId = (int)Enum.Parse<GenreEnum>(g, ignoreCase: true) })], // Map strings to enum
         };
         book.SetSlug(slug);
 
@@ -70,8 +70,8 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
             createdBook.BookId,
             createdBook.Title,
             createdBook.Slug,
-            [.. createdBook.Mediums.Select(m => m.ToString())],
-            [.. createdBook.Genres.Select(g => g.ToString())]
+            [.. createdBook.BookMediums.Select(m => m.Medium.Name)],
+            [.. createdBook.BookGenres.Select(g => g.Genre.Name)]
         );
     }
 }

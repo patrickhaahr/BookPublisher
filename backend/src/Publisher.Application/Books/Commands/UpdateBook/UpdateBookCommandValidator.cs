@@ -1,5 +1,6 @@
 using FluentValidation;
 using Publisher.Domain.Entities;
+using Publisher.Domain.Enums;
 
 namespace Publisher.Application.Books.Commands.UpdateBook;
 
@@ -20,11 +21,11 @@ public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
             .WithMessage("Base price must be greater than 0");
 
         RuleFor(c => c.Mediums)
-            .Must(mediums => mediums is null || mediums.All(m => Enum.TryParse<Medium>(m, ignoreCase: true, out _)))
+            .Must(mediums => mediums is null || mediums.All(m => Enum.TryParse<MediumEnum>(m, ignoreCase: true, out _)))
             .WithMessage("All mediums must be valid enum values (e.g., 'Print', 'EBook')");
         
         RuleFor(c => c.Genres)
-            .Must(genres => genres is null || genres.All(g => Enum.TryParse<Genre>(g, ignoreCase: true, out _)))
+            .Must(genres => genres is null || genres.All(g => Enum.TryParse<GenreEnum>(g, ignoreCase: true, out _)))
             .WithMessage("All genres must be valid enum values (e.g., 'ScienceFiction', 'Mystery')");
     }
 }

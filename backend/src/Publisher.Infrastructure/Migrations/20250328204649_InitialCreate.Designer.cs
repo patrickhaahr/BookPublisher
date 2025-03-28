@@ -12,7 +12,7 @@ using Publisher.Infrastructure;
 namespace Publisher.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250325184943_InitialCreate")]
+    [Migration("20250328204649_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -33,14 +33,6 @@ namespace Publisher.Infrastructure.Migrations
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Genres")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Mediums")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
@@ -67,8 +59,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
                             BasePrice = 19.99m,
-                            Genres = "[21,15]",
-                            Mediums = "[1,3,4]",
                             PublishDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "the-odyssey",
                             Title = "The Oddyssey"
@@ -77,8 +67,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
                             BasePrice = 9.99m,
-                            Genres = "[10,22,1]",
-                            Mediums = "[10,3,1]",
                             PublishDate = new DateTime(1990, 10, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "berserk",
                             Title = "Berserk"
@@ -87,8 +75,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
                             BasePrice = 29.99m,
-                            Genres = "[3,1]",
-                            Mediums = "[5,3,1]",
                             PublishDate = new DateTime(1997, 6, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "harry-potter",
                             Title = "Harry Potter"
@@ -97,8 +83,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
                             BasePrice = 9.99m,
-                            Genres = "[10,3,1]",
-                            Mediums = "[10,3,1]",
                             PublishDate = new DateTime(1999, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "one-piece",
                             Title = "One Piece"
@@ -107,8 +91,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000014"),
                             BasePrice = 29.99m,
-                            Genres = "[19,2]",
-                            Mediums = "[3,1]",
                             PublishDate = new DateTime(1999, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "the-pragmatic-programmer",
                             Title = "The Pragmatic Programmer"
@@ -117,8 +99,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
                             BasePrice = 9.99m,
-                            Genres = "[10,3,1]",
-                            Mediums = "[9,8,3,1]",
                             PublishDate = new DateTime(2003, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "invincible",
                             Title = "Invincible"
@@ -127,8 +107,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
                             BasePrice = 9.99m,
-                            Genres = "[10,3,1]",
-                            Mediums = "[10,3,1]",
                             PublishDate = new DateTime(2002, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "naruto",
                             Title = "Naruto"
@@ -137,8 +115,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
                             BasePrice = 9.99m,
-                            Genres = "[10,3,1]",
-                            Mediums = "[5,3,1]",
                             PublishDate = new DateTime(1965, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "dune",
                             Title = "Dune"
@@ -147,8 +123,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000018"),
                             BasePrice = 29.99m,
-                            Genres = "[14,2]",
-                            Mediums = "[3,1,4]",
                             PublishDate = new DateTime(2018, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "cant-hurt-me",
                             Title = "Cant hurt me"
@@ -157,8 +131,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000019"),
                             BasePrice = 29.99m,
-                            Genres = "[14,2]",
-                            Mediums = "[3,1,4]",
                             PublishDate = new DateTime(2022, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "never-finished",
                             Title = "Never Finished"
@@ -167,8 +139,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
                             BasePrice = 9.99m,
-                            Genres = "[10,3,1]",
-                            Mediums = "[5,3,1]",
                             PublishDate = new DateTime(1937, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "the-hobbit",
                             Title = "The Hobbit"
@@ -177,8 +147,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
                             BasePrice = 9.99m,
-                            Genres = "[10,3,1]",
-                            Mediums = "[5,3,1]",
                             PublishDate = new DateTime(1954, 7, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "the-lord-of-the-rings",
                             Title = "The Lord of the Rings"
@@ -187,8 +155,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000022"),
                             BasePrice = 9.99m,
-                            Genres = "[20,2]",
-                            Mediums = "[3,1]",
                             PublishDate = new DateTime(1997, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "rich-dad-poor-dad",
                             Title = "Rich Dad Poor Dad"
@@ -197,8 +163,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000023"),
                             BasePrice = 9.99m,
-                            Genres = "[14,2]",
-                            Mediums = "[3,1,4]",
                             PublishDate = new DateTime(1998, 9, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "48-laws-of-power",
                             Title = "48 Laws of Power"
@@ -207,8 +171,6 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000024"),
                             BasePrice = 15.99m,
-                            Genres = "[2,14]",
-                            Mediums = "[3,1]",
                             PublishDate = new DateTime(2023, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "how-to-scam-people",
                             Title = "How to Scam People in 8 Easy Steps"
@@ -217,11 +179,463 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             BookId = new Guid("c0a80121-0001-4000-0000-000000000025"),
                             BasePrice = 0m,
-                            Genres = "[19,2]",
-                            Mediums = "[3,1]",
                             PublishDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Slug = "bogen-om-c-sharp",
                             Title = "Bogen om C#"
+                        });
+                });
+
+            modelBuilder.Entity("Publisher.Domain.Entities.BookGenre", b =>
+                {
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("BookGenres");
+
+                    b.HasData(
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
+                            GenreId = 21
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
+                            GenreId = 15
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
+                            GenreId = 22
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000014"),
+                            GenreId = 19
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000014"),
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000018"),
+                            GenreId = 14
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000018"),
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000019"),
+                            GenreId = 14
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000019"),
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
+                            GenreId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
+                            GenreId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
+                            GenreId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000022"),
+                            GenreId = 20
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000022"),
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000023"),
+                            GenreId = 14
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000023"),
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000024"),
+                            GenreId = 2
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000024"),
+                            GenreId = 14
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000025"),
+                            GenreId = 19
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000025"),
+                            GenreId = 2
+                        });
+                });
+
+            modelBuilder.Entity("Publisher.Domain.Entities.BookMedium", b =>
+                {
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("MediumId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookId", "MediumId");
+
+                    b.HasIndex("MediumId");
+
+                    b.ToTable("BookMediums");
+
+                    b.HasData(
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000010"),
+                            MediumId = 4
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
+                            MediumId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000011"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
+                            MediumId = 5
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000012"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            MediumId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000013"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000014"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000014"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            MediumId = 9
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            MediumId = 8
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000015"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
+                            MediumId = 10
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000016"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
+                            MediumId = 5
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000017"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000018"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000018"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000018"),
+                            MediumId = 4
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000019"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000019"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000019"),
+                            MediumId = 4
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
+                            MediumId = 5
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000020"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
+                            MediumId = 5
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000021"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000022"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000022"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000023"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000023"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000023"),
+                            MediumId = 4
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000024"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000024"),
+                            MediumId = 1
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000025"),
+                            MediumId = 3
+                        },
+                        new
+                        {
+                            BookId = new Guid("c0a80121-0001-4000-0000-000000000025"),
+                            MediumId = 1
                         });
                 });
 
@@ -524,6 +938,214 @@ namespace Publisher.Infrastructure.Migrations
                             CoverId = new Guid("c0a80121-0001-4000-0000-000000000022"),
                             PersonId = new Guid("c0a80121-0001-4100-0000-000000000002"),
                             ArtistPersonId = new Guid("c0a80121-0001-4100-0000-000000000002")
+                        });
+                });
+
+            modelBuilder.Entity("Publisher.Domain.Entities.GenreEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Fiction"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "NonFiction"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Fantasy"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "ScienceFiction"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Mystery"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Romance"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Thriller"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "HistoricalFiction"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Adventure"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "YoungAdult"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Childrens"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Name = "Biography"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Name = "SelfHelp"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Name = "Poetry"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Name = "Science"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Name = "Travel"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Name = "Humor"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Name = "Programming"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Name = "Finance"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Name = "Epic"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Name = "DarkFantasy"
+                        });
+                });
+
+            modelBuilder.Entity("Publisher.Domain.Entities.MediumEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Mediums");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Print"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Magazine"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "EBook"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "AudioBook"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Novel"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "LightNovel"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "WebNovel"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "GraphicNovel"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Comic"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "Manga"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Name = "Manhwa"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Name = "Manhua"
                         });
                 });
 
@@ -903,6 +1525,44 @@ namespace Publisher.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Publisher.Domain.Entities.BookGenre", b =>
+                {
+                    b.HasOne("Publisher.Domain.Entities.Book", "Book")
+                        .WithMany("BookGenres")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Publisher.Domain.Entities.GenreEntity", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("Publisher.Domain.Entities.BookMedium", b =>
+                {
+                    b.HasOne("Publisher.Domain.Entities.Book", "Book")
+                        .WithMany("BookMediums")
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Publisher.Domain.Entities.MediumEntity", "Medium")
+                        .WithMany()
+                        .HasForeignKey("MediumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Medium");
+                });
+
             modelBuilder.Entity("Publisher.Domain.Entities.BookPersons", b =>
                 {
                     b.HasOne("Publisher.Domain.Entities.Author", "Author")
@@ -973,6 +1633,10 @@ namespace Publisher.Infrastructure.Migrations
 
             modelBuilder.Entity("Publisher.Domain.Entities.Book", b =>
                 {
+                    b.Navigation("BookGenres");
+
+                    b.Navigation("BookMediums");
+
                     b.Navigation("BookPersons");
 
                     b.Navigation("Covers");

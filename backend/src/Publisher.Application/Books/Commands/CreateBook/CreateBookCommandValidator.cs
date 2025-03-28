@@ -2,6 +2,7 @@ using FluentValidation;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Utils;
 using Publisher.Domain.Entities;
+using Publisher.Domain.Enums;
 
 namespace Publisher.Application.Books.Commands.CreateBook;
 
@@ -34,13 +35,13 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
         RuleFor(c => c.Mediums)
             .NotEmpty()
             .WithMessage("At least one medium is required")
-            .Must(mediums => mediums.All(m => Enum.TryParse<Medium>(m, ignoreCase: true, out _)))
+            .Must(mediums => mediums.All(m => Enum.TryParse<MediumEnum>(m, ignoreCase: true, out _)))
             .WithMessage("All mediums must be valid enum values (e.g., 'Print', 'EBook')");
 
         RuleFor(c => c.Genres)
             .NotEmpty()
             .WithMessage("At least one genre is required")
-            .Must(genres => genres.All(g => Enum.TryParse<Genre>(g, ignoreCase: true, out _)))
+            .Must(genres => genres.All(g => Enum.TryParse<GenreEnum>(g, ignoreCase: true, out _)))
             .WithMessage("All genres must be valid enum values (e.g., 'ScienceFiction', 'Mystery')");
 
         RuleFor(c => c.AuthorIds)
