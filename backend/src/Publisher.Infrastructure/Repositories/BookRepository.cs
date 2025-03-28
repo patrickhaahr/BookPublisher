@@ -14,7 +14,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
         string? author = null,
         string? genre = null,
         string? medium = null,
-        int? year = null,
+        string? year = null,
         CancellationToken token = default)
     {
         // Base query
@@ -30,22 +30,22 @@ public class BookRepository(AppDbContext _context) : IBookRepository
 
         // Apply filters that EF Core can translate to SQL - if provided
         if (!string.IsNullOrEmpty(title))
-            query = query.Where(b => b.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(b => EF.Functions.Like(b.Title, $"%{title}%")); // Case-insensitive LIKE
 
         if (!string.IsNullOrEmpty(author))
-        query = query.Where(b => b.BookPersons.Any(bp => 
-            bp.Author.FirstName.Contains(author, StringComparison.OrdinalIgnoreCase) ||
-            bp.Author.LastName.Contains(author, StringComparison.OrdinalIgnoreCase) ||
-            (bp.Author.FirstName + " " + bp.Author.LastName).Contains(author, StringComparison.OrdinalIgnoreCase)));
+            query = query.Where(b => b.BookPersons.Any(bp =>
+                EF.Functions.Like(bp.Author.FirstName, $"%{author}%") ||
+                EF.Functions.Like(bp.Author.LastName, $"%{author}%") ||
+                EF.Functions.Like(bp.Author.FirstName + " " + bp.Author.LastName, $"%{author}%")));
 
         if (!string.IsNullOrEmpty(genre) && Enum.TryParse<GenreEnum>(genre, true, out var genreEnum))
-        query = query.Where(b => b.BookGenres.Any(bg => bg.GenreId == (int)genreEnum));
+            query = query.Where(b => b.BookGenres.Any(bg => bg.GenreId == (int)genreEnum));
 
         if (!string.IsNullOrEmpty(medium) && Enum.TryParse<MediumEnum>(medium, true, out var mediumEnum))
             query = query.Where(b => b.BookMediums.Any(bm => bm.MediumId == (int)mediumEnum));
         
-        if (year.HasValue)
-            query = query.Where(b => b.PublishDate.Year == year.Value);
+        if (!string.IsNullOrEmpty(year))
+            query = query.Where(b => EF.Functions.Like(b.PublishDate.Year.ToString(), $"{year}%"));
 
         // Get the total count of books
         var totalCount = await query.CountAsync(token);

@@ -16,9 +16,9 @@ public class GetBooksQueryValidator : AbstractValidator<GetBooksQuery>
             .WithMessage("PageSize must be between 1 and 100.");
 
         RuleFor(x => x.Year)
-            .InclusiveBetween(0, DateTime.UtcNow.Year)
-            .When(x => x.Year.HasValue)
-            .WithMessage($"Year must be between 0 and {DateTime.UtcNow.Year}");
+            .Matches(@"^\d{1,4}$")
+            .Must(year => year == null || (int.TryParse(year, out int y) && y <= DateTime.UtcNow.Year))
+            .WithMessage($"Year must be a number between 1 and {DateTime.UtcNow.Year}.");
     }
 }
 

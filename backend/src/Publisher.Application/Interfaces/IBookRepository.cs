@@ -12,7 +12,7 @@ public interface IBookRepository
         string? author = null,
         string? genre = null,
         string? medium = null,
-        int? year = null,
+        string? year = null,
         CancellationToken token = default);
     Task<Book?> GetBookByIdAsync(Guid id, CancellationToken token = default);
     Task<Book?> GetBookBySlugAsync(string slug, CancellationToken token = default);
