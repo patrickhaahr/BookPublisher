@@ -19,6 +19,7 @@ import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as BooksBookIdImport } from './routes/books/$bookId'
 import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AdminCreateBookImport } from './routes/admin/create-book'
 
 // Create/Update Routes
 
@@ -70,6 +71,12 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminCreateBookRoute = AdminCreateBookImport.update({
+  id: '/admin/create-book',
+  path: '/admin/create-book',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -86,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/create-book': {
+      id: '/admin/create-book'
+      path: '/admin/create-book'
+      fullPath: '/admin/create-book'
+      preLoaderRoute: typeof AdminCreateBookImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -138,6 +152,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/create-book': typeof AdminCreateBookRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
@@ -149,6 +164,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/create-book': typeof AdminCreateBookRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
@@ -161,6 +177,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/create-book': typeof AdminCreateBookRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
@@ -174,6 +191,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin/create-book'
     | '/auth/login'
     | '/auth/register'
     | '/books/$bookId'
@@ -184,6 +202,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/admin/create-book'
     | '/auth/login'
     | '/auth/register'
     | '/books/$bookId'
@@ -194,6 +213,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/admin/create-book'
     | '/auth/login'
     | '/auth/register'
     | '/books/$bookId'
@@ -206,6 +226,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminCreateBookRoute: typeof AdminCreateBookRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   BooksBookIdRoute: typeof BooksBookIdRoute
@@ -217,6 +238,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminCreateBookRoute: AdminCreateBookRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   BooksBookIdRoute: BooksBookIdRoute,
@@ -237,6 +259,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/admin/create-book",
         "/auth/login",
         "/auth/register",
         "/books/$bookId",
@@ -250,6 +273,9 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/admin/create-book": {
+      "filePath": "admin/create-book.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"

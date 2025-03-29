@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { FilePlusIcon, PencilIcon, TrashIcon, ViewIcon } from 'lucide-react' // Example icons
@@ -49,8 +49,10 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             {/* These buttons will later link to specific routes */}
-            <Button size="sm" disabled> {/* Remove 'disabled' when implementing links */}
-              <FilePlusIcon className="w-4 h-4 mr-2" /> Create Book
+            <Button size="sm" asChild>
+              <Link to="/admin/create-book">
+                <FilePlusIcon className="w-4 h-4 mr-2" /> Create Book
+              </Link>
             </Button>
             <Button size="sm" variant="outline" disabled> {/* Remove 'disabled' when implementing links */}
               Manage Books

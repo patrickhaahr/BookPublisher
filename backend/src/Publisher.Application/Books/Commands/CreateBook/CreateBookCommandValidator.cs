@@ -29,8 +29,8 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
             .WithMessage("Publish date cannot be in the future");
 
         RuleFor(c => c.BasePrice)
-            .GreaterThan(0)
-            .WithMessage("Base price must be greater than 0");
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Base price must be greater than or equal to 0");
         
         RuleFor(c => c.Mediums)
             .NotEmpty()
