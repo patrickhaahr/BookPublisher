@@ -69,9 +69,7 @@ public class CreateBookCommandHandler(IBookRepository bookRepository)
         return new CreateBookResponse(
             createdBook.BookId,
             createdBook.Title,
-            createdBook.Slug,
-            [.. createdBook.BookMediums.Select(m => m.Medium.Name)],
-            [.. createdBook.BookGenres.Select(g => g.Genre.Name)]
+            createdBook.Slug
         );
     }
 }
