@@ -25,3 +25,7 @@ ADMIN PANEL: CRUD BOOKS, CRUD AUTHOR, CRUD ARTISTS
 hover over books and it will prefetch - faster experience
 
 login with email / username
+
+FIX: edit book, make it correct body request (remove author ids and have it seperate.)
+
+forms can be null

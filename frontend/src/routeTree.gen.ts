@@ -19,7 +19,9 @@ import { Route as AdminIndexImport } from './routes/admin/index'
 import { Route as BooksBookIdImport } from './routes/books/$bookId'
 import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AdminManageBooksImport } from './routes/admin/manage-books'
 import { Route as AdminCreateBookImport } from './routes/admin/create-book'
+import { Route as AdminEditBookBookIdImport } from './routes/admin/edit-book.$bookId'
 
 // Create/Update Routes
 
@@ -71,9 +73,21 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminManageBooksRoute = AdminManageBooksImport.update({
+  id: '/admin/manage-books',
+  path: '/admin/manage-books',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AdminCreateBookRoute = AdminCreateBookImport.update({
   id: '/admin/create-book',
   path: '/admin/create-book',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminEditBookBookIdRoute = AdminEditBookBookIdImport.update({
+  id: '/admin/edit-book/$bookId',
+  path: '/admin/edit-book/$bookId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -100,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/create-book'
       fullPath: '/admin/create-book'
       preLoaderRoute: typeof AdminCreateBookImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/manage-books': {
+      id: '/admin/manage-books'
+      path: '/admin/manage-books'
+      fullPath: '/admin/manage-books'
+      preLoaderRoute: typeof AdminManageBooksImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -144,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
     }
+    '/admin/edit-book/$bookId': {
+      id: '/admin/edit-book/$bookId'
+      path: '/admin/edit-book/$bookId'
+      fullPath: '/admin/edit-book/$bookId'
+      preLoaderRoute: typeof AdminEditBookBookIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -153,24 +181,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/create-book': typeof AdminCreateBookRoute
+  '/admin/manage-books': typeof AdminManageBooksRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/admin': typeof AdminIndexRoute
   '/books': typeof BooksIndexRoute
   '/profile': typeof ProfileIndexRoute
+  '/admin/edit-book/$bookId': typeof AdminEditBookBookIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/create-book': typeof AdminCreateBookRoute
+  '/admin/manage-books': typeof AdminManageBooksRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/admin': typeof AdminIndexRoute
   '/books': typeof BooksIndexRoute
   '/profile': typeof ProfileIndexRoute
+  '/admin/edit-book/$bookId': typeof AdminEditBookBookIdRoute
 }
 
 export interface FileRoutesById {
@@ -178,12 +210,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/create-book': typeof AdminCreateBookRoute
+  '/admin/manage-books': typeof AdminManageBooksRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/books/$bookId': typeof BooksBookIdRoute
   '/admin/': typeof AdminIndexRoute
   '/books/': typeof BooksIndexRoute
   '/profile/': typeof ProfileIndexRoute
+  '/admin/edit-book/$bookId': typeof AdminEditBookBookIdRoute
 }
 
 export interface FileRouteTypes {
@@ -192,34 +226,40 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin/create-book'
+    | '/admin/manage-books'
     | '/auth/login'
     | '/auth/register'
     | '/books/$bookId'
     | '/admin'
     | '/books'
     | '/profile'
+    | '/admin/edit-book/$bookId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/admin/create-book'
+    | '/admin/manage-books'
     | '/auth/login'
     | '/auth/register'
     | '/books/$bookId'
     | '/admin'
     | '/books'
     | '/profile'
+    | '/admin/edit-book/$bookId'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/admin/create-book'
+    | '/admin/manage-books'
     | '/auth/login'
     | '/auth/register'
     | '/books/$bookId'
     | '/admin/'
     | '/books/'
     | '/profile/'
+    | '/admin/edit-book/$bookId'
   fileRoutesById: FileRoutesById
 }
 
@@ -227,24 +267,28 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminCreateBookRoute: typeof AdminCreateBookRoute
+  AdminManageBooksRoute: typeof AdminManageBooksRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
   BooksBookIdRoute: typeof BooksBookIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
   BooksIndexRoute: typeof BooksIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
+  AdminEditBookBookIdRoute: typeof AdminEditBookBookIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminCreateBookRoute: AdminCreateBookRoute,
+  AdminManageBooksRoute: AdminManageBooksRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
   BooksBookIdRoute: BooksBookIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   BooksIndexRoute: BooksIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
+  AdminEditBookBookIdRoute: AdminEditBookBookIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -260,12 +304,14 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/admin/create-book",
+        "/admin/manage-books",
         "/auth/login",
         "/auth/register",
         "/books/$bookId",
         "/admin/",
         "/books/",
-        "/profile/"
+        "/profile/",
+        "/admin/edit-book/$bookId"
       ]
     },
     "/": {
@@ -276,6 +322,9 @@ export const routeTree = rootRoute
     },
     "/admin/create-book": {
       "filePath": "admin/create-book.tsx"
+    },
+    "/admin/manage-books": {
+      "filePath": "admin/manage-books.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
@@ -294,6 +343,9 @@ export const routeTree = rootRoute
     },
     "/profile/": {
       "filePath": "profile/index.tsx"
+    },
+    "/admin/edit-book/$bookId": {
+      "filePath": "admin/edit-book.$bookId.tsx"
     }
   }
 }
