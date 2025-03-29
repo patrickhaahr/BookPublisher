@@ -5,22 +5,33 @@ import { useAuth } from './useAuth';
 const logoutUser = async (): Promise<void> => {
   const accessToken = localStorage.getItem('accessToken');
   
-  const response = await fetch('http://localhost:5094/api/v1/auth/logout', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Logout failed');
+  // Skip the API call if there's no token
+  if (!accessToken) {
+    return;
   }
 
-  // Clear tokens and trigger storage event
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  // Dispatch storage event for cross-tab sync
-  window.dispatchEvent(new Event('storage'));
+  try {
+    const response = await fetch('http://localhost:5094/api/v1/auth/logout', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      // Still proceed with local logout even if server logout fails
+      console.warn(`Logout API failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.warn('Error during logout API call:', error);
+    // Continue with local logout even if API call fails
+  } finally {
+    // Always clear tokens
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    // Dispatch custom event for auth state change
+    window.dispatchEvent(new CustomEvent('auth-state-change'));
+  }
 };
 
 export const useLogout = () => {
@@ -35,6 +46,7 @@ export const useLogout = () => {
     },
     onError: (error) => {
       console.error('Logout error:', error);
+      // Still perform local logout
       logout();
       navigate({ to: '/' });
     },

@@ -7,38 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 
+// Import API function
+import { loginUser } from '@/api';
+
 export const Route = createFileRoute('/auth/login')({
   component: Login,
 });
-
-// Type for the API response
-interface LoginResponse {
-  userId: string;
-  username: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
-// API function to login
-const loginUser = async (data: {
-  email: string;
-  password: string;
-}): Promise<LoginResponse> => {
-  const response = await fetch('http://localhost:5094/api/v1/auth/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Login failed');
-  }
-
-  return await response.json();
-};
 
 function Login() {
   const navigate = useNavigate();

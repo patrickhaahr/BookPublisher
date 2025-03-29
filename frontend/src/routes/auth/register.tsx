@@ -7,40 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 
+// Import API function
+import { registerUser } from '@/api';
+
 export const Route = createFileRoute('/auth/register')({
   component: Register,
 });
-
-// Type for the API response
-interface RegisterResponse {
-  userId: string;
-  username: string;
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-}
-
-// API function to register a user
-const registerUser = async (data: {
-  username: string;
-  email: string;
-  password: string;
-}): Promise<RegisterResponse> => {
-  const response = await fetch('http://localhost:5094/api/v1/auth/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Registration failed');
-  }
-
-  return await response.json();
-};
 
 function Register() {
   const navigate = useNavigate();

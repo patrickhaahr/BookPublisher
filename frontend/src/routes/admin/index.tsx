@@ -1,8 +1,8 @@
 import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { FilePlusIcon, PencilIcon, TrashIcon, ViewIcon } from 'lucide-react' // Example icons
-import { checkUserRoleFromToken } from '@/lib/authUtils'; // Import the helper
+import { FilePlusIcon, PencilIcon, TrashIcon, ViewIcon } from 'lucide-react'
+import { checkUserRoleFromToken } from '@/lib/authUtils';
 
 export const Route = createFileRoute('/admin/')({
   beforeLoad: async ({ location }) => {
@@ -113,5 +113,3 @@ function AdminDashboard() {
     </div>
   )
 }
-
-// No interfaces needed for this specific component yet
