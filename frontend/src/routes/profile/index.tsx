@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
 import { Skeleton } from '../../components/ui/skeleton'
 import { Badge } from '../../components/ui/badge'
+import { NotAuthenticatedCard } from '@/components/auth/not-authenticated-card'
 
 interface UserProfile {
   userId: string
@@ -47,14 +48,7 @@ function RouteComponent() {
   })
 
   if (!isAuthenticated) {
-    return (
-      <Card className="max-w-md mx-auto mt-8">
-        <CardHeader className="text-center">
-          <CardTitle className="text-red-500">Not Authenticated</CardTitle>
-          <CardDescription>Please log in to view your profile</CardDescription>
-        </CardHeader>
-      </Card>
-    )
+    return <NotAuthenticatedCard description="Please log in to view your profile." />;
   }
 
   if (isLoading || !profile) {
