@@ -21,3 +21,7 @@ IsLoading - executing for the first time
 Add pagination - only fetch 10 books at a time.
 Implement search functionality
 ADMIN PANEL: CRUD BOOKS, CRUD AUTHOR, CRUD ARTISTS
+
+hover over books and it will prefetch - faster experience
+
+login with email / username

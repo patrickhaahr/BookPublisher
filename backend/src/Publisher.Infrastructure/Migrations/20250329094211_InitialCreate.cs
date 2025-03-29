@@ -79,8 +79,8 @@ namespace Publisher.Infrastructure.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Username = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "user"),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -343,8 +343,9 @@ namespace Publisher.Infrastructure.Migrations
                 columns: new[] { "UserId", "Email", "PasswordHash", "RefreshToken", "RefreshTokenExpiryTime", "Role", "Username" },
                 values: new object[,]
                 {
-                    { new Guid("c0a80121-0001-4000-0000-000000000030"), "user1@example.com", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", null, null, "User", "user1" },
-                    { new Guid("c0a80121-0001-4000-0000-000000000031"), "user2@example.com", "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", null, null, "User", "user2" }
+                    { new Guid("a1b2c3d4-e5f6-7890-1234-567890abcdef"), "admin@publisher.com", "AQAAAAIAAYagAAAAECRFE8ENk/5NsdXwEvabqJj6sAK1JGDF5I+54TzK2tkbCzEjTA9hgcWGG5xvh7HVtg==", null, null, "Admin", "admin" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000030"), "user1@example.com", "AQAAAAIAAYagAAAAEOJstwSoKOOddW2A+uVTcXqRIp0SKbYwvf5PJIFbzhOqMM/rpzdd4iEo8g/WJDZlCw==", null, null, "User", "user1" },
+                    { new Guid("c0a80121-0001-4000-0000-000000000031"), "user2@example.com", "AQAAAAIAAYagAAAAEErjvO/TvZ2wbXGkfG0ea8tV3Cc5mH4Xxg5z/kiA3/8OrOlf8Zef+JRpjhcnURI3RQ==", null, null, "User", "user2" }
                 });
 
             migrationBuilder.InsertData(

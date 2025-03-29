@@ -12,7 +12,7 @@ using Publisher.Infrastructure;
 namespace Publisher.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250328204649_InitialCreate")]
+    [Migration("20250329094211_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1201,8 +1201,7 @@ namespace Publisher.Infrastructure.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
@@ -1212,10 +1211,8 @@ namespace Publisher.Infrastructure.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasDefaultValue("user");
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -1237,7 +1234,7 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             UserId = new Guid("c0a80121-0001-4000-0000-000000000030"),
                             Email = "user1@example.com",
-                            PasswordHash = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOJstwSoKOOddW2A+uVTcXqRIp0SKbYwvf5PJIFbzhOqMM/rpzdd4iEo8g/WJDZlCw==",
                             Role = "User",
                             Username = "user1"
                         },
@@ -1245,9 +1242,17 @@ namespace Publisher.Infrastructure.Migrations
                         {
                             UserId = new Guid("c0a80121-0001-4000-0000-000000000031"),
                             Email = "user2@example.com",
-                            PasswordHash = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+                            PasswordHash = "AQAAAAIAAYagAAAAEErjvO/TvZ2wbXGkfG0ea8tV3Cc5mH4Xxg5z/kiA3/8OrOlf8Zef+JRpjhcnURI3RQ==",
                             Role = "User",
                             Username = "user2"
+                        },
+                        new
+                        {
+                            UserId = new Guid("a1b2c3d4-e5f6-7890-1234-567890abcdef"),
+                            Email = "admin@publisher.com",
+                            PasswordHash = "AQAAAAIAAYagAAAAECRFE8ENk/5NsdXwEvabqJj6sAK1JGDF5I+54TzK2tkbCzEjTA9hgcWGG5xvh7HVtg==",
+                            Role = "Admin",
+                            Username = "admin"
                         });
                 });
 
