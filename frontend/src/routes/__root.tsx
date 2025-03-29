@@ -2,7 +2,7 @@ import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Book, User } from 'lucide-react'
+import { Book, User, LayoutDashboard } from 'lucide-react'
 import { useLogout } from '@/hooks/useLogout'
 import { useAuth } from '@/hooks/useAuth'
 import { useEffect, useState } from 'react'
@@ -92,12 +92,21 @@ export const Route = createRootRoute({
                   </nav>
                   <ThemeToggle />
                   {isAuthenticated && (
-                    <Link 
-                      to="/profile" 
-                      className="transition-colors hover:text-foreground/80 text-foreground/60"
-                    >
-                      <User className="h-5 w-5" />
-                    </Link>
+                    <>
+                      <Link
+                        to="/profile"
+                        className="transition-colors hover:text-foreground/80 text-foreground/60"
+                      >
+                        <User className="h-5 w-5" />
+                      </Link>
+                      <Link
+                        to="/admin"
+                        className="transition-colors hover:text-foreground/80 text-foreground/60"
+                        aria-label="Admin Dashboard"
+                      >
+                        <LayoutDashboard className="h-5 w-5" />
+                      </Link>
+                    </>
                   )}
                 </div>
               </div>
