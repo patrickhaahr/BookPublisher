@@ -54,8 +54,10 @@ function AdminDashboard() {
                 <FilePlusIcon className="w-4 h-4 mr-2" /> Create Book
               </Link>
             </Button>
-            <Button size="sm" variant="outline" disabled> {/* Remove 'disabled' when implementing links */}
-              Manage Books
+            <Button size="sm" variant="outline" asChild>
+              <Link to="/admin/manage-books">
+                Manage Books
+              </Link>
             </Button>
           </CardFooter>
         </Card>

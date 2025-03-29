@@ -75,6 +75,17 @@ export interface CreateBookFormValues {
   coverArtistIds: string;
 }
 
+export interface EditBookFormValues {
+  title: string;
+  publishDate: string;
+  basePrice: number;
+  authorIds: string;
+  mediums: string[];
+  genres: string[];
+  coverImage?: File;
+  coverArtistIds: string;
+}
+
 export interface CreateBookApiPayload {
   title: string;
   publishDate?: string; 
