@@ -5,42 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Calendar, Heart, BookOpen } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { useQuery } from '@tanstack/react-query'
-
-interface Artist {
-  artistPersonId: string
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  portfolioUrl: string
-}
-
-interface Cover {
-  coverId: string
-  imgBase64: string
-  createdDate: string
-  artists: Artist[]
-}
-
-interface BookDetails {
-  bookId: string
-  title: string
-  publishDate: string
-  basePrice: number
-  slug: string
-  covers: Cover[]
-  authors: Array<{ authorPersonId: string; firstName: string; lastName: string }>
-  mediums: string[]
-  genres: string[]
-}
-
-const getBookById = async (bookId: string) => {
-  const response = await fetch(`http://localhost:5094/api/v1/books/${bookId}`)
-  if (!response.ok) {
-    throw new Error('Failed to fetch book details')
-  }
-  return await response.json() as BookDetails
-}
+import { getBookById } from '@/api'
+import type { BookDetails } from '@/types'
 
 export const Route = createFileRoute('/books/$bookId')({
   component: BookId,
@@ -48,7 +14,7 @@ export const Route = createFileRoute('/books/$bookId')({
 
 function BookId() {
   const { bookId } = useParams({ from: '/books/$bookId' })
-  const { data: book, isLoading, error } = useQuery({
+  const { data: book, isLoading, error } = useQuery<BookDetails>({
     queryKey: ['book', bookId],
     queryFn: () => getBookById(bookId),
     staleTime: 1000 * 60 * 5, // Store cached data for 5 minutes

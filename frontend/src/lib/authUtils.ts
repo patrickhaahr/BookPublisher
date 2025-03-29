@@ -33,6 +33,16 @@ export const isTokenExpired = (bufferSeconds = 60): boolean => {
 };
 
 /**
+ * Validates if the refresh token exists and looks valid
+ * @returns boolean indicating if refresh token appears valid
+ */
+export const hasValidRefreshToken = (): boolean => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  // Basic validation - check if it exists and has a reasonable length
+  return !!refreshToken && refreshToken.length > 20;
+};
+
+/**
  * Attempts to refresh the access token using the refresh token
  * @returns Promise<boolean> indicating if refresh was successful
  */
@@ -40,7 +50,13 @@ export const refreshAccessToken = async (): Promise<boolean> => {
   const refreshToken = localStorage.getItem('refreshToken');
   const userId = getUserIdFromToken();
   
-  if (!refreshToken || !userId) return false;
+  // Early return if we don't have the necessary data
+  if (!refreshToken || !userId) {
+    // Clean up any invalid tokens
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    return false;
+  }
 
   try {
     const response = await fetch('http://localhost:5094/api/v1/auth/refresh-token', {
@@ -55,7 +71,10 @@ export const refreshAccessToken = async (): Promise<boolean> => {
     });
 
     if (!response.ok) {
-      throw new Error('Token refresh failed');
+      // If server rejects the token, clear both tokens
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      throw new Error(`Token refresh failed: ${response.status}`);
     }
 
     const data = await response.json();
@@ -67,6 +86,10 @@ export const refreshAccessToken = async (): Promise<boolean> => {
     return true;
   } catch (error) {
     console.error('Failed to refresh token:', error);
+    // Ensure tokens are cleared on failure
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    window.dispatchEvent(new CustomEvent('auth-state-change'));
     return false;
   }
 };
@@ -102,7 +125,6 @@ export const checkUserRoleFromToken = (): string | null => {
     const decoded = jwtDecode<CustomJwtPayload>(accessToken);
     // Access the claim using the correct constant
     const roleClaim = decoded[ROLE_CLAIM_TYPE];
-    console.log("Decoded Role Claim:", roleClaim); // Add logging
 
     let primaryRole: string | null = null;
     if (Array.isArray(roleClaim)) {
@@ -117,7 +139,6 @@ export const checkUserRoleFromToken = (): string | null => {
         : roleClaim;
     }
 
-    console.log("Determined Primary Role:", primaryRole); // Add logging
     return primaryRole;
   } catch (error) {
     console.error('Failed to decode JWT for role check:', error);

@@ -1,38 +1,18 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useAuth } from '../../hooks/useAuth'
+import { useAuth } from '@/hooks/useAuth'
 import { useQuery } from '@tanstack/react-query'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card'
-import { Skeleton } from '../../components/ui/skeleton'
-import { Badge } from '../../components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
 import { NotAuthenticatedCard } from '@/components/auth/not-authenticated-card'
-
-interface UserProfile {
-  userId: string
-  username: string
-  email: string
-  role: string
-}
-
-// API function to get user profile
-const getUserProfile = async (userId: string): Promise<UserProfile> => {
-  const response = await fetch(`http://localhost:5094/api/v1/users/${userId}`, {
-    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
-    }
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch user profile')
-  }
-
-  return response.json()
-}
+import { getUserProfile } from '@/api'
+import { UserProfile } from '@/types'
 
 export const Route = createFileRoute('/profile/')({
-  component: RouteComponent,
+  component: Profile,
 })
 
-function RouteComponent() {
+function Profile() {
   const { isAuthenticated } = useAuth()
   
   // Get userId from JWT token

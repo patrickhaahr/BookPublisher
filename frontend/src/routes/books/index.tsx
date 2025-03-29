@@ -22,43 +22,14 @@ import {
 import { Label } from '@/components/ui/label';
 import { useDebounce } from 'use-debounce';
 
+// Import shared components, types, and API functions
+import { getBooks } from '@/api';
+import type { BooksResponse } from '@/types';
+import { GENRES, MEDIUMS } from '@/constants';
+
 export const Route = createFileRoute('/books/')({
   component: Books,
 });
-
-interface Book {
-  bookId: string;
-  title: string;
-  publishDate: string;
-  basePrice: number;
-  slug: string;
-  mediums: { mediumId: string; name: string }[];
-  genres: { genreId: string; name: string }[];
-  covers: { coverId: string; imgBase64: string }[];
-  authors: { authorId: string; firstName: string; lastName: string }[];
-}
-
-interface BooksResponse {
-  items: Book[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-}
-
-const genres = [
-  'Fiction', 'NonFiction', 'Fantasy', 'ScienceFiction', 'Mystery', 'Romance',
-  'Thriller', 'Horror', 'HistoricalFiction', 'Adventure', 'YoungAdult',
-  'Childrens', 'Biography', 'SelfHelp', 'Poetry', 'Science', 'Travel',
-  'Humor', 'Programming', 'Finance', 'Epic', 'DarkFantasy',
-];
-
-const mediums = [
-  'Print', 'Magazine', 'EBook', 'AudioBook', 'Novel', 'LightNovel',
-  'WebNovel', 'GraphicNovel', 'Comic', 'Manga', 'Manhwa', 'Manhua',
-];
 
 function Books() {
   const [page, setPage] = useState(1);
@@ -76,11 +47,11 @@ function Books() {
   const yearInputRef = useRef<HTMLInputElement>(null);
   const authorInputRef = useRef<HTMLInputElement>(null);
 
-  const { data: booksData, isPending, error } = useQuery({
+  const { data: booksData, isPending, error } = useQuery<BooksResponse>({
     queryKey: ['books', page, debouncedTitleFilter, debouncedAuthorFilter, genreFilter, mediumFilter, debouncedYearFilter],
     queryFn: () => getBooks(page, pageSize, debouncedTitleFilter, debouncedAuthorFilter, genreFilter, mediumFilter, debouncedYearFilter),
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 5, // 5 minutes
   });
 
   // Restore focus to the title input after re-render if it was focused
@@ -96,7 +67,7 @@ function Books() {
     }
   }, [titleFilter, authorFilter, yearFilter]);
 
-  const booksWithCovers = booksData?.items.map((book: Book) => ({
+  const booksWithCovers = booksData?.items.map((book) => ({
     id: book.slug,
     title: book.title,
     coverUrl: book.covers[0] ? `data:image/png;base64,${book.covers[0].imgBase64}` : '',
@@ -163,9 +134,9 @@ function Books() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Genres</SelectItem>
-              {genres.map((genre) => (
-                <SelectItem key={genre} value={genre}>
-                  {genre}
+              {GENRES.map((genre) => (
+                <SelectItem key={genre.id} value={genre.id}>
+                  {genre.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -188,9 +159,9 @@ function Books() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Mediums</SelectItem>
-              {mediums.map((medium) => (
-                <SelectItem key={medium} value={medium}>
-                  {medium}
+              {MEDIUMS.map((medium) => (
+                <SelectItem key={medium.id} value={medium.id}>
+                  {medium.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -339,28 +310,3 @@ function Books() {
     </div>
   );
 }
-
-const getBooks = async (
-  page: number,
-  pageSize: number,
-  title?: string,
-  author?: string,
-  genre?: string,
-  medium?: string,
-  year?: string
-): Promise<BooksResponse> => {
-  const queryParams = new URLSearchParams({
-    page: page.toString(),
-    pageSize: pageSize.toString(),
-    ...(title && { title }),
-    ...(author && { author }),
-    ...(genre && { genre }),
-    ...(medium && { medium }),
-    ...(year && { year }),
-  });
-
-  console.log('Fetching books with params:', queryParams.toString());
-  const response = await fetch(`http://localhost:5094/api/v1/books?${queryParams}`);
-  if (!response.ok) throw new Error('Failed to fetch books');
-  return await response.json() as BooksResponse;
-};

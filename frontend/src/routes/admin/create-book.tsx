@@ -3,7 +3,7 @@ import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
 import * as React from 'react'
 import { type CheckedState } from "@radix-ui/react-checkbox"
-import { checkUserRoleFromToken } from '@/lib/authUtils' // Import the helper
+import { checkUserRoleFromToken } from '@/lib/authUtils'
 
 // UI Components
 import { Button } from "@/components/ui/button"
@@ -18,121 +18,10 @@ import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import { CalendarIcon, UploadIcon, InfoIcon, BookOpenIcon, LayoutDashboardIcon } from 'lucide-react'
 
-// Available options based on backend enums
-const ALL_MEDIUMS = [
-  { id: 'Print', label: 'Print' },
-  { id: 'Magazine', label: 'Magazine' },
-  { id: 'EBook', label: 'E-Book' },
-  { id: 'AudioBook', label: 'Audio Book' },
-  { id: 'Novel', label: 'Novel' },
-  { id: 'LightNovel', label: 'Light Novel' },
-  { id: 'WebNovel', label: 'Web Novel' },
-  { id: 'GraphicNovel', label: 'Graphic Novel' },
-  { id: 'Comic', label: 'Comic' },
-  { id: 'Manga', label: 'Manga' },
-  { id: 'Manhwa', label: 'Manhwa' },
-  { id: 'Manhua', label: 'Manhua' },
-] as const
-
-const ALL_GENRES = [
-  { id: 'Fiction', label: 'Fiction' },
-  { id: 'NonFiction', label: 'Non-Fiction' },
-  { id: 'Fantasy', label: 'Fantasy' },
-  { id: 'ScienceFiction', label: 'Science Fiction' },
-  { id: 'Mystery', label: 'Mystery' },
-  { id: 'Romance', label: 'Romance' },
-  { id: 'Thriller', label: 'Thriller' },
-  { id: 'Horror', label: 'Horror' },
-  { id: 'HistoricalFiction', label: 'Historical Fiction' },
-  { id: 'Adventure', label: 'Adventure' },
-  { id: 'YoungAdult', label: 'Young Adult' },
-  { id: 'Childrens', label: 'Children\'s' },
-  { id: 'Biography', label: 'Biography' },
-  { id: 'SelfHelp', label: 'Self Help' },
-  { id: 'Poetry', label: 'Poetry' },
-  { id: 'Science', label: 'Science' },
-  { id: 'Travel', label: 'Travel' },
-  { id: 'Humor', label: 'Humor' },
-  { id: 'Programming', label: 'Programming' },
-  { id: 'Finance', label: 'Finance' },
-  { id: 'Epic', label: 'Epic' },
-  { id: 'DarkFantasy', label: 'Dark Fantasy' },
-] as const
-
-// Form values interface
-interface CreateBookFormValues {
-  title: string;
-  publishDate?: Date;
-  basePrice: number;
-  authorIds: string; 
-  mediums: string[];
-  genres: string[];
-  coverImage?: File;
-  coverArtistIds: string;
-}
-
-// API types
-interface CreateBookApiResponse {
-  bookId: string;
-  title: string;
-  slug: string;
-}
-
-interface CreateBookApiPayload {
-  title: string;
-  publishDate?: string; 
-  basePrice: number;
-  authorIds: string[];
-  mediums: string[];
-  genres: string[];
-  covers: { imgBase64: string; artistIds: string[] }[];
-}
-
-// API Function
-const createBookApi = async (payload: CreateBookApiPayload): Promise<CreateBookApiResponse> => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    throw new Error('Authentication token not found');
-  }
-
-  const response = await fetch('http://localhost:5094/api/v1/books', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    let errorData;
-    try {
-      errorData = await response.json();
-    } catch (e) {
-      throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
-    }
-    throw new Error(errorData?.title || errorData?.message || `HTTP error ${response.status}`);
-  }
-
-  return await response.json();
-};
-
-// Helper function to convert File to base64
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      if (typeof reader.result === 'string') {
-        // Remove the "data:*/*;base64," prefix
-        resolve(reader.result.split(',')[1]);
-      } else {
-        reject(new Error('Failed to read file as base64 string'));
-      }
-    };
-    reader.onerror = (error) => reject(error);
-  });
-};
+// Import shared types, constants, and API functions
+import { GENRES, MEDIUMS } from '@/constants'
+import { CreateBookFormValues, CreateBookApiPayload } from '@/types'
+import { createBook, fileToBase64 } from '@/api'
 
 export const Route = createFileRoute('/admin/create-book')({
   beforeLoad: async ({ location }) => {
@@ -159,7 +48,7 @@ function CreateBook() {
 
   // TanStack Query Mutation
   const { mutate, isPending, error: mutationError } = useMutation({
-    mutationFn: createBookApi,
+    mutationFn: createBook,
     onSuccess: (data) => {
       console.log("Book created successfully:", data);
       alert(`Book "${data.title}" created successfully!`);
@@ -447,7 +336,7 @@ function CreateBook() {
                       <>
                         <ScrollArea className="h-36 border rounded-md p-2">
                           <div className="grid grid-cols-2 gap-2">
-                            {ALL_MEDIUMS.map((medium) => (
+                            {MEDIUMS.map((medium) => (
                               <div key={medium.id} className="flex items-center space-x-2">
                                 <Checkbox
                                   id={`medium-${medium.id}`}
@@ -492,7 +381,7 @@ function CreateBook() {
                       <>
                         <ScrollArea className="h-48 border rounded-md p-2">
                           <div className="grid grid-cols-2 gap-2">
-                            {ALL_GENRES.map((genre) => (
+                            {GENRES.map((genre) => (
                               <div key={genre.id} className="flex items-center space-x-2">
                                 <Checkbox
                                   id={`genre-${genre.id}`}
