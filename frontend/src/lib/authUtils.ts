@@ -10,6 +10,84 @@ interface CustomJwtPayload extends JwtPayload {
 }
 
 /**
+ * Checks if the current access token is expired or will expire soon
+ * @param bufferSeconds Seconds before expiration to consider token as expired
+ * @returns boolean indicating if token needs refresh
+ */
+export const isTokenExpired = (bufferSeconds = 60): boolean => {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) return true;
+
+  try {
+    const decoded = jwtDecode<JwtPayload>(accessToken);
+    if (!decoded.exp) return true;
+
+    const expirationTime = decoded.exp * 1000; // Convert to milliseconds
+    const currentTime = Date.now();
+    const bufferTime = bufferSeconds * 1000;
+
+    return currentTime >= expirationTime - bufferTime;
+  } catch {
+    return true;
+  }
+};
+
+/**
+ * Attempts to refresh the access token using the refresh token
+ * @returns Promise<boolean> indicating if refresh was successful
+ */
+export const refreshAccessToken = async (): Promise<boolean> => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  const userId = getUserIdFromToken();
+  
+  if (!refreshToken || !userId) return false;
+
+  try {
+    const response = await fetch('http://localhost:5094/api/v1/auth/refresh-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userId,
+        refreshToken,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Token refresh failed');
+    }
+
+    const data = await response.json();
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    
+    // Dispatch auth state change event
+    window.dispatchEvent(new CustomEvent('auth-state-change'));
+    return true;
+  } catch (error) {
+    console.error('Failed to refresh token:', error);
+    return false;
+  }
+};
+
+/**
+ * Gets the user ID from the current access token
+ * @returns string | null
+ */
+export const getUserIdFromToken = (): string | null => {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) return null;
+
+  try {
+    const decoded = jwtDecode<JwtPayload>(accessToken);
+    return decoded.sub || null;
+  } catch {
+    return null;
+  }
+};
+
+/**
  * Checks the role directly from the access token stored in localStorage.
  * @returns The user's primary role (e.g., "Admin", "User") or null.
  */

@@ -1,13 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { jwtDecode, type JwtPayload } from 'jwt-decode';
-
-// Standard claim type for roles in ASP.NET Core Identity
-const ROLE_CLAIM_TYPE = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
-
-// Define a custom payload interface extending JwtPayload
-interface CustomJwtPayload extends JwtPayload {
-  [ROLE_CLAIM_TYPE]?: string | string[];
-}
+import { checkUserRoleFromToken, isTokenExpired, refreshAccessToken } from '../lib/authUtils';
 
 // Custom event name for auth state changes
 const AUTH_STATE_CHANGE_EVENT = 'auth-state-change';
@@ -15,37 +7,37 @@ const AUTH_STATE_CHANGE_EVENT = 'auth-state-change';
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-  const checkAuth = useCallback(() => {
+  const checkAuth = useCallback(async () => {
+    // If already refreshing, wait
+    if (isRefreshing) return;
+
     const accessToken = localStorage.getItem('accessToken');
-    const tokenIsValid = !!accessToken;
+    
+    // Check if token needs refresh
+    if (accessToken && isTokenExpired()) {
+      setIsRefreshing(true);
+      const refreshSuccess = await refreshAccessToken();
+      setIsRefreshing(false);
+      
+      if (!refreshSuccess) {
+        setIsAuthenticated(false);
+        setUserRole(null);
+        return;
+      }
+    }
+
+    const tokenIsValid = !!accessToken && !isTokenExpired();
     setIsAuthenticated(tokenIsValid);
 
     if (tokenIsValid) {
-      try {
-        const decoded = jwtDecode<CustomJwtPayload>(accessToken);
-        const roleClaim = decoded[ROLE_CLAIM_TYPE]; // Use correct claim name
-        let primaryRole: string | null = null;
-        if (Array.isArray(roleClaim)) {
-          // Check case-insensitively
-          primaryRole = roleClaim.some(role => role.toLowerCase() === 'admin')
-            ? 'Admin'
-            : roleClaim[0] ?? null;
-        } else if (typeof roleClaim === 'string') {
-          // Check case-insensitively
-          primaryRole = roleClaim.toLowerCase() === 'admin'
-            ? 'Admin'
-            : roleClaim;
-        }
-        setUserRole(primaryRole);
-      } catch (error) {
-        console.error('Failed to decode JWT in useAuth:', error);
-        setUserRole(null);
-      }
+      const role = checkUserRoleFromToken();
+      setUserRole(role);
     } else {
       setUserRole(null);
     }
-  }, []);
+  }, [isRefreshing]);
 
   // Function to handle login
   const login = useCallback((accessToken: string, refreshToken: string) => {
@@ -75,6 +67,13 @@ export const useAuth = () => {
     // Initial check
     checkAuth();
 
+    // Set up interval to check token expiration
+    const intervalId = setInterval(() => {
+      if (isAuthenticated) {
+        checkAuth();
+      }
+    }, 60000); // Check every minute
+
     // Listen for storage changes
     window.addEventListener('storage', checkAuth);
 
@@ -82,11 +81,12 @@ export const useAuth = () => {
     window.addEventListener(AUTH_STATE_CHANGE_EVENT, checkAuth);
 
     return () => {
+      clearInterval(intervalId);
       window.removeEventListener('storage', checkAuth);
       window.removeEventListener(AUTH_STATE_CHANGE_EVENT, checkAuth);
     };
-  }, [checkAuth]);
+  }, [checkAuth, isAuthenticated]);
 
   // Expose the user role along with other auth state
-  return { isAuthenticated, userRole, login, logout };
+  return { isAuthenticated, userRole, login, logout, isRefreshing };
 }; 
