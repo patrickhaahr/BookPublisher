@@ -13,18 +13,20 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookResponse> Handle(UpdateBookCommand command, CancellationToken token)
     {
-        // Resolve the book using ID or slug
+        // Resolve the book using ID or slug, including existing mediums and genres
         Book? book;
         if (Guid.TryParse(command.IdOrSlug, out var bookId))
         {
-            book = await bookRepository.GetBookByIdAsync(bookId, token);
+            // Include BookMediums and BookGenres when fetching
+            book = await bookRepository.GetBookByIdAsync(bookId, token); 
         }
         else
         {
+             // Include BookMediums and BookGenres when fetching
             book = await bookRepository.GetBookBySlugAsync(command.IdOrSlug, token);
         }
 
-        if (book == null)
+        if (book is null)
             throw new NotFoundException(nameof(Book), command.IdOrSlug);
 
         var baseSlug = SlugGenerator.GenerateSlug(command.Title ?? book.Title);
@@ -36,29 +38,42 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         if (baseSlug != book.Slug)
         {
             // Find a unique slug
-            while (await bookRepository.SlugExistsAsync(slug, token) && slug != book.Slug)
+            while (await bookRepository.SlugExistsAsync(slug, token))
             {
                 slugAttempt++;
                 slug = SlugGenerator.MakeSlugUnique(baseSlug, slugAttempt);
             }
-        }
-        else
-        {
-            // Keep the existing slug if title hasn't changed
-            slug = book.Slug;
+            book.SetSlug(slug);
         }
 
         book.Title = command.Title ?? book.Title;
         book.PublishDate = command.PublishDate ?? book.PublishDate;
         book.BasePrice = command.BasePrice ?? book.BasePrice;
-        book.BookMediums = command.Mediums?.Select(m => new BookMedium { MediumId = (int)Enum.Parse<MediumEnum>(m, ignoreCase: true) }).ToList() ?? book.BookMediums;
-        book.BookGenres = command.Genres?.Select(g => new BookGenre { GenreId = (int)Enum.Parse<GenreEnum>(g, ignoreCase: true) }).ToList() ?? book.BookGenres;
-        book.SetSlug(slug);
 
-        var updatedBook = await bookRepository.UpdateBookAsync(book.BookId, book, token);
+        if (command.Mediums is not null)
+        {
+            book.BookMediums.Clear();
+            var newMediums = command.Mediums
+                .Select(m => new BookMedium { BookId = book.BookId, MediumId = (int)Enum.Parse<MediumEnum>(m, ignoreCase: true) })
+                .ToList();
+            foreach(var bm in newMediums) book.BookMediums.Add(bm);
+        }
+
+        if (command.Genres is not null)
+        {
+            book.BookGenres.Clear();
+            var newGenres = command.Genres
+                .Select(g => new BookGenre { BookId = book.BookId, GenreId = (int)Enum.Parse<GenreEnum>(g, ignoreCase: true) })
+                .ToList();
+            foreach(var bg in newGenres) book.BookGenres.Add(bg);
+        }
+
+        await bookRepository.UpdateBookAsync(book, token);
+
+        var updatedBook = await bookRepository.GetBookByIdAsync(book.BookId, token);
 
         if (updatedBook is null)
-            throw new NotFoundException(nameof(Book), command.IdOrSlug);
+             throw new NotFoundException(nameof(Book), command.IdOrSlug);
             
         return new UpdateBookResponse(
             updatedBook.BookId,
@@ -66,8 +81,8 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             updatedBook.PublishDate,
             updatedBook.BasePrice,
             updatedBook.Slug,
-            [.. updatedBook.BookMediums.Select(m => m.Medium.Name)],
-            [.. updatedBook.BookGenres.Select(g => g.Genre.Name)]
+            [.. updatedBook.BookMediums.Select(m => m.Medium?.Name ?? "Unknown")],
+            [.. updatedBook.BookGenres.Select(g => g.Genre?.Name ?? "Unknown")]
         );
     }
 }
