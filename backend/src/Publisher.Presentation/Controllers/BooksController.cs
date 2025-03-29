@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Publisher.Application.Books.Commands.CreateBook;
 using Publisher.Application.Books.Commands.DeleteBook;
 using Publisher.Application.Books.Commands.UpdateBook;
@@ -37,6 +38,7 @@ public class BooksController(ISender _sender) : ControllerBase
         return Ok(await _sender.Send(new GetBookByIdQuery(id), token));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost(ApiEndpoints.V1.Books.Create)]
     public async Task<IActionResult> CreateBook(
         [FromBody] CreateBookRequest request, CancellationToken token)
@@ -59,6 +61,7 @@ public class BooksController(ISender _sender) : ControllerBase
         return CreatedAtAction(nameof(GetBookById), new { id = result.BookId }, result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut(ApiEndpoints.V1.Books.Update)]
     public async Task<IActionResult> UpdateBook(
         [FromRoute] string id, [FromBody] UpdateBookRequest request, CancellationToken token)
@@ -74,6 +77,7 @@ public class BooksController(ISender _sender) : ControllerBase
         return Ok(await _sender.Send(command, token));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete(ApiEndpoints.V1.Books.Delete)]
     public async Task<IActionResult> DeleteBook(
         [FromRoute] string id, CancellationToken token)
@@ -82,6 +86,7 @@ public class BooksController(ISender _sender) : ControllerBase
         return Ok(new DeleteResponse());
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPut(ApiEndpoints.V1.Books.BookCovers)]
     public async Task<IActionResult> UpdateBookCovers(
         [FromRoute] string id, [FromBody] UpdateBookCoversRequest request, CancellationToken token)
@@ -91,6 +96,7 @@ public class BooksController(ISender _sender) : ControllerBase
         return Ok(response);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPut(ApiEndpoints.V1.Books.BookAuthors)]
     public async Task<IActionResult> UpdateBookAuthors(
         [FromRoute] string id, [FromBody] UpdateBookAuthorsRequest request, CancellationToken token)
@@ -100,6 +106,7 @@ public class BooksController(ISender _sender) : ControllerBase
         return Ok(response);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpPut(ApiEndpoints.V1.Books.BookArtists)]
     public async Task<IActionResult> UpdateBookArtists(
         [FromRoute] string id, [FromBody] UpdateBookArtistsRequest request, CancellationToken token)
