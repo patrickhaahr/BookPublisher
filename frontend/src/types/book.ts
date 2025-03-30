@@ -76,14 +76,14 @@ export interface CreateBookFormValues {
 }
 
 export interface EditBookFormValues {
-  title: string;
-  publishDate: string;
-  basePrice: number;
-  authorIds: string;
-  mediums: string[];
-  genres: string[];
-  coverImage?: File;
-  coverArtistIds: string;
+  title?: string | null;
+  publishDate?: string | null;
+  basePrice?: number | null;
+  authorIds?: string | null;
+  mediums?: string[] | null;
+  genres?: string[] | null;
+  coverImage?: File | null;
+  coverArtistIds?: string | null;
 }
 
 export interface CreateBookApiPayload {
