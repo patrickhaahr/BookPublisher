@@ -28,12 +28,23 @@ import {
   AlertCircle, 
   Image as ImageIcon,
   BookOpen,
-  UploadIcon
+  UploadIcon,
+  CalendarIcon,
+  InfoIcon
 } from 'lucide-react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { type CheckedState } from "@radix-ui/react-checkbox"
 import { ScrollArea } from '../../components/ui/scroll-area'
 import { GENRES, MEDIUMS } from '../../constants/bookOptions'
+import { Calendar } from '../../components/ui/calendar'
+import { format } from 'date-fns'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../components/ui/popover"
+import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert"
+import { cn } from "../../lib/utils"
 
 export const Route = createFileRoute('/admin/edit-book/$bookId')({
   component: EditBookPage,
@@ -46,6 +57,7 @@ function EditBookPage() {
   const [coverPreview, setCoverPreview] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState('details')
   const [fileName, setFileName] = useState<string | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch book data
@@ -61,30 +73,44 @@ function EditBookPage() {
   // Update mutation
   const updateMutation = useMutation({
     mutationFn: async (values: EditBookFormValues) => {
-      // Process the form data
-      const payload = {
-        title: values.title,
-        publishDate: values.publishDate,
-        basePrice: values.basePrice,
-        authorIds: values.authorIds.split(',').map(id => id.trim()).filter(Boolean),
-        mediums: values.mediums,
-        genres: values.genres,
+      // Create an empty payload that will only include properties that are defined
+      const payload: Record<string, any> = {}
+      
+      // Only add non-null properties to the payload
+      if (values.title !== undefined && values.title !== null) {
+        payload.title = values.title
+      }
+      
+      if (values.publishDate !== undefined && values.publishDate !== null) {
+        payload.publishDate = values.publishDate
+      }
+      
+      if (values.basePrice !== undefined && values.basePrice !== null) {
+        payload.basePrice = values.basePrice
+      }
+      
+      if (values.authorIds !== undefined && values.authorIds !== null) {
+        payload.authorIds = values.authorIds.split(',').map(id => id.trim()).filter(Boolean)
+      }
+      
+      if (values.mediums !== undefined && values.mediums !== null) {
+        payload.mediums = values.mediums
+      }
+      
+      if (values.genres !== undefined && values.genres !== null) {
+        payload.genres = values.genres
       }
 
       // Add cover image if provided
-      let covers = []
       if (values.coverImage && values.coverArtistIds) {
         const imgBase64 = await fileToBase64(values.coverImage)
-        covers.push({
+        payload.covers = [{
           imgBase64,
           artistIds: values.coverArtistIds.split(',').map(id => id.trim()).filter(Boolean)
-        })
+        }]
       }
 
-      return updateBook(bookId, {
-        ...payload,
-        covers: covers.length > 0 ? covers : undefined
-      })
+      return updateBook(bookId, payload)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['book', bookId] })
@@ -96,14 +122,14 @@ function EditBookPage() {
   // Form initialization
   const form = useForm({
     defaultValues: {
-      title: '',
-      publishDate: '',
-      basePrice: 0,
-      authorIds: '',
-      mediums: [] as string[],
-      genres: [] as string[],
+      title: null as string | null,
+      publishDate: null as string | null,
+      basePrice: null as number | null,
+      authorIds: null as string | null,
+      mediums: null as string[] | null,
+      genres: null as string[] | null,
       coverImage: undefined as File | undefined,
-      coverArtistIds: '',
+      coverArtistIds: null as string | null,
     },
     onSubmit: async ({ value }) => {
       await updateMutation.mutateAsync(value)
@@ -114,19 +140,24 @@ function EditBookPage() {
   useEffect(() => {
     if (book) {
       form.reset({
-        title: book.title,
-        publishDate: book.publishDate.split('T')[0], // Format date for input
-        basePrice: book.basePrice,
-        authorIds: book.authors.map(a => a.authorPersonId).join(','),
-        mediums: book.mediums,
-        genres: book.genres,
+        title: null,
+        publishDate: null,
+        basePrice: null,
+        authorIds: null,
+        mediums: null,
+        genres: null,
         coverImage: undefined,
-        coverArtistIds: '',
+        coverArtistIds: null,
       })
 
       // Set cover preview if available
       if (book.covers && book.covers.length > 0) {
         setCoverPreview(`data:image/jpeg;base64,${book.covers[0].imgBase64}`)
+      }
+      
+      // Set the date for the calendar
+      if (book.publishDate) {
+        setSelectedDate(new Date(book.publishDate))
       }
     }
   }, [book])
@@ -198,6 +229,15 @@ function EditBookPage() {
         </div>
       </div>
 
+      {/* Partial update notice */}
+      <Alert className="bg-blue-50 dark:bg-blue-950 mb-6">
+        <InfoIcon className="h-4 w-4" />
+        <AlertTitle>Partial Updates Supported</AlertTitle>
+        <AlertDescription>
+          You only need to fill the fields you want to update. Empty fields will keep their existing values.
+        </AlertDescription>
+      </Alert>
+
       {/* Form Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid grid-cols-2 w-[400px]">
@@ -217,7 +257,7 @@ function EditBookPage() {
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
               <CardDescription>
-                Edit the basic details of your book.
+                Edit the basic details of your book. Leave fields empty to keep their existing values.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -227,18 +267,18 @@ function EditBookPage() {
                 <form.Field
                   name="title"
                   validators={{
-                    onChange: ({ value }) => !value ? 'Title is required' :
-                      value.length > 100 ? 'Title must not exceed 100 characters' : undefined,
+                    onChange: ({ value }) => 
+                      value && value.length > 100 ? 'Title must not exceed 100 characters' : undefined,
                   }}
                 >
                   {(field) => (
                     <>
                       <Input
                         id="title-input"
-                        value={field.state.value}
+                        value={field.state.value ?? ''}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Enter book title"
+                        onChange={(e) => field.handleChange(e.target.value || null)}
+                        placeholder={book?.title ?? "Enter book title"}
                         className={field.state.meta.errors?.length ? "border-destructive" : ""}
                       />
                       {field.state.meta.errors?.length ? (
@@ -258,21 +298,40 @@ function EditBookPage() {
                   <Label htmlFor="publishDate-input">Publish Date</Label>
                   <form.Field
                     name="publishDate"
-                    validators={{
-                      onChange: ({ value }) => !value ? 'Publish date is required' : undefined
-                    }}
                   >
                     {(field) => (
                       <>
-                        <Input
-                          id="publishDate-input"
-                          type="date"
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                          placeholder="Select publish date"
-                          className={field.state.meta.errors?.length ? "border-destructive" : ""}
-                        />
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              id="publishDate-input"
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !selectedDate && "text-muted-foreground",
+                                field.state.meta.errors?.length && "border-destructive"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {selectedDate ? (
+                                format(selectedDate, "PPP")
+                              ) : (
+                                <span>{book?.publishDate ? format(new Date(book.publishDate), "PPP") : "Select date"}</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={selectedDate}
+                              onSelect={(date) => {
+                                setSelectedDate(date);
+                                field.handleChange(date ? format(date, "yyyy-MM-dd") : null);
+                              }}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                         {field.state.meta.errors?.length ? (
                           <p className="text-sm font-medium text-destructive mt-1">
                             {field.state.meta.errors.join(', ')}
@@ -289,7 +348,7 @@ function EditBookPage() {
                   <form.Field
                     name="basePrice"
                     validators={{
-                      onChange: ({ value }) => value < 0 ? 'Base price must be greater than or equal to 0' : undefined
+                      onChange: ({ value }) => value !== null && value < 0 ? 'Base price must be greater than or equal to 0' : undefined
                     }}
                   >
                     {(field) => (
@@ -299,10 +358,13 @@ function EditBookPage() {
                           type="number"
                           step="0.01"
                           min="0"
-                          value={field.state.value}
+                          value={field.state.value ?? ''}
                           onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.valueAsNumber || 0)}
-                          placeholder="29.99"
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? null : e.target.valueAsNumber
+                            field.handleChange(value)
+                          }}
+                          placeholder={book?.basePrice?.toString() ?? "29.99"}
                           className={field.state.meta.errors?.length ? "border-destructive" : ""}
                         />
                         {field.state.meta.errors?.length ? (
@@ -321,18 +383,15 @@ function EditBookPage() {
                 <Label htmlFor="authorIds-input">Author IDs</Label>
                 <form.Field
                   name="authorIds"
-                  validators={{
-                    onChange: ({ value }) => !value ? 'At least one Author ID is required' : undefined
-                  }}
                 >
                   {(field) => (
                     <>
                       <Input
                         id="authorIds-input"
-                        value={field.state.value}
+                        value={field.state.value ?? ''}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Enter comma-separated Author IDs"
+                        onChange={(e) => field.handleChange(e.target.value || null)}
+                        placeholder={book?.authors?.map(a => a.authorPersonId).join(', ') ?? "Enter comma-separated Author IDs"}
                         className={field.state.meta.errors?.length ? "border-destructive" : ""}
                       />
                       <p className="text-[0.8rem] text-muted-foreground mt-1">
@@ -353,10 +412,6 @@ function EditBookPage() {
                 <Label>Mediums</Label>
                 <form.Field
                   name="mediums"
-                  validators={{
-                    onChange: ({ value }) => 
-                      Array.isArray(value) && value.length === 0 ? 'At least one medium is required' : undefined
-                  }}
                 >
                   {(field) => (
                     <>
@@ -366,14 +421,17 @@ function EditBookPage() {
                             <div key={medium.id} className="flex items-center space-x-2">
                               <Checkbox
                                 id={`medium-${medium.id}`}
-                                checked={field.state.value?.includes(medium.id)}
+                                checked={field.state.value?.includes(medium.id) ?? book?.mediums?.includes(medium.id) ?? false}
                                 onCheckedChange={(checked: CheckedState) => {
-                                  const currentValues = field.state.value ?? [];
-                                  field.handleChange(
-                                    checked === true
-                                      ? [...currentValues, medium.id]
-                                      : currentValues.filter((v) => v !== medium.id)
-                                  );
+                                  // Initialize with current field value or book value or empty array
+                                  const currentValues = field.state.value ?? [...(book?.mediums ?? [])];
+                                  
+                                  const newValues = checked === true
+                                    ? [...currentValues, medium.id]
+                                    : currentValues.filter((v) => v !== medium.id);
+                                  
+                                  // Only set the field value if it's different from book value
+                                  field.handleChange(newValues.length > 0 ? newValues : null);
                                 }}
                               />
                               <Label htmlFor={`medium-${medium.id}`} className="font-normal">
@@ -398,10 +456,6 @@ function EditBookPage() {
                 <Label>Genres</Label>
                 <form.Field
                   name="genres"
-                  validators={{
-                    onChange: ({ value }) => 
-                      Array.isArray(value) && value.length === 0 ? 'At least one genre is required' : undefined
-                  }}
                 >
                   {(field) => (
                     <>
@@ -411,14 +465,17 @@ function EditBookPage() {
                             <div key={genre.id} className="flex items-center space-x-2">
                               <Checkbox
                                 id={`genre-${genre.id}`}
-                                checked={field.state.value?.includes(genre.id)}
+                                checked={field.state.value?.includes(genre.id) ?? book?.genres?.includes(genre.id) ?? false}
                                 onCheckedChange={(checked: CheckedState) => {
-                                  const currentValues = field.state.value ?? [];
-                                  field.handleChange(
-                                    checked === true
-                                      ? [...currentValues, genre.id]
-                                      : currentValues.filter((v) => v !== genre.id)
-                                  );
+                                  // Initialize with current field value or book value or empty array
+                                  const currentValues = field.state.value ?? [...(book?.genres ?? [])];
+                                  
+                                  const newValues = checked === true
+                                    ? [...currentValues, genre.id]
+                                    : currentValues.filter((v) => v !== genre.id);
+                                  
+                                  // Only set the field value if it's different from book value
+                                  field.handleChange(newValues.length > 0 ? newValues : null);
                                 }}
                               />
                               <Label htmlFor={`genre-${genre.id}`} className="font-normal">
@@ -539,9 +596,9 @@ function EditBookPage() {
                         <>
                           <Input
                             id="coverArtistIds-input"
-                            value={field.state.value}
+                            value={field.state.value ?? ''}
                             onBlur={field.handleBlur}
-                            onChange={(e) => field.handleChange(e.target.value)}
+                            onChange={(e) => field.handleChange(e.target.value || null)}
                             placeholder="Enter comma-separated Artist IDs"
                             className={field.state.meta.errors?.length ? "border-destructive" : ""}
                           />
@@ -567,12 +624,12 @@ function EditBookPage() {
       {/* Form Actions */}
       <div className="flex justify-end mt-6">
         <form.Subscribe
-          selector={(state) => [state.canSubmit, state.isSubmitting, updateMutation.isPending]}
+          selector={(state) => [state.isSubmitting, updateMutation.isPending]}
         >
-          {([canSubmit, isSubmitting, isPending]) => (
+          {([isSubmitting, isPending]) => (
             <Button 
               onClick={() => form.handleSubmit()}
-              disabled={!canSubmit || isSubmitting || isPending}
+              disabled={isSubmitting || isPending}
               size="lg"
             >
               {isPending ? (
