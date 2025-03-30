@@ -1,6 +1,9 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Users.Queries.GetUsers;
 
-public record GetUsersQuery : IRequest<List<User>>; 
+public record GetUsersQuery(
+    int Page = 1,
+    int PageSize = 10,
+    string? SearchQuery = null) : IRequest<PaginatedResponse<GetUsersResponse>>; 

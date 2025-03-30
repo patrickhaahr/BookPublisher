@@ -4,9 +4,9 @@ using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Books.Queries.GetBooks;
 
-public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHandler<GetBooksQuery, PagedResponse<GetBooksResponse>>
+public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHandler<GetBooksQuery, PaginatedResponse<GetBooksResponse>>
 {
-    public async Task<PagedResponse<GetBooksResponse>> Handle(GetBooksQuery query, CancellationToken token)
+    public async Task<PaginatedResponse<GetBooksResponse>> Handle(GetBooksQuery query, CancellationToken token)
     {
         // Fetch paginated books and total count
         var (books, totalCount) = await bookRepository.GetBooksPaginatedAsync(
@@ -36,7 +36,7 @@ public class GetBooksQueryHandler(IBookRepository bookRepository) : IRequestHand
         var totalPages = (int)Math.Ceiling((double)totalCount / query.PageSize);
 
         // Return the paged response
-        return new PagedResponse<GetBooksResponse>(
+        return new PaginatedResponse<GetBooksResponse>(
             Items: bookResponses,
             Total: totalCount,
             Page: query.Page,

@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { NotAuthenticatedCard } from '@/components/auth/not-authenticated-card'
 import { getUserProfile } from '@/api'
-import { UserProfile } from '@/types'
+import { UserProfile } from '@/types/user'
 
 export const Route = createFileRoute('/profile/')({
   component: Profile,

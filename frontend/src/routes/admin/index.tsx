@@ -101,11 +101,15 @@ function AdminDashboard() {
             <CardDescription>View and manage user accounts and roles.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-             <p className="text-sm text-muted-foreground">View users, manage roles (future).</p>
+             <p className="text-sm text-muted-foreground">View users, manage roles.</p>
              {/* Add more specific action descriptions later */}
           </CardContent>
           <CardFooter className="flex gap-2">
-            <Button size="sm" variant="outline" disabled>Manage Users</Button>
+            <Button size="sm" variant="outline" asChild>
+              <Link to="/admin/manage-users">
+                Manage Users
+              </Link>
+            </Button>
           </CardFooter>
         </Card>
 

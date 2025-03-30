@@ -11,5 +11,5 @@ public record GetBooksQuery(
     string? Genre = null,
     string? Medium = null,
     string? Year = null
-) : IRequest<PagedResponse<GetBooksResponse>>;
+) : IRequest<PaginatedResponse<GetBooksResponse>>;
 

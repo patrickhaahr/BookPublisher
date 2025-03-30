@@ -6,9 +6,24 @@ namespace Publisher.Infrastructure.Repositories;
 
 public class UserRepository(AppDbContext _context) : IUserRepository
 {
-    public async Task<List<User>> GetUsersAsync(CancellationToken token = default)
+    public async Task<(List<User> Items, int TotalCount, int TotalPages)> GetUsersAsync(int page, int pageSize, CancellationToken token = default)
     {
-        return await _context.Users.ToListAsync(token);
+        // Ensure valid pagination parameters
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 10 : pageSize;
+
+        // Get total count for pagination metadata
+        int totalCount = await _context.Users.CountAsync(token);
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        // Get paginated data
+        var items = await _context.Users
+            .OrderBy(u => u.Username)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(token);
+
+        return (items, totalCount, totalPages);
     }
 
     public async Task<User?> GetUserByIdAsync(Guid id, CancellationToken token = default)
