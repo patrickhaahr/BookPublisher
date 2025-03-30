@@ -13,9 +13,13 @@ namespace Publisher.Presentation.Controllers;
 public class UsersController(ISender _sender) : ControllerBase
 {
     [HttpGet(ApiEndpoints.V1.Users.GetAll)]
-    public async Task<IActionResult> GetUsers(CancellationToken token)
+    public async Task<IActionResult> GetUsers(
+        [FromQuery] int page = 1, 
+        [FromQuery] int pageSize = 10, 
+        [FromQuery] string? search = null,
+        CancellationToken token = default)
     {
-        return Ok(await _sender.Send(new GetUsersQuery(), token));
+        return Ok(await _sender.Send(new GetUsersQuery(page, pageSize, search), token));
     }
 
     [HttpGet(ApiEndpoints.V1.Users.GetById)]
