@@ -13,7 +13,7 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
 {
     public async Task<UpdateBookResponse> Handle(UpdateBookCommand command, CancellationToken token)
     {
-        // Resolve the book using ID or slug, including existing mediums and genres
+        // Fetch the book by ID or slug
         Book? book;
         if (Guid.TryParse(command.IdOrSlug, out var bookId))
         {
@@ -29,8 +29,8 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
         if (book is null)
             throw new NotFoundException(nameof(Book), command.IdOrSlug);
 
+        // Update title and slug
         var baseSlug = SlugGenerator.GenerateSlug(command.Title ?? book.Title);
-        
         var slug = baseSlug;
         var slugAttempt = 1;
         
@@ -45,36 +45,96 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             }
             book.SetSlug(slug);
         }
-
+        // Title
         book.Title = command.Title ?? book.Title;
+
+        // Publish Date
         book.PublishDate = command.PublishDate ?? book.PublishDate;
+
+        // Base Price
         book.BasePrice = command.BasePrice ?? book.BasePrice;
 
+        // Handle Mediums
         if (command.Mediums is not null)
         {
             book.BookMediums.Clear();
             var newMediums = command.Mediums
-                .Select(m => new BookMedium { BookId = book.BookId, MediumId = (int)Enum.Parse<MediumEnum>(m, ignoreCase: true) })
+                .Select(m => new BookMedium
+                {   BookId = book.BookId,
+                    MediumId = (int)Enum.Parse<MediumEnum>(m, ignoreCase: true) 
+                })
                 .ToList();
-            foreach(var bm in newMediums) book.BookMediums.Add(bm);
+            book.BookMediums.AddRange(newMediums);
         }
 
+        // Handle Genres
         if (command.Genres is not null)
         {
             book.BookGenres.Clear();
             var newGenres = command.Genres
-                .Select(g => new BookGenre { BookId = book.BookId, GenreId = (int)Enum.Parse<GenreEnum>(g, ignoreCase: true) })
+                .Select(g => new BookGenre
+                {   BookId = book.BookId,
+                    GenreId = (int)Enum.Parse<GenreEnum>(g, ignoreCase: true) 
+                })
                 .ToList();
-            foreach(var bg in newGenres) book.BookGenres.Add(bg);
+            book.BookGenres.AddRange(newGenres);
         }
 
+        // Handle Authors
+        if (command.AuthorIds is not null)
+        {
+            await bookRepository.RemoveBookPersonsAsync(book.BookId, token);
+            var newAuthors = command.AuthorIds
+                .Select(authorId => new BookPersons
+                {   BookId = book.BookId,
+                    PersonId = authorId,
+                    AuthorPersonId = authorId
+                })
+                .ToList();
+            await bookRepository.AddBookPersonsAsync(newAuthors, token);
+        }
+
+        // Handle Covers
+        if (command.Covers is not null)
+        {
+            await bookRepository.RemoveBookCoversAsync(book.BookId, token);
+            var updatedCovers = new List<Cover>();
+            foreach (var coverRequest in command.Covers)
+            {
+                var coverId = coverRequest.CoverId ?? Guid.NewGuid();
+                var cover = new Cover
+                {
+                    CoverId = coverId,
+                    BookId = book.BookId,
+                    ImgBase64 = coverRequest.ImgBase64,
+                    CreatedDate = DateTime.UtcNow,
+                };
+                await bookRepository.AddBookCoverAsync(cover, token);
+
+                // Artists
+                var coverPersons = coverRequest.ArtistIds
+                    .Select(artistId => new CoverPersons
+                    {
+                        CoverId = coverId,
+                        PersonId = artistId,
+                        ArtistPersonId = artistId
+                    })
+                    .ToList();
+                await bookRepository.AddCoverPersonsAsync(coverPersons, token);
+
+                updatedCovers.Add(cover);
+            }
+            book.Covers = updatedCovers;
+        }
+
+        // Save changes
         await bookRepository.UpdateBookAsync(book, token);
 
-        var updatedBook = await bookRepository.GetBookByIdAsync(book.BookId, token);
-
-        if (updatedBook is null)
-             throw new NotFoundException(nameof(Book), command.IdOrSlug);
-            
+        // Fetch the updated book
+        var updatedBook = await bookRepository.GetBookByIdAsync(book.BookId, token)
+            ?? throw new NotFoundException(nameof(Book), command.IdOrSlug);
+        
+        // Build response
         return new UpdateBookResponse(
             updatedBook.BookId,
             updatedBook.Title,
@@ -82,7 +142,13 @@ public class UpdateBookCommandHandler(IBookRepository bookRepository)
             updatedBook.BasePrice,
             updatedBook.Slug,
             [.. updatedBook.BookMediums.Select(m => m.Medium?.Name ?? "Unknown")],
-            [.. updatedBook.BookGenres.Select(g => g.Genre?.Name ?? "Unknown")]
+            [.. updatedBook.BookGenres.Select(g => g.Genre?.Name ?? "Unknown")],
+            [.. updatedBook.BookPersons.Select(p => p.AuthorPersonId)],
+            [.. updatedBook.Covers.Select(c => new CoverResponseData(
+                c.CoverId,
+                c.ImgBase64 ?? string.Empty,
+                [.. c.CoverPersons.Select(p => p.ArtistPersonId)]
+            ))]
         );
     }
 }
