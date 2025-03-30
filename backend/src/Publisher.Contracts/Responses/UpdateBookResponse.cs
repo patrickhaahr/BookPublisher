@@ -7,5 +7,13 @@ public record UpdateBookResponse(
     decimal BasePrice,
     string Slug,
     List<string> Mediums,
-    List<string> Genres
-); 
+    List<string> Genres,
+    List<Guid> AuthorIds,
+    List<CoverResponseData> Covers
+);
+
+public record CoverResponseData(
+    Guid CoverId,
+    string ImgBase64,
+    List<Guid> ArtistIds
+);

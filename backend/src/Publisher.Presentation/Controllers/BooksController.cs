@@ -72,7 +72,9 @@ public class BooksController(ISender _sender) : ControllerBase
             request.PublishDate,
             request.BasePrice,
             request.Mediums,
-            request.Genres
+            request.Genres,
+            request.AuthorIds,
+            request.Covers
         );
         return Ok(await _sender.Send(command, token));
     }
