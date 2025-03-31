@@ -1,9 +1,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Publisher.Application.Persons.Queries.GetPersons;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Publisher.Presentation.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class PersonsController(ISender _sender) : ControllerBase
 {

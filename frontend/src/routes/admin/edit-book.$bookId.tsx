@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState, useEffect, useRef } from 'react'
 import { useForm } from '@tanstack/react-form'
@@ -32,7 +32,6 @@ import {
   CalendarIcon,
   InfoIcon
 } from 'lucide-react'
-import { Link, useNavigate } from '@tanstack/react-router'
 import { type CheckedState } from "@radix-ui/react-checkbox"
 import { ScrollArea } from '../../components/ui/scroll-area'
 import { GENRES, MEDIUMS } from '../../constants/bookOptions'
@@ -45,8 +44,22 @@ import {
 } from "../../components/ui/popover"
 import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert"
 import { cn } from "../../lib/utils"
+import { checkUserRoleFromToken } from '@/lib/authUtils'
 
 export const Route = createFileRoute('/admin/edit-book/$bookId')({
+  beforeLoad: async ({ location }) => {
+    const userRole = checkUserRoleFromToken();
+    const isAdmin = userRole === 'Admin';
+
+    if (!isAdmin) {
+      throw redirect({
+        to: '/auth/login',
+        search: {
+          redirect: location.pathname + location.search,
+        },
+      });
+    }
+  },
   component: EditBookPage,
 })
 

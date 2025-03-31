@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { checkUserRoleFromToken } from '@/lib/authUtils'
 import {
   Table,
   TableBody,
@@ -48,6 +49,19 @@ import { getUsers, deleteUser, updateUserRole } from '../../api/users'
 import type { User, UsersResponse } from '../../types/user'
 
 export const Route = createFileRoute('/admin/manage-users')({
+  beforeLoad: async ({ location }) => {
+    const userRole = checkUserRoleFromToken();
+    const isAdmin = userRole === 'Admin';
+
+    if (!isAdmin) {
+      throw redirect({
+        to: '/auth/login',
+        search: {
+          redirect: location.pathname + location.search,
+        },
+      });
+    }
+  },
   component: RouteComponent,
 })
 
@@ -65,7 +79,9 @@ function RouteComponent() {
     queryKey: ['users', page, pageSize, searchQuery],
     queryFn: async () => {
       return await getUsers(page, pageSize, searchQuery);
-    }
+    },
+    staleTime: 1000 * 60 * 5, // Keep data fresh for 5 minutes
+    gcTime: 1000 * 60 * 5, // Keep unused data in cache for 10 minutes
   })
   
   const deleteMutation = useMutation({

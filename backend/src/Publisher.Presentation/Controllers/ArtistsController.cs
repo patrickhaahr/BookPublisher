@@ -6,9 +6,10 @@ using Publisher.Application.Artists.Commands.UpdateArtist;
 using Publisher.Application.Artists.Queries.GetArtistById;
 using Publisher.Application.Artists.Queries.GetArtists;
 using Publisher.Contracts.Responses;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Publisher.Presentation.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class ArtistsController(ISender _sender) : ControllerBase
 {

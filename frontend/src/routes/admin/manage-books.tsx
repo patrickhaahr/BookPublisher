@@ -1,6 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect, Link } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { checkUserRoleFromToken } from '@/lib/authUtils'
 import {
   Table,
   TableBody,
@@ -37,11 +38,23 @@ import {
 import { Button } from '../../components/ui/button'
 import { Input } from '../../components/ui/input'
 import { Loader2, MoreVertical, Search, Plus, AlertCircle } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
 import { getBooks } from '../../api/books'
 import type { Book, BooksResponse } from '../../types/book'
 
 export const Route = createFileRoute('/admin/manage-books')({
+  beforeLoad: async ({ location }) => {
+    const userRole = checkUserRoleFromToken();
+    const isAdmin = userRole === 'Admin';
+
+    if (!isAdmin) {
+      throw redirect({
+        to: '/auth/login',
+        search: {
+          redirect: location.pathname + location.search,
+        },
+      });
+    }
+  },
   component: RouteComponent,
 })
 
@@ -57,7 +70,9 @@ function RouteComponent() {
     queryKey: ['books', page, pageSize],
     queryFn: async () => {
       return await getBooks(page, pageSize);
-    }
+    },
+    staleTime: 1000 * 60 * 5, // Keep data fresh for 5 minutes
+    gcTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
   })
   
   const deleteMutation = useMutation({
