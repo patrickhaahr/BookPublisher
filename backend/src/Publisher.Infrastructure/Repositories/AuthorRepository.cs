@@ -6,9 +6,24 @@ namespace Publisher.Infrastructure.Repositories;
 
 public class AuthorRepository(AppDbContext _context) : IAuthorRepository
 {
-    public async Task<List<Author>> GetAuthorsAsync(CancellationToken token = default)
+    public async Task<(List<Author> Items, int TotalCount, int TotalPages)> GetAuthorsAsync(int page, int pageSize, CancellationToken token = default)
     {
-        return await _context.Authors.ToListAsync(token);
+        // Ensure valid pagination parameters
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 10 : pageSize;
+
+        // Calculate total count and total pages
+        int totalCount = await _context.Authors.CountAsync(token);
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        // Get paginated data
+        var items = await _context.Authors
+            .OrderBy(a => a.FirstName)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(token);
+
+        return (items, totalCount, totalPages);
     }
 
     public async Task<Author?> GetAuthorByIdAsync(Guid id, CancellationToken token = default)

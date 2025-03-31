@@ -26,3 +26,4 @@ hover over books and it will prefetch - faster experience
 
 login with email / username
 
+Refactor check admin auth into a service?

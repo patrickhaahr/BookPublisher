@@ -14,9 +14,12 @@ namespace Publisher.Presentation.Controllers;
 public class ArtistsController(ISender _sender) : ControllerBase
 {
     [HttpGet(ApiEndpoints.V1.Artists.GetAll)]
-    public async Task<IActionResult> GetArtists(CancellationToken token)
+    public async Task<IActionResult> GetArtists(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken token = default)
     {
-        return Ok(await _sender.Send(new GetArtistsQuery(), token));
+        return Ok(await _sender.Send(new GetArtistsQuery(page, pageSize), token));
     }
 
     [HttpGet(ApiEndpoints.V1.Artists.GetById)]

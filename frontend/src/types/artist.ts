@@ -1,11 +1,10 @@
 export interface Artist {
-  personId: string;
+  artistPersonId: string;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  portfolioUrl: string;
-  coverPersons: any[]; // Could be defined more precisely if needed
+  portfolioUrl: string; 
 }
 
 export interface ArtistsResponse {

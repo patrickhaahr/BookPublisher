@@ -6,9 +6,24 @@ namespace Publisher.Infrastructure.Repositories;
 
 public class ArtistRepository(AppDbContext _context) : IArtistRepository
 {
-    public async Task<List<Artist>> GetArtistsAsync(CancellationToken token = default)
+    public async Task<(List<Artist> Items, int TotalCount, int TotalPages)> GetArtistsAsync(int page, int pageSize, CancellationToken token = default)
     {
-        return await _context.Artists.ToListAsync(token);
+        // Ensure valid pagination parameters
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 10 : pageSize;
+
+        // Calculate total count and total pages
+        int totalCount = await _context.Artists.CountAsync(token);
+        int totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        // Get paginated data
+        var items = await _context.Artists
+            .OrderBy(a => a.FirstName)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(token);
+
+        return (items, totalCount, totalPages);
     }
 
     public async Task<Artist?> GetArtistByIdAsync(Guid id, CancellationToken token = default)
