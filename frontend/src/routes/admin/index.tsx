@@ -74,7 +74,11 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" disabled>Create Author</Button>
-            <Button size="sm" variant="outline" disabled>Manage Authors</Button>
+            <Button size="sm" variant="outline" asChild>
+              <Link to="/admin/manage-authors">
+                Manage Authors
+              </Link>
+            </Button>
           </CardFooter>
         </Card>
 
@@ -90,7 +94,11 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" disabled>Create Artist</Button>
-            <Button size="sm" variant="outline" disabled>Manage Artists</Button>
+            <Button size="sm" variant="outline" asChild>
+              <Link to="/admin/manage-artists">
+                Manage Artists
+              </Link>
+            </Button>
           </CardFooter>
         </Card>
 

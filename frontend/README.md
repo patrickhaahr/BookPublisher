@@ -18,14 +18,11 @@ IsFetching - if we want to see data, if its cached or not. (everytime we save a 
 IsLoading - executing for the first time
 
 // TODO
-Add pagination - only fetch 10 books at a time.
-Implement search functionality
+Implement search functionality (replace current with searchparams?)
 ADMIN PANEL: CRUD BOOKS, CRUD AUTHOR, CRUD ARTISTS
+    - implement pagination for author and artists
 
 hover over books and it will prefetch - faster experience
 
 login with email / username
 
-FIX: edit book, make it correct body request (remove author ids and have it seperate.)
-
-forms can be null

@@ -10,3 +10,8 @@ dotnet run
 
 TODO
 change to HTTPS
+health check
+add Compiled Query for GetBooks
+
+Implement Azure functions test
+Azure Entra ID login auth

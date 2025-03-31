@@ -21,6 +21,8 @@ import { Route as AuthRegisterImport } from './routes/auth/register'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AdminManageUsersImport } from './routes/admin/manage-users'
 import { Route as AdminManageBooksImport } from './routes/admin/manage-books'
+import { Route as AdminManageAuthorsImport } from './routes/admin/manage-authors'
+import { Route as AdminManageArtistsImport } from './routes/admin/manage-artists'
 import { Route as AdminCreateBookImport } from './routes/admin/create-book'
 import { Route as AdminEditBookBookIdImport } from './routes/admin/edit-book.$bookId'
 
@@ -86,6 +88,18 @@ const AdminManageBooksRoute = AdminManageBooksImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminManageAuthorsRoute = AdminManageAuthorsImport.update({
+  id: '/admin/manage-authors',
+  path: '/admin/manage-authors',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminManageArtistsRoute = AdminManageArtistsImport.update({
+  id: '/admin/manage-artists',
+  path: '/admin/manage-artists',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AdminCreateBookRoute = AdminCreateBookImport.update({
   id: '/admin/create-book',
   path: '/admin/create-book',
@@ -121,6 +135,20 @@ declare module '@tanstack/react-router' {
       path: '/admin/create-book'
       fullPath: '/admin/create-book'
       preLoaderRoute: typeof AdminCreateBookImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/manage-artists': {
+      id: '/admin/manage-artists'
+      path: '/admin/manage-artists'
+      fullPath: '/admin/manage-artists'
+      preLoaderRoute: typeof AdminManageArtistsImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/manage-authors': {
+      id: '/admin/manage-authors'
+      path: '/admin/manage-authors'
+      fullPath: '/admin/manage-authors'
+      preLoaderRoute: typeof AdminManageAuthorsImport
       parentRoute: typeof rootRoute
     }
     '/admin/manage-books': {
@@ -195,6 +223,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/create-book': typeof AdminCreateBookRoute
+  '/admin/manage-artists': typeof AdminManageArtistsRoute
+  '/admin/manage-authors': typeof AdminManageAuthorsRoute
   '/admin/manage-books': typeof AdminManageBooksRoute
   '/admin/manage-users': typeof AdminManageUsersRoute
   '/auth/login': typeof AuthLoginRoute
@@ -210,6 +240,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/create-book': typeof AdminCreateBookRoute
+  '/admin/manage-artists': typeof AdminManageArtistsRoute
+  '/admin/manage-authors': typeof AdminManageAuthorsRoute
   '/admin/manage-books': typeof AdminManageBooksRoute
   '/admin/manage-users': typeof AdminManageUsersRoute
   '/auth/login': typeof AuthLoginRoute
@@ -226,6 +258,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/admin/create-book': typeof AdminCreateBookRoute
+  '/admin/manage-artists': typeof AdminManageArtistsRoute
+  '/admin/manage-authors': typeof AdminManageAuthorsRoute
   '/admin/manage-books': typeof AdminManageBooksRoute
   '/admin/manage-users': typeof AdminManageUsersRoute
   '/auth/login': typeof AuthLoginRoute
@@ -243,6 +277,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin/create-book'
+    | '/admin/manage-artists'
+    | '/admin/manage-authors'
     | '/admin/manage-books'
     | '/admin/manage-users'
     | '/auth/login'
@@ -257,6 +293,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin/create-book'
+    | '/admin/manage-artists'
+    | '/admin/manage-authors'
     | '/admin/manage-books'
     | '/admin/manage-users'
     | '/auth/login'
@@ -271,6 +309,8 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/admin/create-book'
+    | '/admin/manage-artists'
+    | '/admin/manage-authors'
     | '/admin/manage-books'
     | '/admin/manage-users'
     | '/auth/login'
@@ -287,6 +327,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminCreateBookRoute: typeof AdminCreateBookRoute
+  AdminManageArtistsRoute: typeof AdminManageArtistsRoute
+  AdminManageAuthorsRoute: typeof AdminManageAuthorsRoute
   AdminManageBooksRoute: typeof AdminManageBooksRoute
   AdminManageUsersRoute: typeof AdminManageUsersRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -302,6 +344,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminCreateBookRoute: AdminCreateBookRoute,
+  AdminManageArtistsRoute: AdminManageArtistsRoute,
+  AdminManageAuthorsRoute: AdminManageAuthorsRoute,
   AdminManageBooksRoute: AdminManageBooksRoute,
   AdminManageUsersRoute: AdminManageUsersRoute,
   AuthLoginRoute: AuthLoginRoute,
@@ -326,6 +370,8 @@ export const routeTree = rootRoute
         "/",
         "/about",
         "/admin/create-book",
+        "/admin/manage-artists",
+        "/admin/manage-authors",
         "/admin/manage-books",
         "/admin/manage-users",
         "/auth/login",
@@ -345,6 +391,12 @@ export const routeTree = rootRoute
     },
     "/admin/create-book": {
       "filePath": "admin/create-book.tsx"
+    },
+    "/admin/manage-artists": {
+      "filePath": "admin/manage-artists.tsx"
+    },
+    "/admin/manage-authors": {
+      "filePath": "admin/manage-authors.tsx"
     },
     "/admin/manage-books": {
       "filePath": "admin/manage-books.tsx"
