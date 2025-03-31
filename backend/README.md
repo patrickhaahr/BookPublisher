@@ -15,3 +15,11 @@ add Compiled Query for GetBooks
 
 Implement Azure functions test
 Azure Entra ID login auth
+
+cleanup backend structure
+    -Contracts classlib
+    -unused endpoints and logic
+
+Result pattern?
+
+UML use case ( se video og lav uml diagram)

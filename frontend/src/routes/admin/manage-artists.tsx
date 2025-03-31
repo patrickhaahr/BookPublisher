@@ -87,7 +87,7 @@ function RouteComponent() {
     artist.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     artist.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     artist.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    artist.personId.includes(searchQuery)
+    artist.artistPersonId.toString().includes(searchQuery)
   ) : [];
   
   return (
@@ -145,6 +145,7 @@ function RouteComponent() {
                     <TableHead className="w-[80px]">ID</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead className="hidden md:table-cell">Email</TableHead>
+                    <TableHead className="hidden md:table-cell">Phone</TableHead>
                     <TableHead className="hidden sm:table-cell">Portfolio</TableHead>
                     <TableHead className="w-[70px]"></TableHead>
                   </TableRow>
@@ -152,8 +153,8 @@ function RouteComponent() {
                 <TableBody>
                   {filteredArtists && filteredArtists.length > 0 ? (
                     filteredArtists.map((artist) => (
-                      <TableRow key={artist.personId}>
-                        <TableCell className="font-medium">{artist.personId}</TableCell>
+                      <TableRow key={artist.artistPersonId}>
+                        <TableCell className="font-medium">{artist.artistPersonId}</TableCell>
                         <TableCell>
                           <div className="font-medium">
                             {artist.firstName} {artist.lastName}
@@ -163,7 +164,10 @@ function RouteComponent() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {artist.email || 'N/A'}
+                          {artist.email || ''}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {artist.phone || ''}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {artist.portfolioUrl ? (
@@ -251,7 +255,7 @@ function RouteComponent() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => artistToDelete && deleteMutation.mutate(artistToDelete.personId)}
+              onClick={() => artistToDelete && deleteMutation.mutate(artistToDelete.artistPersonId)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={deleteMutation.isPending}
             >

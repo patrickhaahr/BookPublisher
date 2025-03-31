@@ -1,7 +1,10 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Authors.Queries.GetAuthors;
 
-public record GetAuthorsQuery : IRequest<List<Author>>;
+public record GetAuthorsQuery(
+    int Page = 1,
+    int PageSize = 10
+) : IRequest<PaginatedResponse<AuthorResponse>>;
 

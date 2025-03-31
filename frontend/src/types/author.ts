@@ -1,11 +1,10 @@
 export interface Author {
-  personId: string;
+  authorPersonId: string;
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
   royaltyRate: number;
-  bookPersons: any[]; // Could be defined more precisely if needed
 }
 
 export interface AuthorsResponse {

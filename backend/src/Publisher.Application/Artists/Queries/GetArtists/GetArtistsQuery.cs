@@ -1,6 +1,10 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Artists.Queries.GetArtists;
 
-public record GetArtistsQuery : IRequest<List<Artist>>; 
+public record GetArtistsQuery(
+    int Page = 1,
+    int PageSize = 10,
+    string? SearchQuery = null
+) : IRequest<PaginatedResponse<ArtistResponse>>; 

@@ -14,9 +14,12 @@ namespace Publisher.Presentation.Controllers;
 public class AuthorsController(ISender _sender) : ControllerBase
 {
     [HttpGet(ApiEndpoints.V1.Authors.GetAll)]
-    public async Task<IActionResult> GetAuthors(CancellationToken token)
+    public async Task<IActionResult> GetAuthors(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        CancellationToken token = default)
     {
-        return Ok(await _sender.Send(new GetAuthorsQuery(), token));
+        return Ok(await _sender.Send(new GetAuthorsQuery(page, pageSize), token));
     }
 
     [HttpGet(ApiEndpoints.V1.Authors.GetById)]
