@@ -68,13 +68,15 @@ function AdminDashboard() {
             <CardDescription>Manage author profiles and associated books.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-             <p className="text-sm text-muted-foreground">CRUD operations for authors.</p>
-             {/* Add more specific action descriptions later */}
+             <p className="text-sm text-muted-foreground flex items-center"><FilePlusIcon className="w-4 h-4 mr-2" /> Create new authors</p>
+             <p className="text-sm text-muted-foreground flex items-center"><PencilIcon className="w-4 h-4 mr-2" /> Edit author details and royalty rates</p>
+             <p className="text-sm text-muted-foreground flex items-center"><TrashIcon className="w-4 h-4 mr-2" /> Delete authors</p>
+             <p className="text-sm text-muted-foreground flex items-center"><ViewIcon className="w-4 h-4 mr-2" /> View all authors</p>
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" asChild>
               <Link to="/admin/create-author">
-                Create Author
+                <FilePlusIcon className="w-4 h-4 mr-2" /> Create Author
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
@@ -92,13 +94,15 @@ function AdminDashboard() {
             <CardDescription>Manage artist profiles and associated covers.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-             <p className="text-sm text-muted-foreground">CRUD operations for artists.</p>
-             {/* Add more specific action descriptions later */}
+             <p className="text-sm text-muted-foreground flex items-center"><FilePlusIcon className="w-4 h-4 mr-2" /> Create new cover artists</p>
+             <p className="text-sm text-muted-foreground flex items-center"><PencilIcon className="w-4 h-4 mr-2" /> Edit artist details and portfolio links</p>
+             <p className="text-sm text-muted-foreground flex items-center"><TrashIcon className="w-4 h-4 mr-2" /> Delete artists</p>
+             <p className="text-sm text-muted-foreground flex items-center"><ViewIcon className="w-4 h-4 mr-2" /> View all cover artists</p>
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" asChild>
               <Link to="/admin/create-artist">
-                Create Artist
+                <FilePlusIcon className="w-4 h-4 mr-2" /> Create Artist
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
