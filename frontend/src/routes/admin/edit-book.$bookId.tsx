@@ -126,8 +126,9 @@ function EditBookPage() {
       return updateBook(bookId, payload)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['book', bookId] })
-      queryClient.invalidateQueries({ queryKey: ['books'] })
+      // Ensure all relevant queries are invalidated with proper configuration
+      queryClient.invalidateQueries({ queryKey: ['book', bookId], refetchType: 'all' })
+      queryClient.invalidateQueries({ queryKey: ['books'], refetchType: 'all' })
       navigate({ to: '/admin/manage-books' })
     }
   })

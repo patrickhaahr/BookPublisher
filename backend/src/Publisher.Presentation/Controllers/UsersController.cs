@@ -12,10 +12,10 @@ using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
 [ApiController]
 public class UsersController(ISender _sender) : ControllerBase
 {
+    [Authorize(Roles = "Admin")]
     [HttpGet(ApiEndpoints.V1.Users.GetAll)]
     public async Task<IActionResult> GetUsers(
         [FromQuery] int page = 1, 
@@ -26,6 +26,7 @@ public class UsersController(ISender _sender) : ControllerBase
         return Ok(await _sender.Send(new GetUsersQuery(page, pageSize, search), token));
     }
 
+    [Authorize]
     [HttpGet(ApiEndpoints.V1.Users.GetById)]
     public async Task<IActionResult> GetUserById(
         [FromRoute] Guid id, CancellationToken token)
@@ -33,13 +34,7 @@ public class UsersController(ISender _sender) : ControllerBase
         return Ok(await _sender.Send(new GetUserByIdQuery(id), token));
     }
 
-    [HttpPost(ApiEndpoints.V1.Users.Create)]
-    public async Task<IActionResult> CreateUser(
-        [FromBody] CreateUserCommand command, CancellationToken token)
-    {
-        return Ok(await _sender.Send(command, token));
-    }
-
+    [Authorize]
     [HttpPut(ApiEndpoints.V1.Users.Update)]
     public async Task<IActionResult> UpdateUser(
         [FromRoute] Guid id, [FromBody] UpdateUserRequest request, CancellationToken token)
@@ -48,6 +43,7 @@ public class UsersController(ISender _sender) : ControllerBase
         return Ok(await _sender.Send(command, token));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPut(ApiEndpoints.V1.Users.UpdateRole)]
     public async Task<IActionResult> UpdateUserRole(
         [FromRoute] Guid id, [FromBody] UpdateUserRoleRequest request, CancellationToken token)
@@ -56,6 +52,7 @@ public class UsersController(ISender _sender) : ControllerBase
         return Ok(await _sender.Send(command, token));
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete(ApiEndpoints.V1.Users.Delete)]
     public async Task<IActionResult> DeleteUser(
         [FromRoute] Guid id, CancellationToken token)

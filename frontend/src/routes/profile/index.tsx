@@ -25,8 +25,9 @@ function Profile() {
     queryKey: ['profile', userId],
     queryFn: () => getUserProfile(userId),
     enabled: !!userId && isAuthenticated,
-    staleTime: 1000 * 60 * 5, // Store cached data for 5 minutes
-    gcTime: 1000 * 60 * 5, // Remove unused cached data after 5 minutes
+    staleTime: 0, // Always consider data stale so it gets refetched when returning to the page
+    gcTime: 1000 * 60 * 5, // Keep the cached data for 5 minutes after it's unused
+    refetchOnMount: true, // Refetch when component mounts
   })
 
   if (!isAuthenticated) {
