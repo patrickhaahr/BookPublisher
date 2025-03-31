@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as React from 'react'
 import { checkUserRoleFromToken } from '@/lib/authUtils'
 
@@ -41,6 +41,7 @@ interface EditArtistFormValues {
 function EditArtist() {
   const { artistPersonId } = Route.useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   
   // Fetch artist data
   const { data: artist, isLoading, isError, error } = useQuery<Artist>({
@@ -88,6 +89,9 @@ function EditArtist() {
     mutationFn: updateArtist,
     onSuccess: (data) => {
       console.log("Artist updated successfully:", data);
+      // Invalidate both the single artist query and the artists list query
+      queryClient.invalidateQueries({ queryKey: ['artist', artistPersonId], refetchType: 'all' });
+      queryClient.invalidateQueries({ queryKey: ['artists'], refetchType: 'all' });
       alert(`Artist "${data.firstName} ${data.lastName}" updated successfully!`);
       navigate({ to: '/admin/manage-artists' });
     },

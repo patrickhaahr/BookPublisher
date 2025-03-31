@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as React from 'react'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -47,6 +47,7 @@ function EditProfile() {
   const { userId } = Route.useParams();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const queryClient = useQueryClient();
   
   // Fetch user profile data
   const { data: profile, isLoading, isError, error } = useQuery<UserProfile>({
@@ -110,6 +111,8 @@ function EditProfile() {
     }) => updateUser(userId, userData),
     onSuccess: (data) => {
       console.log("Profile updated successfully:", data);
+      // Invalidate profile query cache to force a refetch when returning to profile page
+      queryClient.invalidateQueries({ queryKey: ['profile', userId] });
       navigate({ to: '/profile' });
     },
     onError: (error) => {

@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, redirect } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import * as React from 'react'
 import { checkUserRoleFromToken } from '@/lib/authUtils'
 
@@ -41,6 +41,7 @@ interface EditAuthorFormValues {
 function EditAuthor() {
   const { authorPersonId } = Route.useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   
   // Fetch author data
   const { data: author, isLoading, isError, error } = useQuery<Author>({
@@ -88,6 +89,9 @@ function EditAuthor() {
     mutationFn: updateAuthor,
     onSuccess: (data) => {
       console.log("Author updated successfully:", data);
+      // Invalidate both the single author query and the authors list query
+      queryClient.invalidateQueries({ queryKey: ['author', authorPersonId], refetchType: 'all' });
+      queryClient.invalidateQueries({ queryKey: ['authors'], refetchType: 'all' });
       alert(`Author "${data.firstName} ${data.lastName}" updated successfully!`);
       navigate({ to: '/admin/manage-authors' });
     },

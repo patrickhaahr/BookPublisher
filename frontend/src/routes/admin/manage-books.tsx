@@ -71,8 +71,9 @@ function RouteComponent() {
     queryFn: async () => {
       return await getBooks(page, pageSize);
     },
-    staleTime: 1000 * 60 * 5, // Keep data fresh for 5 minutes
+    staleTime: 0, // Always consider data stale to force refetch on revisit
     gcTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
+    refetchOnMount: true, // Refetch when component mounts
   })
   
   const deleteMutation = useMutation({
