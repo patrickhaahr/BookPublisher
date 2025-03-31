@@ -42,10 +42,10 @@ public class UsersController(ISender _sender) : ControllerBase
 
     [HttpPut(ApiEndpoints.V1.Users.Update)]
     public async Task<IActionResult> UpdateUser(
-        [FromRoute] Guid id, [FromBody] UpdateUserCommand command, CancellationToken token)
+        [FromRoute] Guid id, [FromBody] UpdateUserRequest request, CancellationToken token)
     {
-        var updateCommand = command with { Id = id };
-        return Ok(await _sender.Send(updateCommand, token));
+        var command = new UpdateUserCommand(id, request.Username, request.Email, request.PasswordHash);
+        return Ok(await _sender.Send(command, token));
     }
 
     [HttpPut(ApiEndpoints.V1.Users.UpdateRole)]

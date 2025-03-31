@@ -26,6 +26,7 @@ import { Route as AdminManageArtistsImport } from './routes/admin/manage-artists
 import { Route as AdminCreateBookImport } from './routes/admin/create-book'
 import { Route as AdminCreateAuthorImport } from './routes/admin/create-author'
 import { Route as AdminCreateArtistImport } from './routes/admin/create-artist'
+import { Route as ProfileEditUserIdImport } from './routes/profile/edit.$userId'
 import { Route as AdminEditBookBookIdImport } from './routes/admin/edit-book.$bookId'
 import { Route as AdminEditAuthorAuthorPersonIdImport } from './routes/admin/edit-author.$authorPersonId'
 import { Route as AdminEditArtistArtistPersonIdImport } from './routes/admin/edit-artist.$artistPersonId'
@@ -119,6 +120,12 @@ const AdminCreateAuthorRoute = AdminCreateAuthorImport.update({
 const AdminCreateArtistRoute = AdminCreateArtistImport.update({
   id: '/admin/create-artist',
   path: '/admin/create-artist',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileEditUserIdRoute = ProfileEditUserIdImport.update({
+  id: '/profile/edit/$userId',
+  path: '/profile/edit/$userId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -272,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEditBookBookIdImport
       parentRoute: typeof rootRoute
     }
+    '/profile/edit/$userId': {
+      id: '/profile/edit/$userId'
+      path: '/profile/edit/$userId'
+      fullPath: '/profile/edit/$userId'
+      preLoaderRoute: typeof ProfileEditUserIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -296,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/admin/edit-artist/$artistPersonId': typeof AdminEditArtistArtistPersonIdRoute
   '/admin/edit-author/$authorPersonId': typeof AdminEditAuthorAuthorPersonIdRoute
   '/admin/edit-book/$bookId': typeof AdminEditBookBookIdRoute
+  '/profile/edit/$userId': typeof ProfileEditUserIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -317,6 +332,7 @@ export interface FileRoutesByTo {
   '/admin/edit-artist/$artistPersonId': typeof AdminEditArtistArtistPersonIdRoute
   '/admin/edit-author/$authorPersonId': typeof AdminEditAuthorAuthorPersonIdRoute
   '/admin/edit-book/$bookId': typeof AdminEditBookBookIdRoute
+  '/profile/edit/$userId': typeof ProfileEditUserIdRoute
 }
 
 export interface FileRoutesById {
@@ -339,6 +355,7 @@ export interface FileRoutesById {
   '/admin/edit-artist/$artistPersonId': typeof AdminEditArtistArtistPersonIdRoute
   '/admin/edit-author/$authorPersonId': typeof AdminEditAuthorAuthorPersonIdRoute
   '/admin/edit-book/$bookId': typeof AdminEditBookBookIdRoute
+  '/profile/edit/$userId': typeof ProfileEditUserIdRoute
 }
 
 export interface FileRouteTypes {
@@ -362,6 +379,7 @@ export interface FileRouteTypes {
     | '/admin/edit-artist/$artistPersonId'
     | '/admin/edit-author/$authorPersonId'
     | '/admin/edit-book/$bookId'
+    | '/profile/edit/$userId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -382,6 +400,7 @@ export interface FileRouteTypes {
     | '/admin/edit-artist/$artistPersonId'
     | '/admin/edit-author/$authorPersonId'
     | '/admin/edit-book/$bookId'
+    | '/profile/edit/$userId'
   id:
     | '__root__'
     | '/'
@@ -402,6 +421,7 @@ export interface FileRouteTypes {
     | '/admin/edit-artist/$artistPersonId'
     | '/admin/edit-author/$authorPersonId'
     | '/admin/edit-book/$bookId'
+    | '/profile/edit/$userId'
   fileRoutesById: FileRoutesById
 }
 
@@ -424,6 +444,7 @@ export interface RootRouteChildren {
   AdminEditArtistArtistPersonIdRoute: typeof AdminEditArtistArtistPersonIdRoute
   AdminEditAuthorAuthorPersonIdRoute: typeof AdminEditAuthorAuthorPersonIdRoute
   AdminEditBookBookIdRoute: typeof AdminEditBookBookIdRoute
+  ProfileEditUserIdRoute: typeof ProfileEditUserIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -445,6 +466,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminEditArtistArtistPersonIdRoute: AdminEditArtistArtistPersonIdRoute,
   AdminEditAuthorAuthorPersonIdRoute: AdminEditAuthorAuthorPersonIdRoute,
   AdminEditBookBookIdRoute: AdminEditBookBookIdRoute,
+  ProfileEditUserIdRoute: ProfileEditUserIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -474,7 +496,8 @@ export const routeTree = rootRoute
         "/profile/",
         "/admin/edit-artist/$artistPersonId",
         "/admin/edit-author/$authorPersonId",
-        "/admin/edit-book/$bookId"
+        "/admin/edit-book/$bookId",
+        "/profile/edit/$userId"
       ]
     },
     "/": {
@@ -530,6 +553,9 @@ export const routeTree = rootRoute
     },
     "/admin/edit-book/$bookId": {
       "filePath": "admin/edit-book.$bookId.tsx"
+    },
+    "/profile/edit/$userId": {
+      "filePath": "profile/edit.$userId.tsx"
     }
   }
 }
