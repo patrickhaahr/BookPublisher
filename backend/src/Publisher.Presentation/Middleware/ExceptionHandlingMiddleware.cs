@@ -3,6 +3,9 @@ using System.Text.Json;
 using FluentValidation;
 using Publisher.Contracts.Responses;
 using Publisher.Domain.Exceptions;
+using ValidationException = Publisher.Domain.Exceptions.ValidationException;
+using DomainValidationError = Publisher.Domain.Exceptions.ValidationError;
+using ResponseValidationError = Publisher.Contracts.Responses.ValidationError;
 
 namespace Publisher.Presentation.Middleware;
 
@@ -27,11 +30,19 @@ public class ExceptionHandlingMiddleware(RequestDelegate _next)
 
         var result = exception switch
         {
-            ValidationException validationException => new ErrorResponse
+            // Handle FluentValidation exceptions
+            FluentValidation.ValidationException fluentValidationEx => new ErrorResponse
             {
                 Message = "Validation failed",
                 StatusCode = (int)HttpStatusCode.BadRequest,
-                Errors = validationException.Errors.Select(e => new ValidationError { PropertyName = e.PropertyName, ErrorMessage = e.ErrorMessage }).ToList()
+                Errors = fluentValidationEx.Errors.Select(e => new ResponseValidationError { PropertyName = e.PropertyName, ErrorMessage = e.ErrorMessage }).ToList()
+            },
+            // Handle our custom ValidationException
+            ValidationException domainValidationEx => new ErrorResponse
+            {
+                Message = domainValidationEx.Message,
+                StatusCode = (int)HttpStatusCode.BadRequest,
+                Errors = domainValidationEx.Errors.Select(e => new ResponseValidationError { PropertyName = e.PropertyName, ErrorMessage = e.ErrorMessage }).ToList()
             },
             NotFoundException notFoundException => new ErrorResponse
             {

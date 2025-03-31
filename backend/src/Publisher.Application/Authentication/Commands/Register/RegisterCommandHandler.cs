@@ -2,6 +2,7 @@ using MediatR;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Interfaces.Authentication;
 using Publisher.Domain.Entities;
+using Publisher.Domain.Exceptions;
 
 namespace Publisher.Application.Authentication.Commands.Register;
 
@@ -10,6 +11,19 @@ public class RegisterCommandHandler(IUserRepository userRepository, IPasswordHas
 {
     public async Task<AuthenticationResult> Handle(RegisterCommand request, CancellationToken token)
     {
+        // Check if username is already taken
+        var existingUsername = await userRepository.GetUserByUsernameAsync(request.Username, token);
+        if (existingUsername is not null)
+        {
+            throw new ValidationException("Username", "Username is already taken.");
+        }
+
+        // Check if email is already taken
+        var existingEmail = await userRepository.GetUserByEmailAsync(request.Email, token);
+        if (existingEmail is not null)
+        {
+            throw new ValidationException("Email", "Email address is already taken.");
+        }
 
         var user = new User
         {
