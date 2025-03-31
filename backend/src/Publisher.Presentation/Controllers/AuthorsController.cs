@@ -7,6 +7,7 @@ using Publisher.Application.Authors.Queries.GetAuthorById;
 using Publisher.Application.Authors.Queries.GetAuthors;
 using Publisher.Contracts.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Publisher.Contracts.Requests;
 namespace Publisher.Presentation.Controllers;
 
 [Authorize(Roles = "Admin")]
@@ -31,8 +32,15 @@ public class AuthorsController(ISender _sender) : ControllerBase
 
     [HttpPost(ApiEndpoints.V1.Authors.Create)]
     public async Task<IActionResult> CreateAuthor(
-        [FromBody] CreateAuthorCommand command, CancellationToken token)
-    {
+        [FromBody] CreateAuthorRequest request, CancellationToken token)
+    {   
+        var command = new CreateAuthorCommand(
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.Phone ?? string.Empty,
+            request.RoyaltyRate
+        );
         return Ok(await _sender.Send(command, token));
     }
 

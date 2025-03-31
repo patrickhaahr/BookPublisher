@@ -1,5 +1,5 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Artists.Commands.CreateArtist;
 
@@ -8,4 +8,4 @@ public record CreateArtistCommand(
     string LastName,
     string Email,
     string? Phone,
-    string? PortfolioUrl) : IRequest<Artist>; 
+    string? PortfolioUrl) : IRequest<ArtistResponse>; 

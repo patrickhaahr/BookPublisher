@@ -1,13 +1,14 @@
 using MediatR;
 using Publisher.Application.Interfaces;
+using Publisher.Contracts.Responses;
 using Publisher.Domain.Entities;
 
 namespace Publisher.Application.Artists.Commands.CreateArtist;
 
 public class CreateArtistCommandHandler(IArtistRepository _artistRepository)
-    : IRequestHandler<CreateArtistCommand, Artist>
+    : IRequestHandler<CreateArtistCommand, ArtistResponse>
 {
-    public async Task<Artist> Handle(CreateArtistCommand command, CancellationToken token)
+    public async Task<ArtistResponse> Handle(CreateArtistCommand command, CancellationToken token)
     {
         var artist = new Artist
         {
@@ -18,6 +19,15 @@ public class CreateArtistCommandHandler(IArtistRepository _artistRepository)
             Phone = command.Phone,
             PortfolioUrl = command.PortfolioUrl
         };
-        return await _artistRepository.CreateArtistAsync(artist);
+        await _artistRepository.CreateArtistAsync(artist, token);
+
+        return new ArtistResponse(
+            artist.PersonId,
+            artist.FirstName,
+            artist.LastName,
+            artist.Email,
+            artist.Phone ?? string.Empty,
+            artist.PortfolioUrl ?? string.Empty
+        );
     }
 } 

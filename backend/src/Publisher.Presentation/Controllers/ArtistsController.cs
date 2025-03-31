@@ -7,6 +7,7 @@ using Publisher.Application.Artists.Queries.GetArtistById;
 using Publisher.Application.Artists.Queries.GetArtists;
 using Publisher.Contracts.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Publisher.Contracts.Requests;
 namespace Publisher.Presentation.Controllers;
 
 [Authorize(Roles = "Admin")]
@@ -31,8 +32,15 @@ public class ArtistsController(ISender _sender) : ControllerBase
 
     [HttpPost(ApiEndpoints.V1.Artists.Create)]
     public async Task<IActionResult> CreateArtist(
-        [FromBody] CreateArtistCommand command, CancellationToken token)
+        [FromBody] CreateArtistRequest request, CancellationToken token)
     {
+        var command = new CreateArtistCommand(
+            request.FirstName,
+            request.LastName,
+            request.Email,
+            request.Phone ?? string.Empty,
+            request.PortfolioUrl ?? string.Empty
+        );
         return Ok(await _sender.Send(command, token));
     }
 
