@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Publisher.Application.Users.Commands.CreateUser;
 using Publisher.Application.Users.Commands.DeleteUser;
@@ -9,6 +10,7 @@ using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class UsersController(ISender _sender) : ControllerBase
 {

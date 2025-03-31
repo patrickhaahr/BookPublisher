@@ -6,9 +6,10 @@ using Publisher.Application.Authors.Commands.UpdateAuthor;
 using Publisher.Application.Authors.Queries.GetAuthorById;
 using Publisher.Application.Authors.Queries.GetAuthors;
 using Publisher.Contracts.Responses;
-
+using Microsoft.AspNetCore.Authorization;
 namespace Publisher.Presentation.Controllers;
 
+[Authorize(Roles = "Admin")]
 [ApiController]
 public class AuthorsController(ISender _sender) : ControllerBase
 {
