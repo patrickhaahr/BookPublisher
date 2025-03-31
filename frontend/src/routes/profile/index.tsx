@@ -1,12 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { useQuery } from '@tanstack/react-query'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { NotAuthenticatedCard } from '@/components/auth/not-authenticated-card'
 import { getUserProfile } from '@/api'
 import { UserProfile } from '@/types/user'
+import { EditIcon } from 'lucide-react'
 
 export const Route = createFileRoute('/profile/')({
   component: Profile,
@@ -79,6 +81,18 @@ function Profile() {
           </p>
         </div>
       </CardContent>
+      <CardFooter className="pt-2 pb-6">
+        <Button 
+          variant="outline" 
+          className="w-full flex items-center justify-center" 
+          asChild
+        >
+          <a href={`/profile/edit/${profile.userId}`}>
+            <EditIcon className="w-4 h-4 mr-2" />
+            Edit Profile
+          </a>
+        </Button>
+      </CardFooter>
     </Card>
   )
 }

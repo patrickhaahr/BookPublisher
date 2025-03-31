@@ -116,3 +116,38 @@ export const updateUserRole = async (userId: string, role: string): Promise<User
 
   return await response.json();
 };
+
+/**
+ * Updates user profile information
+ */
+export const updateUser = async (userId: string, userData: {
+  username?: string;
+  email?: string;
+  passwordHash?: string;
+}): Promise<User> => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) {
+    throw new Error('Authentication token not found');
+  }
+
+  const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    let errorData;
+    try {
+      errorData = await response.json();
+    } catch (e) {
+      throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+    }
+    throw new Error(errorData?.title || errorData?.message || `HTTP error ${response.status}`);
+  }
+
+  return await response.json();
+};
