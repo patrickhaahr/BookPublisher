@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { checkUserRoleFromToken } from '@/lib/authUtils'
@@ -65,6 +65,7 @@ function RouteComponent() {
   const pageSize = 10
   
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   
   const { data: authorsResponse, isLoading, isError } = useQuery<AuthorsResponse>({
     queryKey: ['authors', page, pageSize, searchQuery],
@@ -182,6 +183,12 @@ function RouteComponent() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => navigate({ to: '/admin/edit-author/$authorPersonId', params: { authorPersonId: author.authorPersonId } })}
+                              >
+                                Edit
+                              </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
                                 className="text-destructive focus:text-destructive"
