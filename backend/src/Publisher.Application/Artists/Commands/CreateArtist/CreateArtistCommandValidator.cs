@@ -18,9 +18,11 @@ public class CreateArtistCommandValidator : AbstractValidator<CreateArtistComman
             .NotEmpty()
             .EmailAddress()
             .MaximumLength(100);
+        
+        RuleFor(c => c.Phone)
+            .MaximumLength(15);
 
         RuleFor(c => c.PortfolioUrl)
-            .NotEmpty()
             .Must(url => Uri.TryCreate(url, UriKind.Absolute, out _))
             .WithMessage("Portfolio URL must be a valid URL");
     }
