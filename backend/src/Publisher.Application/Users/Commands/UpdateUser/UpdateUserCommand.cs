@@ -1,11 +1,10 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.Users.Commands.UpdateUser;
 
 public record UpdateUserCommand(
     Guid Id,
-    string Username,
-    string Email,
-    string PasswordHash,
-    string Role) : IRequest<User>; 
+    string? Username,
+    string? Email,
+    string? PasswordHash) : IRequest<UpdateUserResponse>; 
