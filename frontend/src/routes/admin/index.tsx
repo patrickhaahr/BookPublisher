@@ -48,7 +48,6 @@ function AdminDashboard() {
             <p className="text-sm text-muted-foreground flex items-center"><ViewIcon className="w-4 h-4 mr-2" /> View all books</p>
           </CardContent>
           <CardFooter className="flex gap-2">
-            {/* These buttons will later link to specific routes */}
             <Button size="sm" asChild>
               <Link to="/admin/create-book">
                 <FilePlusIcon className="w-4 h-4 mr-2" /> Create Book
@@ -73,7 +72,11 @@ function AdminDashboard() {
              {/* Add more specific action descriptions later */}
           </CardContent>
           <CardFooter className="flex gap-2">
-            <Button size="sm" disabled>Create Author</Button>
+            <Button size="sm" asChild>
+              <Link to="/admin/create-author">
+                Create Author
+              </Link>
+            </Button>
             <Button size="sm" variant="outline" asChild>
               <Link to="/admin/manage-authors">
                 Manage Authors
@@ -93,7 +96,11 @@ function AdminDashboard() {
              {/* Add more specific action descriptions later */}
           </CardContent>
           <CardFooter className="flex gap-2">
-            <Button size="sm" disabled>Create Artist</Button>
+            <Button size="sm" asChild>
+              <Link to="/admin/create-artist">
+                Create Artist
+              </Link>
+            </Button>
             <Button size="sm" variant="outline" asChild>
               <Link to="/admin/manage-artists">
                 Manage Artists

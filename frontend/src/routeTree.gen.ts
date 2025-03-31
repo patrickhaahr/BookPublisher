@@ -24,6 +24,8 @@ import { Route as AdminManageBooksImport } from './routes/admin/manage-books'
 import { Route as AdminManageAuthorsImport } from './routes/admin/manage-authors'
 import { Route as AdminManageArtistsImport } from './routes/admin/manage-artists'
 import { Route as AdminCreateBookImport } from './routes/admin/create-book'
+import { Route as AdminCreateAuthorImport } from './routes/admin/create-author'
+import { Route as AdminCreateArtistImport } from './routes/admin/create-artist'
 import { Route as AdminEditBookBookIdImport } from './routes/admin/edit-book.$bookId'
 
 // Create/Update Routes
@@ -106,6 +108,18 @@ const AdminCreateBookRoute = AdminCreateBookImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminCreateAuthorRoute = AdminCreateAuthorImport.update({
+  id: '/admin/create-author',
+  path: '/admin/create-author',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminCreateArtistRoute = AdminCreateArtistImport.update({
+  id: '/admin/create-artist',
+  path: '/admin/create-artist',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AdminEditBookBookIdRoute = AdminEditBookBookIdImport.update({
   id: '/admin/edit-book/$bookId',
   path: '/admin/edit-book/$bookId',
@@ -128,6 +142,20 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/create-artist': {
+      id: '/admin/create-artist'
+      path: '/admin/create-artist'
+      fullPath: '/admin/create-artist'
+      preLoaderRoute: typeof AdminCreateArtistImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/create-author': {
+      id: '/admin/create-author'
+      path: '/admin/create-author'
+      fullPath: '/admin/create-author'
+      preLoaderRoute: typeof AdminCreateAuthorImport
       parentRoute: typeof rootRoute
     }
     '/admin/create-book': {
@@ -222,6 +250,8 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/create-artist': typeof AdminCreateArtistRoute
+  '/admin/create-author': typeof AdminCreateAuthorRoute
   '/admin/create-book': typeof AdminCreateBookRoute
   '/admin/manage-artists': typeof AdminManageArtistsRoute
   '/admin/manage-authors': typeof AdminManageAuthorsRoute
@@ -239,6 +269,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/create-artist': typeof AdminCreateArtistRoute
+  '/admin/create-author': typeof AdminCreateAuthorRoute
   '/admin/create-book': typeof AdminCreateBookRoute
   '/admin/manage-artists': typeof AdminManageArtistsRoute
   '/admin/manage-authors': typeof AdminManageAuthorsRoute
@@ -257,6 +289,8 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin/create-artist': typeof AdminCreateArtistRoute
+  '/admin/create-author': typeof AdminCreateAuthorRoute
   '/admin/create-book': typeof AdminCreateBookRoute
   '/admin/manage-artists': typeof AdminManageArtistsRoute
   '/admin/manage-authors': typeof AdminManageAuthorsRoute
@@ -276,6 +310,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin/create-artist'
+    | '/admin/create-author'
     | '/admin/create-book'
     | '/admin/manage-artists'
     | '/admin/manage-authors'
@@ -292,6 +328,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/admin/create-artist'
+    | '/admin/create-author'
     | '/admin/create-book'
     | '/admin/manage-artists'
     | '/admin/manage-authors'
@@ -308,6 +346,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/admin/create-artist'
+    | '/admin/create-author'
     | '/admin/create-book'
     | '/admin/manage-artists'
     | '/admin/manage-authors'
@@ -326,6 +366,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminCreateArtistRoute: typeof AdminCreateArtistRoute
+  AdminCreateAuthorRoute: typeof AdminCreateAuthorRoute
   AdminCreateBookRoute: typeof AdminCreateBookRoute
   AdminManageArtistsRoute: typeof AdminManageArtistsRoute
   AdminManageAuthorsRoute: typeof AdminManageAuthorsRoute
@@ -343,6 +385,8 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminCreateArtistRoute: AdminCreateArtistRoute,
+  AdminCreateAuthorRoute: AdminCreateAuthorRoute,
   AdminCreateBookRoute: AdminCreateBookRoute,
   AdminManageArtistsRoute: AdminManageArtistsRoute,
   AdminManageAuthorsRoute: AdminManageAuthorsRoute,
@@ -369,6 +413,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/admin/create-artist",
+        "/admin/create-author",
         "/admin/create-book",
         "/admin/manage-artists",
         "/admin/manage-authors",
@@ -388,6 +434,12 @@ export const routeTree = rootRoute
     },
     "/about": {
       "filePath": "about.tsx"
+    },
+    "/admin/create-artist": {
+      "filePath": "admin/create-artist.tsx"
+    },
+    "/admin/create-author": {
+      "filePath": "admin/create-author.tsx"
     },
     "/admin/create-book": {
       "filePath": "admin/create-book.tsx"
