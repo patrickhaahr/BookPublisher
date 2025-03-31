@@ -69,6 +69,7 @@ public static class ApiEndpoints
             public const string Create = Base;
             public const string Update = $"{Base}/{{id}}";
             public const string Delete = $"{Base}/{{id}}";
+            public const string UpdateRole = $"{Base}/{{id}}/role";
             public const string GetUserBookInteractions = $"{Base}/{{id}}/book-interactions";
         }
 

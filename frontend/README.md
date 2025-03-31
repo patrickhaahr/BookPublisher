@@ -19,8 +19,6 @@ IsLoading - executing for the first time
 
 // TODO
 Implement search functionality (replace current with searchparams?)
-ADMIN PANEL: CRUD BOOKS, CRUD AUTHOR, CRUD ARTISTS
-    - implement pagination for author and artists
 
 hover over books and it will prefetch - faster experience
 

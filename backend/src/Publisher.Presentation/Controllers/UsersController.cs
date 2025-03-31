@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Publisher.Application.Users.Commands.CreateUser;
 using Publisher.Application.Users.Commands.DeleteUser;
 using Publisher.Application.Users.Commands.UpdateUser;
+using Publisher.Application.Users.Commands.UpdateUserRole;
 using Publisher.Application.Users.Queries.GetUserById;
 using Publisher.Application.Users.Queries.GetUsers;
+using Publisher.Contracts.Requests;
 using Publisher.Contracts.Responses;
 
 namespace Publisher.Presentation.Controllers;
@@ -44,6 +46,14 @@ public class UsersController(ISender _sender) : ControllerBase
     {
         var updateCommand = command with { Id = id };
         return Ok(await _sender.Send(updateCommand, token));
+    }
+
+    [HttpPut(ApiEndpoints.V1.Users.UpdateRole)]
+    public async Task<IActionResult> UpdateUserRole(
+        [FromRoute] Guid id, [FromBody] UpdateUserRoleRequest request, CancellationToken token)
+    {
+        var command = new UpdateUserRoleCommand(id, request.Role);
+        return Ok(await _sender.Send(command, token));
     }
 
     [HttpDelete(ApiEndpoints.V1.Users.Delete)]
