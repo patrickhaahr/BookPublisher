@@ -120,8 +120,9 @@ function AdminDashboard() {
             <CardDescription>View and manage user accounts and roles.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-             <p className="text-sm text-muted-foreground">View users, manage roles.</p>
-             {/* Add more specific action descriptions later */}
+             <p className="text-sm text-muted-foreground flex items-center"><ViewIcon className="w-4 h-4 mr-2" /> View all registered users</p>
+             <p className="text-sm text-muted-foreground flex items-center"><PencilIcon className="w-4 h-4 mr-2" /> Modify user roles and permissions</p>
+             <p className="text-sm text-muted-foreground flex items-center"><TrashIcon className="w-4 h-4 mr-2" /> Delete user accounts</p>
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" variant="outline" asChild>
