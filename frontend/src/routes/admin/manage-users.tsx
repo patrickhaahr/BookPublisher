@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { checkUserRoleFromToken } from '@/lib/authUtils'
+import { checkUserRoleFromToken, getUserIdFromToken } from '@/lib/authUtils'
 import {
   Table,
   TableBody,
@@ -72,6 +72,8 @@ function RouteComponent() {
   const [selectedRole, setSelectedRole] = useState<string>('')
   const [page, setPage] = useState(1)
   const pageSize = 10
+  
+  const currentUserId = getUserIdFromToken()
   
   const queryClient = useQueryClient()
   
@@ -202,18 +204,26 @@ function RouteComponent() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => {
-                                setUserToEdit(user);
-                                setSelectedRole(user.role);
-                              }}>
-                                Edit Role
+                              <DropdownMenuItem 
+                                onClick={() => {
+                                  setUserToEdit(user);
+                                  setSelectedRole(user.role);
+                                }}
+                                disabled={currentUserId === user.userId}
+                              >
+                                {currentUserId === user.userId ? 
+                                  "Cannot edit own role" : 
+                                  "Edit Role"}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
                                 className="text-destructive focus:text-destructive"
                                 onClick={() => setUserToDelete(user)}
+                                disabled={currentUserId === user.userId}
                               >
-                                Delete
+                                {currentUserId === user.userId ? 
+                                  "Cannot delete yourself" : 
+                                  "Delete"}
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
@@ -295,38 +305,48 @@ function RouteComponent() {
           <AlertDialogHeader>
             <AlertDialogTitle>Edit User Role</AlertDialogTitle>
             <AlertDialogDescription>
-              Change the role for user <span className="font-medium">{userToEdit?.username}</span>.
+              {currentUserId === userToEdit?.userId ? (
+                <div className="text-destructive">
+                  You cannot modify your own role. This is for security reasons.
+                </div>
+              ) : (
+                <>Change the role for user <span className="font-medium">{userToEdit?.username}</span>.</>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="py-4">
-            <Select value={selectedRole} onValueChange={setSelectedRole}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="User">User</SelectItem>
-                <SelectItem value="Admin">Admin</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {currentUserId !== userToEdit?.userId && (
+            <div className="py-4">
+              <Select value={selectedRole} onValueChange={setSelectedRole}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="User">User</SelectItem>
+                  <SelectItem value="Admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => userToEdit && updateRoleMutation.mutate({
-                userId: userToEdit.userId,
-                role: selectedRole
-              })}
-              disabled={updateRoleMutation.isPending || selectedRole === userToEdit?.role}
-            >
-              {updateRoleMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                "Save Changes"
-              )}
-            </AlertDialogAction>
+            {currentUserId !== userToEdit?.userId && (
+              <AlertDialogAction
+                onClick={() => userToEdit && updateRoleMutation.mutate({
+                  userId: userToEdit.userId,
+                  role: selectedRole
+                })}
+                disabled={updateRoleMutation.isPending || selectedRole === userToEdit?.role}
+              >
+                {updateRoleMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </AlertDialogAction>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

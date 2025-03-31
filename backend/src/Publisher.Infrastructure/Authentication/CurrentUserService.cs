@@ -13,5 +13,7 @@ public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICur
             throw new UnauthorizedAccessException("User not authenticated.");
         return userId;
     }
+    
+    public string? Role => httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 }
 
