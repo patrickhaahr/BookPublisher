@@ -17,18 +17,10 @@ public class BookRepository(AppDbContext _context) : IBookRepository
         string? year = null,
         CancellationToken token = default)
     {
-        // Base query
-        var query = _context.Books
-            .Include(b => b.Covers)
-            .Include(b => b.BookPersons)
-                .ThenInclude(bp => bp.Author)
-            .Include(b => b.BookGenres)
-                .ThenInclude(bg => bg.Genre)
-            .Include(b => b.BookMediums)
-                .ThenInclude(bm => bm.Medium)
-            .AsQueryable();
-
-        // Apply filters that EF Core can translate to SQL - if provided
+        // Start with the base query that includes all necessary related entities
+        var query = BookRepositoryCompiledQueries.GetBooksWithIncludes(_context);
+        
+        // Apply filters
         if (!string.IsNullOrEmpty(title))
             query = query.Where(b => EF.Functions.Like(b.Title, $"%{title}%")); // Case-insensitive LIKE
 
@@ -47,15 +39,16 @@ public class BookRepository(AppDbContext _context) : IBookRepository
         if (!string.IsNullOrEmpty(year))
             query = query.Where(b => EF.Functions.Like(b.PublishDate.Year.ToString(), $"{year}%"));
 
-        // Get the total count of books
-        var totalCount = await query.CountAsync(token);
+        // Order the query
+        query = query.OrderBy(b => b.Title);
+        
+        // Get the total count of books using our compiled count function
+        var totalCount = await BookRepositoryCompiledQueries.CountBooksAsync(
+            _context, title, author, genre, medium, year);
 
-        // Fetch the books for the current page
-        var books = await query
-            .OrderBy(b => b.Title) // Order by title
-            .Skip((page - 1) * pageSize) // Ensures only the requested page is returned
-            .Take(pageSize) // Take only the requested number of records
-            .ToListAsync(token);
+        // Apply paging and get the final results
+        var pagedQuery = BookRepositoryCompiledQueries.ApplyPaging(query, (page - 1) * pageSize, pageSize);
+        var books = await pagedQuery.ToListAsync(token);
 
         return (books, totalCount);
     }
