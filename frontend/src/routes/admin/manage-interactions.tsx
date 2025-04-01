@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   fetchUserBookInteractions, 
@@ -35,8 +35,22 @@ import { Label } from '../../components/ui/label';
 import { Checkbox } from '../../components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { AlertCircle, Trash2, Edit, Star } from 'lucide-react';
+import { checkUserRoleFromToken } from '../../lib/authUtils';
 
 export const Route = createFileRoute('/admin/manage-interactions')({
+  beforeLoad: async ({ location }) => {
+    const userRole = checkUserRoleFromToken();
+    const isAdmin = userRole === 'Admin';
+
+    if (!isAdmin) {
+      throw redirect({
+        to: '/auth/login',
+        search: {
+          redirect: location.pathname + location.search,
+        },
+      });
+    }
+  },
   component: ManageInteractionsPage,
 });
 

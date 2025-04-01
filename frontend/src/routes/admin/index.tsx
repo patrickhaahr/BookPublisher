@@ -133,6 +133,26 @@ function AdminDashboard() {
           </CardFooter>
         </Card>
 
+        {/* User Interactions Management Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle>User Interactions</CardTitle>
+            <CardDescription>Monitor and manage user ratings, favorites, and reading statuses.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+          <p className="text-sm text-muted-foreground flex items-center"><ViewIcon className="w-4 h-4 mr-2" /> View all user engagement</p>
+            <p className="text-sm text-muted-foreground flex items-center"><PencilIcon className="w-4 h-4 mr-2" /> Edit reading statuses</p>
+            <p className="text-sm text-muted-foreground flex items-center"><TrashIcon className="w-4 h-4 mr-2" /> Delete inappropriate interactions</p>
+          </CardContent>
+          <CardFooter className="flex gap-2">
+            <Button size="sm" variant="outline" asChild>
+              <Link to="/admin/manage-interactions">
+                Manage Interactions
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+
         {/* Add more cards for other sections like Genres, Covers etc. if needed */}
 
       </div>

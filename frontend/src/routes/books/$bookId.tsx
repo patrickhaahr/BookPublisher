@@ -31,6 +31,7 @@ function BookId() {
   const { bookId } = useParams({ from: '/books/$bookId' })
   const queryClient = useQueryClient()
   const userId = getUserIdFromToken()
+  const isLoggedIn = !!userId && userId !== 'undefined' && userId !== 'null'
 
   // Fetch book details
   const { data: book, isLoading: isLoadingBook, error: bookError } = useQuery<BookDetails>({
@@ -49,16 +50,16 @@ function BookId() {
   } = useQuery({
     queryKey: ['bookInteraction', userId, bookId],
     queryFn: async () => {
-      if (!userId) return null;
+      if (!isLoggedIn) return null;
       // Try to get the interaction directly by userId and bookId
       try {
-        return await getUserBookInteractionByUserAndBook(userId, bookId);
+        return await getUserBookInteractionByUserAndBook(userId!, bookId);
       } catch (error) {
         console.error("Error fetching interaction:", error);
         return null;
       }
     },
-    enabled: !!userId && !!bookId, // Only run if user is logged in and bookId is available
+    enabled: isLoggedIn && !!bookId, // Only run if user is logged in and bookId is available
     staleTime: 0, // Always fetch fresh data
   })
 
@@ -94,17 +95,17 @@ function BookId() {
 
   // Refetch when component mounts or userId changes or bookId changes
   useEffect(() => {
-    if (userId && bookId) {
+    if (isLoggedIn && bookId) {
       refetchInteraction()
     }
-  }, [userId, bookId, refetchInteraction])
+  }, [userId, bookId, refetchInteraction, isLoggedIn])
 
   // Handle interaction updates
   const handleInteractionUpdate = async (data: Partial<UserBookInteraction>) => {
-    if (!userId) {
-      // Handle not logged in state - maybe show a login dialog
-      console.log('User not logged in')
-      return
+    if (!isLoggedIn) {
+      console.error('User not logged in or invalid user ID');
+      // Consider redirecting to login or showing a login dialog
+      return;
     }
 
     try {
@@ -116,7 +117,7 @@ function BookId() {
           ...data 
         })
         await createInteraction.mutateAsync({
-          userId,
+          userId: userId!,
           bookId,
           isFavorite: data.isFavorite ?? false,
           isSaved: data.isSaved ?? false,
