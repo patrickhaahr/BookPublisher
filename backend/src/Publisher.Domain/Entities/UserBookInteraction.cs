@@ -5,8 +5,8 @@ public class UserBookInteraction
     public Guid InteractionId { get; set; }
     public Guid UserId { get; set; }
     public Guid BookId { get; set; }
-    public bool IsFavorite { get; set; }
-    public bool IsSaved { get; set; }
+    public bool IsFavorite { get; set; } = false;
+    public bool IsSaved { get; set; } = false;
     public string? Status { get; set; }
     public int? Rating { get; set; }
         

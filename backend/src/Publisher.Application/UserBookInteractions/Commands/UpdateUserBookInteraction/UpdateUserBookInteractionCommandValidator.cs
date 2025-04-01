@@ -23,8 +23,28 @@ public class UpdateUserBookInteractionCommandValidator : AbstractValidator<Updat
 
         RuleFor(c => c.BookId)
             .NotEmpty()
-            .Must(Validation.IsValidGuid)
-            .MustAsync(async (bookId, token) => await _bookRepository.GetBookByIdAsync(bookId, token) is not null)
+            .MustAsync(async (bookId, token) => {
+                // If it's a Guid, check directly
+                if (bookId is Guid guidId)
+                {
+                    return await _bookRepository.GetBookByIdAsync(guidId, token) is not null;
+                }
+                
+                // If it's a string, try parsing as Guid first
+                var bookIdStr = bookId?.ToString();
+                if (string.IsNullOrEmpty(bookIdStr))
+                {
+                    return false;
+                }
+                
+                if (Guid.TryParse(bookIdStr, out var parsedGuid))
+                {
+                    return await _bookRepository.GetBookByIdAsync(parsedGuid, token) is not null;
+                }
+                
+                // Otherwise, treat as slug
+                return await _bookRepository.GetBookBySlugAsync(bookIdStr, token) is not null;
+            })
             .WithMessage("Book must exist in database");
 
         RuleFor(c => c.Status)

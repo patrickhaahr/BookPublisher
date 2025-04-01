@@ -11,12 +11,29 @@ public class UserBookInteractionRepository(AppDbContext _context) : IUserBookInt
         return await _context.UserBookInteractions.ToListAsync(token);
     }
 
+    public async Task<List<UserBookInteraction>> GetUserBookInteractionsByUserIdAsync(Guid userId, CancellationToken token = default)
+    {
+        return await _context.UserBookInteractions
+            .Include(ubi => ubi.User)
+            .Include(ubi => ubi.Book)
+            .Where(ubi => ubi.UserId == userId)
+            .ToListAsync(token);
+    }
+
     public async Task<UserBookInteraction?> GetUserBookInteractionByIdAsync(Guid id, CancellationToken token = default)
     {
         return await _context.UserBookInteractions
             .Include(ubi => ubi.User)
             .Include(ubi => ubi.Book)
             .FirstOrDefaultAsync(ubi => ubi.InteractionId == id, token);
+    }
+
+    public async Task<UserBookInteraction?> GetUserBookInteractionByUserAndBookAsync(Guid userId, Guid bookId, CancellationToken token = default)
+    {
+        return await _context.UserBookInteractions
+            .Include(ubi => ubi.User)
+            .Include(ubi => ubi.Book)
+            .FirstOrDefaultAsync(ubi => ubi.UserId == userId && ubi.BookId == bookId, token);
     }
 
     public async Task<UserBookInteraction> CreateUserBookInteractionAsync(UserBookInteraction interaction, CancellationToken token = default)

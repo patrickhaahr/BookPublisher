@@ -3,7 +3,8 @@ import {
   checkUserRoleFromToken, 
   isTokenExpired, 
   refreshAccessToken,
-  hasValidRefreshToken
+  hasValidRefreshToken,
+  getUserIdFromToken
 } from '../lib/authUtils';
 import { useMsal } from './authConfig';
 
@@ -69,9 +70,10 @@ export const useAuth = () => {
   }, [isRefreshing]);
 
   // Function to handle login
-  const login = useCallback((accessToken: string, refreshToken: string) => {
+  const login = useCallback((accessToken: string, refreshToken: string, userId: string) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
+    localStorage.setItem('userId', userId);
     
     // Reset last refresh time on manual login
     lastRefreshAttempt.current = 0;
@@ -85,6 +87,7 @@ export const useAuth = () => {
   const logout = useCallback(() => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
     setIsAuthenticated(false);
     setUserRole(null);
 
@@ -111,7 +114,7 @@ export const useAuth = () => {
 
     // Listen for storage changes
     const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === 'accessToken' || event.key === 'refreshToken') {
+      if (event.key === 'accessToken' || event.key === 'refreshToken' || event.key === 'userId') {
         checkAuth();
       }
     };
@@ -135,6 +138,7 @@ export const useAuth = () => {
     login, 
     logout, 
     isRefreshing,
-    hasMsalAccount
+    hasMsalAccount,
+    getUserId: getUserIdFromToken
   };
 }; 
