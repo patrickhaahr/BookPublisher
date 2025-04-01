@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react'
 
 export const Route = createRootRoute({
   component: () => {
-    const { mutate: logout } = useLogout();
-    const { isAuthenticated } = useAuth();
+    const { mutate: logout, isPending: isLoggingOut } = useLogout();
+    const { isAuthenticated, hasMsalAccount } = useAuth();
     const [forceUpdate, setForceUpdate] = useState(0);
 
     // Add a listener to force re-render when auth state changes
@@ -29,7 +29,16 @@ export const Route = createRootRoute({
       };
     }, []);
 
-    console.log('Root component rendering, authenticated:', isAuthenticated, 'update:', forceUpdate);
+    // Check if any authentication is active
+    const anyAuthActive = isAuthenticated || hasMsalAccount();
+
+    console.log('Root component rendering, authenticated:', isAuthenticated, 'Entra ID active:', hasMsalAccount(), 'update:', forceUpdate);
+
+    // Handle logout for both authentication methods
+    const handleLogout = () => {
+      if (isLoggingOut) return; // Prevent multiple clicks
+      logout();
+    };
 
     return (
       <ThemeProvider defaultTheme="light" storageKey="book-publisher-theme">
@@ -66,7 +75,7 @@ export const Route = createRootRoute({
                 
                 <div className="flex items-center gap-4">
                   <nav className="flex items-center space-x-6 text-sm font-medium">
-                    {!isAuthenticated ? (
+                    {!anyAuthActive ? (
                       <>
                         <Link
                           to="/auth/login"
@@ -83,15 +92,16 @@ export const Route = createRootRoute({
                       </>
                     ) : (
                       <button 
-                        onClick={() => logout()}
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
                         className="transition-colors hover:text-foreground/80 text-foreground/60 [&.active]:text-foreground"
                       >
-                        Logout
+                        {isLoggingOut ? 'Logging out...' : 'Logout'}
                       </button>
                     )}
                   </nav>
                   <ThemeToggle />
-                  {isAuthenticated && (
+                  {anyAuthActive && (
                     <>
                       <Link
                         to="/profile"

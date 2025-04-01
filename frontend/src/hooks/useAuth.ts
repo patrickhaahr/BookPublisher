@@ -5,6 +5,7 @@ import {
   refreshAccessToken,
   hasValidRefreshToken
 } from '../lib/authUtils';
+import { useMsal } from './authConfig';
 
 // Custom event name for auth state changes
 const AUTH_STATE_CHANGE_EVENT = 'auth-state-change';
@@ -13,6 +14,7 @@ export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const auth = useMsal();
   
   // Use a ref to track the last refresh attempt time to prevent spamming
   const lastRefreshAttempt = useRef<number>(0);
@@ -90,6 +92,11 @@ export const useAuth = () => {
     window.dispatchEvent(new CustomEvent(AUTH_STATE_CHANGE_EVENT));
   }, []);
 
+  // Function to check if user is authenticated via MSAL
+  const hasMsalAccount = useCallback(() => {
+    return auth.msalInstance.getAllAccounts().length > 0;
+  }, [auth.msalInstance]);
+
   useEffect(() => {
     // Initial check
     checkAuth();
@@ -122,5 +129,12 @@ export const useAuth = () => {
   }, [checkAuth, isAuthenticated]);
 
   // Expose the user role along with other auth state
-  return { isAuthenticated, userRole, login, logout, isRefreshing };
+  return { 
+    isAuthenticated, 
+    userRole, 
+    login, 
+    logout, 
+    isRefreshing,
+    hasMsalAccount
+  };
 }; 

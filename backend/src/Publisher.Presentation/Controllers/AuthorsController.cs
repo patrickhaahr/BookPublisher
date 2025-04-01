@@ -6,11 +6,12 @@ using Publisher.Application.Authors.Commands.UpdateAuthor;
 using Publisher.Application.Authors.Queries.GetAuthorById;
 using Publisher.Application.Authors.Queries.GetAuthors;
 using Publisher.Contracts.Responses;
-using Microsoft.AspNetCore.Authorization;
 using Publisher.Contracts.Requests;
+using Publisher.Presentation.Authorization;
+
 namespace Publisher.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
+[JwtAdmin]
 [ApiController]
 public class AuthorsController(ISender _sender) : ControllerBase
 {

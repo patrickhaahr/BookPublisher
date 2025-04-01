@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { NotAuthenticatedCard } from '@/components/auth/not-authenticated-card'
+import { EntraIdProfile } from '@/components/auth/entra-id-profile'
 import { getUserProfile } from '@/api'
 import { UserProfile } from '@/types/user'
 import { EditIcon } from 'lucide-react'
@@ -15,25 +16,40 @@ export const Route = createFileRoute('/profile/')({
 })
 
 function Profile() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, hasMsalAccount } = useAuth()
+  const hasEntraAccount = hasMsalAccount() // Use the function from useAuth
   
-  // Get userId from JWT token
+  // Get userId from JWT token if using JWT authentication
   const token = localStorage.getItem('accessToken')
-  const userId = token ? JSON.parse(atob(token.split('.')[1])).sub : null
+  const userId = isAuthenticated && token ? JSON.parse(atob(token.split('.')[1])).sub : null
 
+  // Only fetch profile if we have JWT authentication
   const { data: profile, isLoading, error } = useQuery<UserProfile>({
     queryKey: ['profile', userId],
     queryFn: () => getUserProfile(userId),
     enabled: !!userId && isAuthenticated,
-    staleTime: 0, // Always consider data stale so it gets refetched when returning to the page
-    gcTime: 1000 * 60 * 5, // Keep the cached data for 5 minutes after it's unused
-    refetchOnMount: true, // Refetch when component mounts
+    staleTime: 0,
+    gcTime: 1000 * 60 * 5,
+    refetchOnMount: true,
+    retry: (failureCount, error: Error) => {
+      if (error.message.includes('401')) {
+        return false;
+      }
+      return failureCount < 2;
+    }
   })
 
-  if (!isAuthenticated) {
+  // Not authenticated at all
+  if (!isAuthenticated && !hasEntraAccount) {
     return <NotAuthenticatedCard description="Please log in to view your profile." />;
   }
-
+  
+  // Using Entra ID authentication
+  if (hasEntraAccount) {
+    return <EntraIdProfile />;
+  }
+  
+  // JWT Authentication - Loading State
   if (isLoading || !profile) {
     return (
       <Card className="max-w-md mx-auto mt-8">
@@ -49,6 +65,7 @@ function Profile() {
     )
   }
 
+  // JWT Authentication - Error State
   if (error) {
     return (
       <Card className="max-w-md mx-auto mt-8">
@@ -60,6 +77,7 @@ function Profile() {
     )
   }
 
+  // JWT Authentication - Success State
   return (
     <Card className="max-w-md mx-auto mt-8">
       <CardHeader className="text-center border-b pb-4">
@@ -95,5 +113,5 @@ function Profile() {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
