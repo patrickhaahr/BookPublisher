@@ -32,8 +32,6 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
 });
 
-builder.Services.AddHttpClient();
-
 // CORS
 builder.Services.AddCors(options =>
 {

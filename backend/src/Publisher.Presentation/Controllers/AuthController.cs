@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Publisher.Application.Authentication.Commands.Logout;
 using Publisher.Application.Authentication.Commands.RefreshToken;
@@ -7,6 +6,7 @@ using Publisher.Application.Authentication.Commands.Register;
 using Publisher.Application.Authentication.Queries.Login;
 using Publisher.Contracts.Requests;
 using Publisher.Contracts.Responses;
+using Publisher.Presentation.Authorization;
 
 namespace Publisher.Presentation.Controllers;
 
@@ -29,7 +29,7 @@ public class AuthController(ISender sender) : ControllerBase
         return Ok(new AuthenticationResponse(authResult.User.UserId, authResult.User.Username, authResult.User.Email, authResult.AccessToken, authResult.RefreshToken));
     }
 
-    [Authorize]
+    [JwtAuthorize]
     [HttpPost(ApiEndpoints.V1.Auth.Logout)]
     public async Task<IActionResult> Logout(CancellationToken token)
     {

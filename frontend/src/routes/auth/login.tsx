@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
+import { useMsal } from '@/hooks/authConfig';
 
 // Import API function
 import { loginUser } from '@/api';
@@ -16,8 +17,9 @@ export const Route = createFileRoute('/auth/login')({
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
-
+  const { login, isAuthenticated, logout } = useAuth();
+  const auth = useMsal();
+  
   // TanStack Form setup
   const form = useForm({
     defaultValues: {
@@ -25,10 +27,46 @@ function Login() {
       password: '',
     },
     onSubmit: async ({ value }) => {
-      // Trigger the mutation on form submission
+      // If already logged in, log out first
+      if (isAuthenticated) {
+        logout();
+      }
+      
+      // Clear any existing Entra ID state
+      auth.clearMsalState();
+      
+      // Now proceed with new login
       mutate(value);
     },
   });
+
+  // Handle Microsoft authentication
+  const handleMsalLogin = async () => {
+    try {
+      // If already logged in, log out first
+      if (isAuthenticated) {
+        logout();
+      }
+      
+      await auth.msalInstance.initialize();
+      await auth.msalInstance.loginPopup();
+      const myAccounts = auth.msalInstance.getAllAccounts();
+      auth.account = myAccounts[0];
+
+      const response = await auth.msalInstance.acquireTokenSilent({
+        account: auth.account,
+        scopes: [`api://${import.meta.env.VITE_AZURE_CLIENT_ID}/API.Read`],
+      });
+      
+      auth.token = response.accessToken;
+      
+      // Use the same login flow as form submission
+      login(response.accessToken, response.idToken);
+      navigate({ to: '/' });
+    } catch (error) {
+      console.error('MSAL login error:', error);
+    }
+  };
 
   // TanStack Query mutation for login
   const { mutate, isPending, error, isSuccess } = useMutation({
@@ -51,8 +89,33 @@ function Login() {
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+          {isAuthenticated && (
+            <p className="text-center text-amber-500 text-sm mt-2">
+              Note: Logging in will replace your current authentication.
+            </p>
+          )}
         </CardHeader>
         <CardContent>
+          <div className="mb-4">
+            <Button 
+              onClick={handleMsalLogin} 
+              variant="outline" 
+              className="w-full"
+              disabled={isPending}
+            >
+              Sign in with Microsoft
+            </Button>
+          </div>
+          
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t"></span>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+            </div>
+          </div>
+          
           <form
             onSubmit={(e) => {
               e.preventDefault();

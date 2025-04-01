@@ -6,10 +6,11 @@ using Publisher.Application.Covers.Commands.UpdateCover;
 using Publisher.Application.Covers.Queries.GetCoverById;
 using Publisher.Application.Covers.Queries.GetCovers;
 using Publisher.Contracts.Responses;
-using Microsoft.AspNetCore.Authorization;
+using Publisher.Presentation.Authorization;
+
 namespace Publisher.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
+[JwtAdmin]
 [ApiController]
 public class CoversController(ISender _sender) : ControllerBase
 {

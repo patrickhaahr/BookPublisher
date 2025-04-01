@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Interfaces.Authentication;
@@ -47,12 +48,17 @@ public static class DependencyInjection
         services.AddSingleton(configuration.GetSection("JwtSettings").Get<JwtSettings>() 
             ?? throw new InvalidOperationException("JWT settings are not configured in the application configuration."));
 
-        // JWT Authentication
+        // JWT Authentication and Entra ID configuration
         var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>() 
             ?? throw new InvalidOperationException("JWT settings are not configured in the application configuration.");
             
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+        services.AddAuthentication(options => 
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -64,8 +70,11 @@ public static class DependencyInjection
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
                 };
-            });
-        
+            })
+            .AddMicrosoftIdentityWebApi(configuration.GetSection("EntraID"), "EntraID");
+
+        // Azure Functions
+        services.AddHttpClient();
 
         return services;
     }

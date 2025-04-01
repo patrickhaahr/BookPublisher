@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useAuth } from './useAuth';
+import { useMsal } from './authConfig';
 
 const logoutUser = async (): Promise<void> => {
   const accessToken = localStorage.getItem('accessToken');
@@ -37,17 +38,53 @@ const logoutUser = async (): Promise<void> => {
 export const useLogout = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const msalAuth = useMsal();
+  
+  // Check if we have an MSAL session active
+  const hasMsalAccount = msalAuth.msalInstance.getAllAccounts().length > 0;
 
   return useMutation({
-    mutationFn: logoutUser,
+    mutationFn: async () => {
+      try {
+        // First logout from local JWT
+        await logoutUser();
+        
+        // Then clear Entra ID state with specific handling
+        if (hasMsalAccount) {
+          console.log("MSAL account detected, clearing MSAL state");
+          // First clear local MSAL state
+          msalAuth.account = null;
+          msalAuth.token = "";
+          
+          // Then trigger MSAL logout
+          await msalAuth.msalInstance.logoutPopup({
+            mainWindowRedirectUri: window.location.origin,
+          }).catch(e => {
+            console.warn("Failed to logout popup, trying alternative:", e);
+            // Try cache clearing as fallback
+            msalAuth.msalInstance.clearCache();
+          });
+        }
+      } catch (error) {
+        console.error("Error during logout process:", error);
+        // Make sure local state is cleared even on error
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+      }
+    },
     onSuccess: () => {
+      // Use the logout function from useAuth for local state cleanup
       logout();
+      // Force trigger the auth state change event again to ensure UI updates
+      window.dispatchEvent(new CustomEvent('auth-state-change'));
       navigate({ to: '/' });
     },
     onError: (error) => {
       console.error('Logout error:', error);
       // Still perform local logout
       logout();
+      // Force trigger the auth state change event again
+      window.dispatchEvent(new CustomEvent('auth-state-change'));
       navigate({ to: '/' });
     },
   });

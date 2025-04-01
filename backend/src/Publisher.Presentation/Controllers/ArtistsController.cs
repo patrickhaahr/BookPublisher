@@ -8,9 +8,11 @@ using Publisher.Application.Artists.Queries.GetArtists;
 using Publisher.Contracts.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Publisher.Contracts.Requests;
+using Publisher.Presentation.Authorization;
+
 namespace Publisher.Presentation.Controllers;
 
-[Authorize(Roles = "Admin")]
+[JwtAdmin]
 [ApiController]
 public class ArtistsController(ISender _sender) : ControllerBase
 {
