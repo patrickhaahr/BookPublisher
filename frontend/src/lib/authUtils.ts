@@ -105,7 +105,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
 export const getUserIdFromToken = (): string | null => {
   // First check if we already have the userId in localStorage
   const storedUserId = localStorage.getItem('userId');
-  if (storedUserId) {
+  if (storedUserId && storedUserId !== 'undefined' && storedUserId !== 'null') {
     return storedUserId;
   }
   
@@ -117,11 +117,12 @@ export const getUserIdFromToken = (): string | null => {
     const userId = decoded.sub || null;
     
     // Store userId in localStorage for future use if we find it
-    if (userId) {
+    if (userId && userId !== 'undefined' && userId !== 'null') {
       localStorage.setItem('userId', userId);
+      return userId;
     }
     
-    return userId;
+    return null;
   } catch {
     return null;
   }
