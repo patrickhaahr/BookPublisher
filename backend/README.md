@@ -8,13 +8,12 @@ dotnet ef database update --project ../Publisher.Infrastructure
 # Run Server
 dotnet run
 
+# Health check
+GET http://localhost:5094/health
+
 TODO
-change to HTTPS
-health check
 add Compiled Query for GetBooks
 
-Implement Azure functions test
-Azure Entra ID login auth
 
 cleanup backend structure
     -Contracts classlib
