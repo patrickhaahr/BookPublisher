@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Publisher.Application;
 using Publisher.Infrastructure;
@@ -49,6 +50,9 @@ var app = builder.Build();
 app.UseCors("AllowFrontend");
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+// Map health check endpoints
+app.MapHealthChecks("/health");
 
 //app.UseHttpsRedirection(); // Always redirect to HTTPS (safest port)
 

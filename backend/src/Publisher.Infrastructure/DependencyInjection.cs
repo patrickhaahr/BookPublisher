@@ -1,13 +1,20 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Tokens;
 using Publisher.Application.Interfaces;
 using Publisher.Application.Interfaces.Authentication;
 using Publisher.Infrastructure.Authentication;
+using Publisher.Infrastructure.Health;
 using Publisher.Infrastructure.Repositories;
 
 namespace Publisher.Infrastructure;
@@ -17,10 +24,14 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         return services
-            .AddPersistence(configuration);
+            .AddDatabase(configuration)
+            .AddRepositories()
+            .AddAuthentication(configuration)
+            .AddAzureServices()
+            .AddHealthChecks(configuration);
     }
 
-    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<AppDbContext>(options =>
         {
@@ -30,6 +41,11 @@ public static class DependencyInjection
                 warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
         });
 
+        return services;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
         // Register repositories
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
@@ -39,6 +55,11 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserBookInteractionRepository, UserBookInteractionRepository>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
         // Register authentication services
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
@@ -73,9 +94,25 @@ public static class DependencyInjection
             })
             .AddMicrosoftIdentityWebApi(configuration.GetSection("EntraID"), "EntraID");
 
+        return services;
+    }
+
+    public static IServiceCollection AddAzureServices(this IServiceCollection services)
+    {
         // Azure Functions
         services.AddHttpClient();
 
         return services;
     }
+
+    public static IServiceCollection AddHealthChecks(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHealthChecks()
+            .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name, 
+                failureStatus: HealthStatus.Unhealthy, 
+                tags: new[] { "ready", "database" });
+
+        return services;
+    }
 }
+
