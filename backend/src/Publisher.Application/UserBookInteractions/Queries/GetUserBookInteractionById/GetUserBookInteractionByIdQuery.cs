@@ -1,6 +1,6 @@
 using MediatR;
-using Publisher.Domain.Entities;
+using Publisher.Contracts.Responses;
 
 namespace Publisher.Application.UserBookInteractions.Queries.GetUserBookInteractionById;
 
-public record GetUserBookInteractionByIdQuery(Guid Id) : IRequest<UserBookInteraction>; 
+public record GetUserBookInteractionByIdQuery(Guid Id) : IRequest<UserBookInteractionResponse>; 

@@ -55,6 +55,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
     // Clean up any invalid tokens
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
     return false;
   }
 
@@ -74,12 +75,14 @@ export const refreshAccessToken = async (): Promise<boolean> => {
       // If server rejects the token, clear both tokens
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userId');
       throw new Error(`Token refresh failed: ${response.status}`);
     }
 
     const data = await response.json();
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
+    localStorage.setItem('userId', data.userId);
     
     // Dispatch auth state change event
     window.dispatchEvent(new CustomEvent('auth-state-change'));
@@ -89,6 +92,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
     // Ensure tokens are cleared on failure
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userId');
     window.dispatchEvent(new CustomEvent('auth-state-change'));
     return false;
   }
@@ -99,12 +103,25 @@ export const refreshAccessToken = async (): Promise<boolean> => {
  * @returns string | null
  */
 export const getUserIdFromToken = (): string | null => {
+  // First check if we already have the userId in localStorage
+  const storedUserId = localStorage.getItem('userId');
+  if (storedUserId) {
+    return storedUserId;
+  }
+  
   const accessToken = localStorage.getItem('accessToken');
   if (!accessToken) return null;
 
   try {
     const decoded = jwtDecode<JwtPayload>(accessToken);
-    return decoded.sub || null;
+    const userId = decoded.sub || null;
+    
+    // Store userId in localStorage for future use if we find it
+    if (userId) {
+      localStorage.setItem('userId', userId);
+    }
+    
+    return userId;
   } catch {
     return null;
   }

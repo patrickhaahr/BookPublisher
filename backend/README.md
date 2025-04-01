@@ -12,7 +12,6 @@ dotnet run
 GET http://localhost:5094/health
 
 TODO
-add Compiled Query for GetBooks
 
 
 cleanup backend structure
