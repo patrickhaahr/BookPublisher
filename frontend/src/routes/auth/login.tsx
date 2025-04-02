@@ -48,20 +48,40 @@ function Login() {
         logout();
       }
       
+      // Clear any existing MSAL state
+      auth.clearMsalState();
+      
+      // Initialize MSAL 
       await auth.msalInstance.initialize();
-      await auth.msalInstance.loginPopup();
-      const myAccounts = auth.msalInstance.getAllAccounts();
-      auth.account = myAccounts[0];
-
-      const response = await auth.msalInstance.acquireTokenSilent({
+      
+      // Define login request with redirect URI explicitly set
+      const loginRequest = {
+        scopes: [`api://${import.meta.env.VITE_AZURE_CLIENT_ID}/API.Read`],
+        redirectUri: window.location.origin + "/auth/login"
+      };
+      
+      // Perform login
+      const loginResponse = await auth.msalInstance.loginPopup(loginRequest);
+      
+      if (!loginResponse) {
+        throw new Error('Login failed - no response received');
+      }
+      
+      // Set the account
+      auth.account = loginResponse.account;
+      
+      // Acquire token silently
+      const tokenResponse = await auth.msalInstance.acquireTokenSilent({
         account: auth.account,
         scopes: [`api://${import.meta.env.VITE_AZURE_CLIENT_ID}/API.Read`],
+        redirectUri: window.location.origin + "/auth/login"
       });
       
-      auth.token = response.accessToken;
+      // Store the token
+      auth.token = tokenResponse.accessToken;
       
       // Use the same login flow as form submission
-      login(response.accessToken, response.idToken, response.account.localAccountId);
+      login(tokenResponse.accessToken, tokenResponse.idToken, tokenResponse.account.localAccountId);
       navigate({ to: '/' });
     } catch (error) {
       console.error('MSAL login error:', error);
