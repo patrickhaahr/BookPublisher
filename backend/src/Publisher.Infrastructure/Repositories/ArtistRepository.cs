@@ -28,7 +28,7 @@ public class ArtistRepository(AppDbContext _context) : IArtistRepository
 
     public async Task<Artist?> GetArtistByIdAsync(Guid id, CancellationToken token = default)
     {
-        return await _context.Artists.FindAsync(id, token);
+        return await _context.Artists.FindAsync([id], token);
     }
 
     public async Task<Artist> CreateArtistAsync(Artist artist, CancellationToken token = default)
@@ -40,13 +40,13 @@ public class ArtistRepository(AppDbContext _context) : IArtistRepository
 
     public async Task<Artist?> UpdateArtistAsync(Guid id, Artist artist, CancellationToken token = default)
     {
-        var existingArtist = await _context.Artists.FindAsync(id, token);
+        var existingArtist = await _context.Artists.FindAsync([id], token);
         
-        if (existingArtist is null)
+        if (existingArtist is null) 
             return null;
 
         _context.Entry(existingArtist).CurrentValues.SetValues(artist);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
         return existingArtist;
     }
 
@@ -57,7 +57,7 @@ public class ArtistRepository(AppDbContext _context) : IArtistRepository
             return null;
 
         _context.Artists.Remove(artist);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
         return artist;
     }
 } 

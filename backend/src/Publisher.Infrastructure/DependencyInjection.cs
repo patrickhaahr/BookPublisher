@@ -1,10 +1,12 @@
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,11 +26,21 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         return services
+            .AddCoreServices()
             .AddDatabase(configuration)
             .AddRepositories()
             .AddAuthentication(configuration)
             .AddAzureServices()
-            .AddHealthChecks(configuration);
+            .AddHealthChecks(configuration)
+            .AddCorsConfiguration()
+            .AddApiConfiguration()
+            .AddKestrelConfiguration();
+    }
+
+    public static IServiceCollection AddCoreServices(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        return services;
     }
 
     public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
@@ -51,7 +63,6 @@ public static class DependencyInjection
         services.AddScoped<IAuthorRepository, AuthorRepository>();
         services.AddScoped<IArtistRepository, ArtistRepository>();
         services.AddScoped<ICoverRepository, CoverRepository>();
-        services.AddScoped<IPersonRepository, PersonRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserBookInteractionRepository, UserBookInteractionRepository>();
 
@@ -65,7 +76,6 @@ public static class DependencyInjection
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddHttpContextAccessor();
         services.AddSingleton(configuration.GetSection("JwtSettings").Get<JwtSettings>() 
             ?? throw new InvalidOperationException("JWT settings are not configured in the application configuration."));
 
@@ -111,6 +121,49 @@ public static class DependencyInjection
             .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name, 
                 failureStatus: HealthStatus.Unhealthy, 
                 tags: new[] { "ready", "database" });
+
+        return services;
+    }
+
+    public static IServiceCollection AddCorsConfiguration(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", builder =>
+            {
+                builder.WithOrigins("http://localhost:5173")
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
+            });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddApiConfiguration(this IServiceCollection services)
+    {
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
+
+        services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddKestrelConfiguration(this IServiceCollection services)
+    {
+        services.Configure<KestrelServerOptions>(options =>
+        {
+            options.Limits.MaxRequestBodySize = 1024 * 1024; // 1 MB
+        });
 
         return services;
     }

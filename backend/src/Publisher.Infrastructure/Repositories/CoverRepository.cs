@@ -37,7 +37,7 @@ public class CoverRepository(AppDbContext _context) : ICoverRepository
             return null;
 
         _context.Entry(existingCover).CurrentValues.SetValues(cover);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
         return existingCover;
     }
 

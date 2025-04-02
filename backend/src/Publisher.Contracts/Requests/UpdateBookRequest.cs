@@ -7,11 +7,5 @@ public record UpdateBookRequest(
     List<string>? Mediums,
     List<string>? Genres,
     List<Guid>? AuthorIds,
-    List<CoverUpdateData>? Covers
-);
-
-public record CoverUpdateData(
-    Guid? CoverId,
-    string ImgBase64,
-    List<Guid> ArtistIds
+    List<UpdateCoverData>? Covers
 );

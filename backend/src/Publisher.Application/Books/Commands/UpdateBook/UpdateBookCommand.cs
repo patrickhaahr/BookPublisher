@@ -12,5 +12,5 @@ public record UpdateBookCommand(
     List<string>? Mediums,
     List<string>? Genres,
     List<Guid>? AuthorIds,
-    List<CoverUpdateData>? Covers
+    List<UpdateCoverData>? Covers
 ) : IRequest<UpdateBookResponse>;

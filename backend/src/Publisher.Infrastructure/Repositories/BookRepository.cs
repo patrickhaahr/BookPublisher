@@ -98,27 +98,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
         await _context.SaveChangesAsync(token);
         return book;
     }
-    public async Task<Book?> UpdateBookAsync(Guid id, Book book, CancellationToken token = default)
-    {
-        var existingBook = await _context.Books
-            .Include(b => b.Covers)
-                .ThenInclude(c => c.CoverPersons)
-                    .ThenInclude(cp => cp.Artist)
-            .Include(b => b.BookPersons)
-                .ThenInclude(bp => bp.Author)
-            .Include(b => b.BookMediums)
-                .ThenInclude(bm => bm.Medium)
-            .Include(b => b.BookGenres)
-                .ThenInclude(bg => bg.Genre)
-            .FirstOrDefaultAsync(b => b.BookId == id, token);
-
-        if (existingBook is null)
-            return null!; // Let Application layer handle not found case
-
-        _context.Entry(existingBook).CurrentValues.SetValues(book);
-        await _context.SaveChangesAsync(token);
-        return existingBook;
-    }
+    
     public async Task<Book?> DeleteBookAsync(Guid id, CancellationToken token = default)
     {
         var book = await GetBookByIdAsync(id, token);
@@ -140,7 +120,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
     {
         var bookPersons = await _context.BookPersons
             .Where(bp => bp.BookId == bookId)
-            .ToListAsync();
+            .ToListAsync(token);
         
         _context.BookPersons.RemoveRange(bookPersons);
         await _context.SaveChangesAsync(token);
@@ -157,12 +137,12 @@ public class BookRepository(AppDbContext _context) : IBookRepository
     {
         var covers = await _context.Covers
             .Where(c => c.BookId == bookId)
-            .ToListAsync();
+            .ToListAsync(token);
         
         // Also remove related CoverPersons
         foreach (var cover in covers)
         {
-            await RemoveCoverPersonsAsync(cover.CoverId);
+            await RemoveCoverPersonsAsync(cover.CoverId, token);
         }
         
         _context.Covers.RemoveRange(covers);
@@ -180,7 +160,7 @@ public class BookRepository(AppDbContext _context) : IBookRepository
     {
         var coverPersons = await _context.CoverPersons
             .Where(cp => cp.CoverId == coverId)
-            .ToListAsync();
+            .ToListAsync(token);
         
         _context.CoverPersons.RemoveRange(coverPersons);
         await _context.SaveChangesAsync(token);

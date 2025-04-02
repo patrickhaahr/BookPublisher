@@ -1,10 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Publisher.Domain.Entities;
-using Publisher.Domain.Entities.ViewModels;
 
 namespace Publisher.Infrastructure;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     // Expression-Bodied Property with Set<T>()
     // Expresses the intent of the property
@@ -19,12 +18,8 @@ public class AppDbContext : DbContext
     public DbSet<UserBookInteraction> UserBookInteractions => Set<UserBookInteraction>();
     public DbSet<BookPersons> BookPersons => Set<BookPersons>();
     public DbSet<CoverPersons> CoverPersons => Set<CoverPersons>();
-    public DbSet<BookSummary> BookSummaries => Set<BookSummary>();
     public DbSet<BookMedium> BookMediums => Set<BookMedium>();
     public DbSet<BookGenre> BookGenres => Set<BookGenre>();
-
-
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
