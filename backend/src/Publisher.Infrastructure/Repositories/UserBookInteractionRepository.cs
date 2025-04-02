@@ -8,7 +8,10 @@ public class UserBookInteractionRepository(AppDbContext _context) : IUserBookInt
 {
     public async Task<List<UserBookInteraction>> GetUserBookInteractionsAsync(CancellationToken token = default)
     {
-        return await _context.UserBookInteractions.ToListAsync(token);
+        return await _context.UserBookInteractions
+            .Include(ubi => ubi.User)
+            .Include(ubi => ubi.Book)
+            .ToListAsync(token);
     }
 
     public async Task<List<UserBookInteraction>> GetUserBookInteractionsByUserIdAsync(Guid userId, CancellationToken token = default)
@@ -45,7 +48,7 @@ public class UserBookInteractionRepository(AppDbContext _context) : IUserBookInt
 
     public async Task<UserBookInteraction?> UpdateUserBookInteractionAsync(Guid id, UserBookInteraction interaction, CancellationToken token = default)
     {
-        var existingInteraction = await _context.UserBookInteractions.FindAsync(id, token);
+        var existingInteraction = await _context.UserBookInteractions.FindAsync([id], token);
         
         if (existingInteraction is null)
             return null;
