@@ -49,12 +49,12 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" asChild>
-              <Link to="/admin/create-book">
+              <Link to="/admin/create/book">
                 <FilePlusIcon className="w-4 h-4 mr-2" /> Create Book
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
-              <Link to="/admin/manage-books">
+              <Link to="/admin/manage/books">
                 Manage Books
               </Link>
             </Button>
@@ -75,12 +75,12 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" asChild>
-              <Link to="/admin/create-author">
+              <Link to="/admin/create/author">
                 <FilePlusIcon className="w-4 h-4 mr-2" /> Create Author
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
-              <Link to="/admin/manage-authors">
+              <Link to="/admin/manage/authors">
                 Manage Authors
               </Link>
             </Button>
@@ -101,12 +101,12 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" asChild>
-              <Link to="/admin/create-artist">
+              <Link to="/admin/create/artist">
                 <FilePlusIcon className="w-4 h-4 mr-2" /> Create Artist
               </Link>
             </Button>
             <Button size="sm" variant="outline" asChild>
-              <Link to="/admin/manage-artists">
+              <Link to="/admin/manage/artists">
                 Manage Artists
               </Link>
             </Button>
@@ -126,7 +126,7 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" variant="outline" asChild>
-              <Link to="/admin/manage-users">
+              <Link to="/admin/manage/users">
                 Manage Users
               </Link>
             </Button>
@@ -146,7 +146,7 @@ function AdminDashboard() {
           </CardContent>
           <CardFooter className="flex gap-2">
             <Button size="sm" variant="outline" asChild>
-              <Link to="/admin/manage-interactions">
+              <Link to="/admin/manage/interactions">
                 Manage Interactions
               </Link>
             </Button>

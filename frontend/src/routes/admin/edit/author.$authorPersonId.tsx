@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { InfoIcon, PaintbrushIcon, LayoutDashboardIcon, Loader2 } from 'lucide-react'
-import { getArtist, updateArtist } from '../../api/artists'
-import { Artist } from '../../types/artist'
+import { InfoIcon, UserIcon, LayoutDashboardIcon, Loader2 } from 'lucide-react'
+import { getAuthor, updateAuthor } from '../../../api/authors'
+import { Author } from '../../../types/author'
 
-export const Route = createFileRoute('/admin/edit-artist/$artistPersonId')({
+export const Route = createFileRoute('/admin/edit/author/$authorPersonId')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';
@@ -27,73 +27,73 @@ export const Route = createFileRoute('/admin/edit-artist/$artistPersonId')({
       });
     }
   },
-  component: EditArtist,
+  component: EditAuthor,
 });
 
-interface EditArtistFormValues {
+interface EditAuthorFormValues {
   firstname: string;
   lastname: string;
   email: string;
   phone: string;
-  portfoliourl: string;
+  royaltyrate: number;
 }
 
-function EditArtist() {
-  const { artistPersonId } = Route.useParams();
+function EditAuthor() {
+  const { authorPersonId } = Route.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   
-  // Fetch artist data
-  const { data: artist, isLoading, isError, error } = useQuery<Artist>({
-    queryKey: ['artist', artistPersonId],
-    queryFn: () => getArtist(artistPersonId),
+  // Fetch author data
+  const { data: author, isLoading, isError, error } = useQuery<Author>({
+    queryKey: ['author', authorPersonId],
+    queryFn: () => getAuthor(authorPersonId),
   });
   
   // TanStack Form
   const form = useForm({
     defaultValues: React.useMemo(() => {
-      if (!artist) return {} as EditArtistFormValues;
+      if (!author) return {} as EditAuthorFormValues;
       
       return {
-        firstname: artist.firstName || '',
-        lastname: artist.lastName || '',
-        email: artist.email || '',
-        phone: artist.phone || '',
-        portfoliourl: artist.portfolioUrl || 'https://',
+        firstname: author.firstName || '',
+        lastname: author.lastName || '',
+        email: author.email || '',
+        phone: author.phone || '',
+        royaltyrate: author.royaltyRate || 0,
       };
-    }, [artist]),
+    }, [author]),
     onSubmit: async ({ value }) => {
       console.log('Form Submitted:', value);
       updateMutation.mutate({
-        artistId: artistPersonId,
-        artistData: value
+        authorId: authorPersonId,
+        authorData: value
       });
     },
   });
 
-  // Update form values when artist data is loaded
+  // Update form values when author data is loaded
   React.useEffect(() => {
-    if (artist) {
+    if (author) {
       form.reset({
-        firstname: artist.firstName || '',
-        lastname: artist.lastName || '',
-        email: artist.email || '',
-        phone: artist.phone || '',
-        portfoliourl: artist.portfolioUrl || 'https://',
+        firstname: author.firstName || '',
+        lastname: author.lastName || '',
+        email: author.email || '',
+        phone: author.phone || '',
+        royaltyrate: author.royaltyRate || 0,
       });
     }
-  }, [artist, form]);
+  }, [author, form]);
   
   // TanStack Query Mutation
   const updateMutation = useMutation({
-    mutationFn: updateArtist,
+    mutationFn: updateAuthor,
     onSuccess: (data) => {
-      console.log("Artist updated successfully:", data);
-      // Invalidate both the single artist query and the artists list query
-      queryClient.invalidateQueries({ queryKey: ['artist', artistPersonId], refetchType: 'all' });
-      queryClient.invalidateQueries({ queryKey: ['artists'], refetchType: 'all' });
-      alert(`Artist "${data.firstName} ${data.lastName}" updated successfully!`);
-      navigate({ to: '/admin/manage-artists' });
+      console.log("Author updated successfully:", data);
+      // Invalidate both the single author query and the authors list query
+      queryClient.invalidateQueries({ queryKey: ['author', authorPersonId], refetchType: 'all' });
+      queryClient.invalidateQueries({ queryKey: ['authors'], refetchType: 'all' });
+      alert(`Author "${data.firstName} ${data.lastName}" updated successfully!`);
+      navigate({ to: '/admin/manage/authors' });
     },
   });
 
@@ -101,7 +101,7 @@ function EditArtist() {
     return (
       <div className="flex justify-center items-center h-[calc(100vh-6rem)]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <span className="ml-2">Loading artist...</span>
+        <span className="ml-2">Loading author...</span>
       </div>
     );
   }
@@ -110,9 +110,9 @@ function EditArtist() {
     return (
       <div className="container mx-auto p-4 md:p-8 text-center">
         <h1 className="text-3xl font-bold text-destructive mb-4">Error</h1>
-        <p className="mb-4">Failed to load artist: {error?.message}</p>
-        <Button onClick={() => navigate({ to: '/admin/manage-artists' })}>
-          Return to Artists
+        <p className="mb-4">Failed to load author: {error?.message}</p>
+        <Button onClick={() => navigate({ to: '/admin/manage/authors' })}>
+          Return to Authors
         </Button>
       </div>
     );
@@ -121,8 +121,8 @@ function EditArtist() {
   return (
     <div className="container mx-auto p-4 md:p-8 max-w-4xl">
       <div className="flex items-center mb-6">
-        <PaintbrushIcon className="h-8 w-8 mr-2 text-primary" />
-        <h1 className="text-3xl font-bold">Edit Artist</h1>
+        <UserIcon className="h-8 w-8 mr-2 text-primary" />
+        <h1 className="text-3xl font-bold">Edit Author</h1>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -131,26 +131,26 @@ function EditArtist() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <InfoIcon className="h-5 w-5 mr-2 text-primary" />
-              Artist Guide
+              Author Guide
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div>
-              <h3 className="font-medium mb-1">Artist Information</h3>
-              <p className="text-muted-foreground">Update the artist's details as needed.</p>
+              <h3 className="font-medium mb-1">Author Information</h3>
+              <p className="text-muted-foreground">Update the author's details as needed.</p>
             </div>
             <div>
-              <h3 className="font-medium mb-1">Portfolio URL</h3>
-              <p className="text-muted-foreground">Include a link to the artist's portfolio website. Must start with "https://".</p>
+              <h3 className="font-medium mb-1">Royalty Rate</h3>
+              <p className="text-muted-foreground">Set the percentage of sales the author receives as royalties.</p>
             </div>
             <div className="pt-4 border-t">
               <Button 
                 variant="outline" 
                 className="w-full" 
-                onClick={() => navigate({ to: '/admin/manage-artists' })}
+                onClick={() => navigate({ to: '/admin/manage/authors' })}
               >
                 <LayoutDashboardIcon className="mr-2 h-4 w-4" />
-                Back to Artists
+                Back to Authors
               </Button>
             </div>
           </CardContent>
@@ -159,8 +159,8 @@ function EditArtist() {
         {/* Main form */}
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Edit Artist</CardTitle>
-            <CardDescription>Update the details for {artist?.firstName} {artist?.lastName}</CardDescription>
+            <CardTitle>Edit Author</CardTitle>
+            <CardDescription>Update the details for {author?.firstName} {author?.lastName}</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -284,15 +284,15 @@ function EditArtist() {
                 </form.Field>
               </fieldset>
 
-              {/* Portfolio URL Field */}
+              {/* Royalty Rate Field */}
               <fieldset disabled={updateMutation.isPending} className="space-y-2">
-                <Label htmlFor="portfoliourl-input">Portfolio URL</Label>
+                <Label htmlFor="royaltyrate-input">Royalty Rate (%)</Label>
                 <form.Field
-                  name="portfoliourl"
+                  name="royaltyrate"
                   validators={{
                     onChange: ({ value }) => {
-                      if (!value) return 'Portfolio URL is required';
-                      if (!value.startsWith('https://')) return 'URL must start with "https://"';
+                      if (value < 0) return 'Royalty rate cannot be negative';
+                      if (value > 100) return 'Royalty rate cannot exceed 100%';
                       return undefined;
                     }
                   }}
@@ -300,17 +300,17 @@ function EditArtist() {
                   {(field) => (
                     <>
                       <Input
-                        id="portfoliourl-input"
-                        type="url"
+                        id="royaltyrate-input"
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="100"
                         value={field.state.value}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="e.g., https://www.portfolio-example.com"
+                        onChange={(e) => field.handleChange(e.target.valueAsNumber || 0)}
+                        placeholder="e.g., 15"
                         className={field.state.meta.errors?.length ? "border-destructive" : ""}
                       />
-                      <p className="text-[0.8rem] text-muted-foreground mt-1">
-                        Must include the full URL with "https://" prefix
-                      </p>
                       {field.state.meta.errors?.length ? (
                         <p className="text-sm font-medium text-destructive mt-1">
                           {field.state.meta.errors.join(', ')}
@@ -326,7 +326,7 @@ function EditArtist() {
                 {updateMutation.error && (
                   <div className="p-3 mb-4 bg-destructive/10 border border-destructive rounded-md">
                     <p className="text-sm font-medium text-destructive">
-                      Error updating artist: {updateMutation.error.message}
+                      Error updating author: {updateMutation.error.message}
                     </p>
                   </div>
                 )}
@@ -334,7 +334,7 @@ function EditArtist() {
                 <div className="flex space-x-3">
                   <Button 
                     variant="outline" 
-                    onClick={() => navigate({ to: '/admin/manage-artists' })}
+                    onClick={() => navigate({ to: '/admin/manage/authors' })}
                     className="flex-1"
                   >
                     Cancel
@@ -349,7 +349,7 @@ function EditArtist() {
                         disabled={!canSubmit || isSubmitting || updateMutation.isPending} 
                         className="flex-1"
                       >
-                        {updateMutation.isPending ? "Updating..." : "Update Artist"}
+                        {updateMutation.isPending ? "Updating..." : "Update Author"}
                       </Button>
                     )}
                   </form.Subscribe>

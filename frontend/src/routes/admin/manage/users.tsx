@@ -9,14 +9,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/ui/table'
+} from '../../../components/ui/table'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card'
+} from '../../../components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu'
+} from '../../../components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,21 +34,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../../components/ui/alert-dialog'
+} from '../../../components/ui/alert-dialog'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select"
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
+} from "../../../components/ui/select"
+import { Button } from '../../../components/ui/button'
+import { Input } from '../../../components/ui/input'
 import { Loader2, MoreVertical, Search, AlertCircle } from 'lucide-react'
-import { getUsers, deleteUser, updateUserRole } from '../../api/users'
-import type { User, UsersResponse } from '../../types/user'
+import { getUsers, deleteUser, updateUserRole } from '../../../api/users'
+import type { User, UsersResponse } from '../../../types/user'
 
-export const Route = createFileRoute('/admin/manage-users')({
+export const Route = createFileRoute('/admin/manage/users')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';

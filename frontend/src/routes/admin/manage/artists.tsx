@@ -9,14 +9,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/ui/table'
+} from '../../../components/ui/table'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card'
+} from '../../../components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu'
+} from '../../../components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,14 +34,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../../components/ui/alert-dialog'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
+} from '../../../components/ui/alert-dialog'
+import { Button } from '../../../components/ui/button'
+import { Input } from '../../../components/ui/input'
 import { Loader2, MoreVertical, Search, AlertCircle } from 'lucide-react'
-import { getArtists, deleteArtist } from '../../api/artists'
-import type { Artist, ArtistsResponse } from '../../types/artist'
+import { getArtists, deleteArtist } from '../../../api/artists'
+import type { Artist, ArtistsResponse } from '../../../types/artist'
 
-export const Route = createFileRoute('/admin/manage-artists')({
+export const Route = createFileRoute('/admin/manage/artists')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';
@@ -195,7 +195,7 @@ function RouteComponent() {
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
-                                onClick={() => navigate({ to: '/admin/edit-artist/$artistPersonId', params: { artistPersonId: artist.artistPersonId } })}
+                                onClick={() => navigate({ to: '/admin/edit/artist/$artistPersonId', params: { artistPersonId: artist.artistPersonId } })}
                               >
                                 Edit
                               </DropdownMenuItem>

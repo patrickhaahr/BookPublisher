@@ -23,7 +23,7 @@ import { GENRES, MEDIUMS } from '@/constants'
 import { CreateBookFormValues, CreateBookApiPayload } from '@/types'
 import { createBook, fileToBase64 } from '@/api'
 
-export const Route = createFileRoute('/admin/create-book')({
+export const Route = createFileRoute('/admin/create/book')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';
@@ -52,7 +52,7 @@ function CreateBook() {
     onSuccess: (data) => {
       console.log("Book created successfully:", data);
       alert(`Book "${data.title}" created successfully!`);
-      navigate({ to: '/admin' });
+      navigate({ to: '/admin/manage/books' });
     },
   });
 

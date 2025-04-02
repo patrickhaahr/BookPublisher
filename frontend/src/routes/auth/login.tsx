@@ -61,7 +61,7 @@ function Login() {
       auth.token = response.accessToken;
       
       // Use the same login flow as form submission
-      login(response.accessToken, response.idToken);
+      login(response.accessToken, response.idToken, response.account.localAccountId);
       navigate({ to: '/' });
     } catch (error) {
       console.error('MSAL login error:', error);
@@ -75,7 +75,7 @@ function Login() {
       // Handle successful login
       console.log('Login successful:', data);
       // Use the login function from useAuth instead of directly setting localStorage
-      login(data.accessToken, data.refreshToken);
+      login(data.accessToken, data.refreshToken, data.userId);
       // Redirect to dashboard
       navigate({ to: '/' });
     },

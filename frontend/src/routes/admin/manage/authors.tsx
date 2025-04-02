@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, Link } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { checkUserRoleFromToken } from '@/lib/authUtils'
@@ -9,14 +9,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../../components/ui/table'
+} from '../../../components/ui/table'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card'
+} from '../../../components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../components/ui/dropdown-menu'
+} from '../../../components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,14 +34,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '../../components/ui/alert-dialog'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
-import { Loader2, MoreVertical, Search, Plus, AlertCircle } from 'lucide-react'
-import { getBooks } from '../../api/books'
-import type { Book, BooksResponse } from '../../types/book'
+} from '../../../components/ui/alert-dialog'
+import { Button } from '../../../components/ui/button'
+import { Input } from '../../../components/ui/input'
+import { Loader2, MoreVertical, Search, AlertCircle } from 'lucide-react'
+import { getAuthors, deleteAuthor } from '../../../api/authors'
+import type { Author, AuthorsResponse } from '../../../types/author'
 
-export const Route = createFileRoute('/admin/manage-books')({
+export const Route = createFileRoute('/admin/manage/authors')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';
@@ -60,16 +60,17 @@ export const Route = createFileRoute('/admin/manage-books')({
 
 function RouteComponent() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [bookToDelete, setBookToDelete] = useState<Book | null>(null)
+  const [authorToDelete, setAuthorToDelete] = useState<Author | null>(null)
   const [page, setPage] = useState(1)
   const pageSize = 10
   
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   
-  const { data: booksResponse, isLoading, isError } = useQuery<BooksResponse>({
-    queryKey: ['books', page, pageSize],
+  const { data: authorsResponse, isLoading, isError } = useQuery<AuthorsResponse>({
+    queryKey: ['authors', page, pageSize, searchQuery],
     queryFn: async () => {
-      return await getBooks(page, pageSize);
+      return await getAuthors(page, pageSize, searchQuery);
     },
     staleTime: 0, // Always consider data stale to force refetch on revisit
     gcTime: 1000 * 60 * 5, // Keep unused data in cache for 5 minutes
@@ -77,68 +78,37 @@ function RouteComponent() {
   })
   
   const deleteMutation = useMutation({
-    mutationFn: async (bookId: string) => {
-      const token = localStorage.getItem('accessToken');
-      if (!token) {
-        throw new Error('Authentication token not found');
-      }
-      
-      const response = await fetch(`http://localhost:5094/api/v1/books/${bookId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to delete book');
-      }
-      
-      return response.json();
-    },
+    mutationFn: deleteAuthor,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['books'] });
-      setBookToDelete(null);
+      queryClient.invalidateQueries({ queryKey: ['authors'] });
+      setAuthorToDelete(null);
     }
   })
   
-  const filteredBooks = booksResponse?.items.filter(book => 
-    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.bookId.includes(searchQuery)
-  )
-  
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
-  }
+  const filteredAuthors = authorsResponse?.items ? authorsResponse.items.filter(author => 
+    author.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    author.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    author.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    author.authorPersonId.toString().includes(searchQuery)
+  ) : [];
   
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-center">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Manage Books</h1>
-          <p className="text-muted-foreground mt-1">View, edit and manage your published books.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Manage Authors</h1>
+          <p className="text-muted-foreground mt-1">View and manage authors in the system.</p>
         </div>
-        <Button asChild className="shrink-0">
-          <Link to="/admin/create-book">
-            <Plus className="h-4 w-4 mr-2" />
-            Add New Book
-          </Link>
-        </Button>
       </div>
       
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <CardTitle>Books Library</CardTitle>
+            <CardTitle>Authors</CardTitle>
             <div className="relative w-full sm:w-64 md:w-80">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search books..."
+                placeholder="Search authors..."
                 className="pl-8"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -146,7 +116,7 @@ function RouteComponent() {
             </div>
           </div>
           <CardDescription>
-            {filteredBooks ? `${filteredBooks.length} books found` : 'Loading books...'}
+            {filteredAuthors ? `${filteredAuthors.length} authors found` : 'Loading authors...'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -157,14 +127,14 @@ function RouteComponent() {
           ) : isError ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <AlertCircle className="h-10 w-10 text-destructive mb-2" />
-              <h3 className="font-medium text-lg">Failed to load books</h3>
+              <h3 className="font-medium text-lg">Failed to load authors</h3>
               <p className="text-muted-foreground max-w-md mt-1">
-                There was an error loading your books. Please try again later.
+                There was an error loading the authors. Please try again later.
               </p>
               <Button 
                 variant="outline" 
                 className="mt-4"
-                onClick={() => queryClient.invalidateQueries({ queryKey: ['books'] })}
+                onClick={() => queryClient.invalidateQueries({ queryKey: ['authors'] })}
               >
                 Retry
               </Button>
@@ -175,38 +145,34 @@ function RouteComponent() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[80px]">ID</TableHead>
-                    <TableHead>Title</TableHead>
-                    <TableHead className="hidden md:table-cell">Slug</TableHead>
-                    <TableHead className="hidden md:table-cell">Authors</TableHead>
-                    <TableHead className="hidden md:table-cell">Published</TableHead>
-                    <TableHead className="hidden sm:table-cell">Price</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead className="hidden md:table-cell">Email</TableHead>
+                    <TableHead className="hidden md:table-cell">Phone</TableHead>
+                    <TableHead className="hidden sm:table-cell">Royalty Rate</TableHead>
                     <TableHead className="w-[70px]"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredBooks && filteredBooks.length > 0 ? (
-                    filteredBooks.map((book) => (
-                      <TableRow key={book.bookId}>
-                        <TableCell className="font-medium">{book.bookId}</TableCell>
+                  {filteredAuthors && filteredAuthors.length > 0 ? (
+                    filteredAuthors.map((author) => (
+                      <TableRow key={author.authorPersonId}>
+                        <TableCell className="font-medium">{author.authorPersonId}</TableCell>
                         <TableCell>
-                          <div className="font-medium">{book.title}</div>
+                          <div className="font-medium">
+                            {author.firstName} {author.lastName}
+                          </div>
                           <div className="text-sm text-muted-foreground md:hidden">
-                            {book.slug}
+                            {author.email}
                           </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {book.slug}
+                          {author.email || ''}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          {book.authors.map(author => 
-                            `${author.firstName} ${author.lastName}`
-                          ).join(', ')}
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {formatDate(book.publishDate)}
+                          {author.phone || ''}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          ${book.basePrice.toFixed(2)}
+                          {author.royaltyRate}%
                         </TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -219,26 +185,15 @@ function RouteComponent() {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Actions</DropdownMenuLabel>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem>
-                                <button 
-                                  className="w-full text-left" 
-                                  onClick={() => window.location.href = `/admin/edit-book/${book.slug}`}
-                                >
-                                  Edit
-                                </button>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <button 
-                                  className="w-full text-left" 
-                                  onClick={() => window.open(`/books/${book.slug}`, '_blank')}
-                                >
-                                  View
-                                </button>
+                              <DropdownMenuItem 
+                                onClick={() => navigate({ to: '/admin/edit/author/$authorPersonId', params: { authorPersonId: author.authorPersonId } })}
+                              >
+                                Edit
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
                                 className="text-destructive focus:text-destructive"
-                                onClick={() => setBookToDelete(book)}
+                                onClick={() => setAuthorToDelete(author)}
                               >
                                 Delete
                               </DropdownMenuItem>
@@ -249,8 +204,8 @@ function RouteComponent() {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={8} className="h-24 text-center">
-                        No books found.
+                      <TableCell colSpan={5} className="h-24 text-center">
+                        No authors found.
                       </TableCell>
                     </TableRow>
                   )}
@@ -259,7 +214,7 @@ function RouteComponent() {
             </div>
           )}
           
-          {booksResponse && booksResponse.totalPages > 1 && (
+          {authorsResponse && authorsResponse.totalPages > 1 && (
             <div className="flex items-center justify-between space-x-2 py-4">
               <Button
                 variant="outline"
@@ -270,13 +225,13 @@ function RouteComponent() {
                 Previous
               </Button>
               <div className="text-sm text-muted-foreground">
-                Page {page} of {booksResponse.totalPages}
+                Page {page} of {authorsResponse.totalPages}
               </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setPage(p => p + 1)}
-                disabled={!booksResponse.hasNextPage || isLoading}
+                disabled={!authorsResponse.hasNextPage || isLoading}
               >
                 Next
               </Button>
@@ -285,20 +240,21 @@ function RouteComponent() {
         </CardContent>
       </Card>
 
-      <AlertDialog open={!!bookToDelete} onOpenChange={(isOpen: boolean) => !isOpen && setBookToDelete(null)}>
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={!!authorToDelete} onOpenChange={(isOpen: boolean) => !isOpen && setAuthorToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete{' '}
-              <span className="font-medium">{bookToDelete?.title}</span>
-              {' '}and all of its content. This action cannot be undone.
+              This will permanently delete the author{' '}
+              <span className="font-medium">{authorToDelete?.firstName} {authorToDelete?.lastName}</span>.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => bookToDelete && deleteMutation.mutate(bookToDelete.bookId)}
+              onClick={() => authorToDelete && deleteMutation.mutate(authorToDelete.authorPersonId)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={deleteMutation.isPending}
             >
