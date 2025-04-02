@@ -169,8 +169,14 @@ function ManageInteractionsPage() {
               ) : (
                 interactions?.map((interaction) => (
                   <TableRow key={interaction.interactionId}>
-                    <TableCell>{interaction.user?.username ?? 'Unknown'}</TableCell>
-                    <TableCell>{interaction.book?.title ?? 'Unknown'}</TableCell>
+                    <TableCell>
+                      {interaction.user?.username ?? 'Unknown'}
+                      {interaction.user?.email && <span className="block text-xs text-muted-foreground mt-1">{interaction.user.email}</span>}
+                    </TableCell>
+                    <TableCell>
+                      {interaction.book?.title ?? 'Unknown'}
+                      {interaction.book?.slug && <span className="block text-xs text-muted-foreground mt-1">Slug: {interaction.book.slug}</span>}
+                    </TableCell>
                     <TableCell>{interaction.isFavorite ? 'Yes' : 'No'}</TableCell>
                     <TableCell>{interaction.isSaved ? 'Yes' : 'No'}</TableCell>
                     <TableCell>{interaction.status ?? 'Not set'}</TableCell>
@@ -236,7 +242,8 @@ function ManageInteractionsPage() {
           <DialogHeader>
             <DialogTitle>Edit Interaction</DialogTitle>
             <DialogDescription>
-              Update the interaction details for {selectedInteraction?.user?.username} on "{selectedInteraction?.book?.title}"
+              Update the interaction details for {selectedInteraction?.user?.username ?? 'Unknown'} on "{selectedInteraction?.book?.title ?? 'Unknown'}"
+              {selectedInteraction?.book?.slug && <span className="block mt-1">Book slug: {selectedInteraction.book.slug}</span>}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmitEdit}>
