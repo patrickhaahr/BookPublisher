@@ -134,6 +134,82 @@ Import the Postman collection from `/helpers/BookPublisher.postman_collection.js
 
 ---
 
+## Project Structure
+
+```text
+.
+├── backend/                          # .NET backend
+│   ├── src/
+│   │   ├── Publisher.Application/    # Application layer
+│   │   │   ├── Artists/              # Artist-related use cases
+│   │   │   │   ├── Commands/         # Create/update/delete artist workflows
+│   │   │   │   └── Queries/          # Read/list artist workflows
+│   │   │   ├── Authentication/       # Login, register, refresh, logout flows
+│   │   │   │   ├── Commands/         # State-changing auth actions
+│   │   │   │   └── Queries/          # Read/authentication lookup actions
+│   │   │   ├── Authors/              # Author-related use cases
+│   │   │   │   ├── Commands/         # Create/update/delete author workflows
+│   │   │   │   └── Queries/          # Read/list author workflows
+│   │   │   ├── Behaviors/            # Cross-cutting MediatR pipeline behavior
+│   │   │   ├── Books/                # Book-related use cases
+│   │   │   │   ├── Commands/         # Create/update/delete book workflows
+│   │   │   │   └── Queries/          # Read/list/search book workflows
+│   │   │   ├── Covers/               # Cover-related use cases
+│   │   │   │   ├── Commands/         # Create/update/delete cover workflows
+│   │   │   │   └── Queries/          # Read/list cover workflows
+│   │   │   ├── Interfaces/           # Application-facing abstractions
+│   │   │   │   ├── Authentication/   # Token/password service contracts
+│   │   │   │   └── ...               # Repository and current-user contracts
+│   │   │   ├── UserBookInteractions/ # User-to-book interaction use cases
+│   │   │   │   ├── Commands/         # Create/update/delete interaction workflows
+│   │   │   │   └── Queries/          # Fetch interactions by id/user/book
+│   │   │   ├── Users/                # User management/admin use cases
+│   │   │   │   ├── Commands/         # Update role/profile, delete user
+│   │   │   │   └── Queries/          # Read/list user workflows
+│   │   │   └── Utils/                # Shared application utilities/validation helpers
+│   │   ├── Publisher.Contracts/      # API contracts
+│   │   │   ├── Requests/             # Incoming request DTOs from clients
+│   │   │   └── Responses/            # Outgoing response DTOs to clients
+│   │   ├── Publisher.Domain/         # Core business model
+│   │   │   ├── Entities/             # Domain entities and relationships
+│   │   │   ├── Enums/                # Domain enums
+│   │   │   └── Exceptions/           # Domain-specific error types
+│   │   ├── Publisher.Infrastructure/ # Technical implementation layer
+│   │   │   ├── Authentication/       # JWT, password hashing, current-user resolution
+│   │   │   ├── EntityConfigurations/ # EF Core entity mappings
+│   │   │   ├── Health/               # Health checks
+│   │   │   ├── Migrations/           # Database schema migration history
+│   │   │   └── Repositories/         # Repository implementations and query logic
+│   │   └── Publisher.Presentation/   # API entrypoint layer
+│   │       ├── Authorization/        # Custom authorization attributes/policies
+│   │       ├── Controllers/          # HTTP endpoints by resource area
+│   │       └── Middleware/           # Global request/exception pipeline behavior
+│   └── BookPublisher.Backend.sln     # Backend solution file
+├── frontend/                         # Vite/React frontend
+│   ├── src/
+│   │   ├── api/                      # Typed wrappers for backend HTTP calls
+│   │   ├── components/               # Reusable React components
+│   │   │   ├── auth/                 # Auth/account-specific UI pieces
+│   │   │   └── ui/                   # Shared design-system style primitives
+│   │   ├── constants/                # Shared constant values/options
+│   │   ├── hooks/                    # Custom React hooks
+│   │   ├── lib/                      # Utility/helper functions
+│   │   ├── routes/                   # File-based app routing
+│   │   │   ├── admin/                # Admin area
+│   │   │   │   ├── create/           # Admin create forms for entities
+│   │   │   │   ├── edit/             # Admin edit forms for entities
+│   │   │   │   └── manage/           # Admin list/manage screens
+│   │   │   ├── auth/                 # Login and registration pages
+│   │   │   ├── books/                # Book listing and book detail pages
+│   │   │   ├── profile/              # User profile and profile edit pages
+│   │   │   └── ...                   # Root/index/about layout routes
+│   │   ├── types/                    # Frontend domain and API TypeScript types
+│   │   ├── main.tsx                  # Frontend bootstrap
+│   │   ├── routeTree.gen.ts          # Generated route tree
+│   │   └── styles.css                # Global styling
+│   └── ...                           # Frontend app config and tooling
+```
+
 ## Getting Started
 
 ### Backend
@@ -151,8 +227,6 @@ dotnet ef database update --project src/Publisher.Infrastructure
 # Run API
 dotnet run --project src/Publisher.Presentation
 ```
-
-See `backend/README.md` for more details.
 
 ### Frontend
 
