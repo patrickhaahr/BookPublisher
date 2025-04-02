@@ -42,7 +42,7 @@ public class UserRepository(AppDbContext _context) : IUserRepository
 
     public async Task<User?> UpdateUserAsync(Guid id, User user, CancellationToken token = default)
     {
-        var existingUser = await _context.Users.FindAsync(id, token);
+        var existingUser = await _context.Users.FindAsync([id], token);
         
         if (existingUser is null)
             return null;

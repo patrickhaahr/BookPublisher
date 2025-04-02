@@ -82,8 +82,8 @@ function CreateBook() {
           return;
         }
         
-        if (value.coverImage.size > 1500000) {
-          setFormErrors(prev => ({ ...prev, coverImage: 'Max file size is 1.5MB.' }));
+        if (value.coverImage.size > 1000000) {
+          setFormErrors(prev => ({ ...prev, coverImage: 'Max file size is 1MB.' }));
           return;
         }
 
@@ -272,10 +272,10 @@ function CreateBook() {
                         type="number"
                         step="0.01"
                         min="0"
-                        value={field.state.value}
+                        value={field.state.value || ''}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.valueAsNumber || 0)}
-                        placeholder="e.g., 29.99"
+                        placeholder="29.99"
                         className={field.state.meta.errors?.length ? "border-destructive" : ""}
                       />
                       {field.state.meta.errors?.length ? (
@@ -447,7 +447,7 @@ function CreateBook() {
                           {fileName ? `Selected: ${fileName}` : "Upload Cover (PNG, JPG)"}
                         </Button>
                         <p className="text-[0.8rem] text-muted-foreground">
-                          Max file size 1.5MB. Recommended dimensions: 800×1200px.
+                          Max file size 1MB. Recommended dimensions: 800×1200px.
                         </p>
                         {formErrors.coverImage && (
                           <p className="text-sm font-medium text-destructive">

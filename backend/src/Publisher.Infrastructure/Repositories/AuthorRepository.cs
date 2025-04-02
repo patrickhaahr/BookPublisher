@@ -28,7 +28,7 @@ public class AuthorRepository(AppDbContext _context) : IAuthorRepository
 
     public async Task<Author?> GetAuthorByIdAsync(Guid id, CancellationToken token = default)
     {
-        return await _context.Authors.FindAsync(id, token);
+        return await _context.Authors.FindAsync([id], token);
     }
 
     public async Task<Author> CreateAuthorAsync(Author author, CancellationToken token = default)
@@ -40,13 +40,13 @@ public class AuthorRepository(AppDbContext _context) : IAuthorRepository
 
     public async Task<Author?> UpdateAuthorAsync(Guid id, Author author, CancellationToken token = default)
     {
-        var existingAuthor = await _context.Authors.FindAsync(id, token);
+        var existingAuthor = await _context.Authors.FindAsync([id], token);
         
         if (existingAuthor is null)
             return null;
 
         _context.Entry(existingAuthor).CurrentValues.SetValues(author);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(token);
         return existingAuthor;
     }
 

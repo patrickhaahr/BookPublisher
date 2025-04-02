@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Publisher.Application.Books.Commands.CreateBook;
 using Publisher.Application.Books.Commands.DeleteBook;
 using Publisher.Application.Books.Commands.UpdateBook;
-using Publisher.Application.Books.Commands.UpdateBookCovers;
-using Publisher.Application.Books.Commands.UpdateBookAuthors;
-using Publisher.Application.Books.Commands.UpdateBookArtists;
 using Publisher.Application.Books.Queries.GetBooks;
 using Publisher.Application.Books.Queries.GetBookById;
 using Publisher.Contracts.Requests;
@@ -86,36 +83,6 @@ public class BooksController(ISender _sender) : ControllerBase
     {
         await _sender.Send(new DeleteBookCommand(id), token);
         return Ok(new DeleteResponse());
-    }
-    
-    [JwtAdmin]
-    [HttpPut(ApiEndpoints.V1.Books.BookCovers)]
-    public async Task<IActionResult> UpdateBookCovers(
-        [FromRoute] string id, [FromBody] UpdateBookCoversRequest request, CancellationToken token)
-    {
-        var command = new UpdateBookCoversCommand(id, request.Covers);
-        var response = await _sender.Send(command, token);
-        return Ok(response);
-    }
-    
-    [JwtAdmin]
-    [HttpPut(ApiEndpoints.V1.Books.BookAuthors)]
-    public async Task<IActionResult> UpdateBookAuthors(
-        [FromRoute] string id, [FromBody] UpdateBookAuthorsRequest request, CancellationToken token)
-    {
-        var command = new UpdateBookAuthorsCommand(id, request.AuthorIds);
-        var response = await _sender.Send(command, token);
-        return Ok(response);
-    }
-    
-    [JwtAdmin]
-    [HttpPut(ApiEndpoints.V1.Books.BookArtists)]
-    public async Task<IActionResult> UpdateBookArtists(
-        [FromRoute] string id, [FromBody] UpdateBookArtistsRequest request, CancellationToken token)
-    {
-        var command = new UpdateBookArtistsCommand(id, request.ArtistIds);
-        var response = await _sender.Send(command, token);
-        return Ok(response);
     }
 }
 
