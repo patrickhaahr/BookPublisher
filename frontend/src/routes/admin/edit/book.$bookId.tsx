@@ -8,19 +8,19 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '../../components/ui/card'
+} from "../../../components/ui/card"
 import {
   Tabs,
-  TabsContent,
-  TabsList,
+  TabsContent,  
+  TabsList, 
   TabsTrigger,
-} from '../../components/ui/tabs'
-import { Button } from '../../components/ui/button'
-import { Input } from '../../components/ui/input'
-import { Label } from '../../components/ui/label'
-import { Checkbox } from '../../components/ui/checkbox'
-import { getBookById, fileToBase64, updateBook } from '../../api/books'
-import { BookDetails, EditBookFormValues } from '../../types/book'
+} from '../../../components/ui/tabs'
+import { Button } from '../../../components/ui/button'
+import { Input } from '../../../components/ui/input'
+import { Label } from '../../../components/ui/label'
+import { Checkbox } from '../../../components/ui/checkbox'
+import { getBookById, fileToBase64, updateBook } from '../../../api/books'
+import { BookDetails, EditBookFormValues } from '../../../types/book'
 import { 
   ArrowLeft, 
   Loader2, 
@@ -33,20 +33,20 @@ import {
   InfoIcon
 } from 'lucide-react'
 import { type CheckedState } from "@radix-ui/react-checkbox"
-import { ScrollArea } from '../../components/ui/scroll-area'
-import { GENRES, MEDIUMS } from '../../constants/bookOptions'
-import { Calendar } from '../../components/ui/calendar'
+import { ScrollArea } from '../../../components/ui/scroll-area'
+import { GENRES, MEDIUMS } from '../../../constants/bookOptions'
+import { Calendar } from '../../../components/ui/calendar'
 import { format } from 'date-fns'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../components/ui/popover"
-import { Alert, AlertDescription, AlertTitle } from "../../components/ui/alert"
-import { cn } from "../../lib/utils"
+} from "../../../components/ui/popover"
+import { Alert, AlertDescription, AlertTitle } from "../../../components/ui/alert"
+import { cn } from "../../../lib/utils"
 import { checkUserRoleFromToken } from '@/lib/authUtils'
 
-export const Route = createFileRoute('/admin/edit-book/$bookId')({
+export const Route = createFileRoute('/admin/edit/book/$bookId')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';
@@ -129,7 +129,7 @@ function EditBookPage() {
       // Ensure all relevant queries are invalidated with proper configuration
       queryClient.invalidateQueries({ queryKey: ['book', bookId], refetchType: 'all' })
       queryClient.invalidateQueries({ queryKey: ['books'], refetchType: 'all' })
-      navigate({ to: '/admin/manage-books' })
+      navigate({ to: '/admin/manage/books' })
     }
   })
 
@@ -196,7 +196,7 @@ function EditBookPage() {
           There was an error loading the book details. The book might have been deleted or you may not have permission to view it.
         </p>
         <Button asChild>
-          <Link to="/admin/manage-books">Return to Books</Link>
+          <Link to="/admin/manage/books">Return to Books</Link>
         </Button>
       </div>
     )
@@ -218,7 +218,7 @@ function EditBookPage() {
             className="shrink-0" 
             asChild
           >
-            <Link to="/admin/manage-books">
+            <Link to="/admin/manage/books">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Cancel
             </Link>

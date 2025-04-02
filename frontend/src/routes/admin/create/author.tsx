@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { InfoIcon, PaintbrushIcon, LayoutDashboardIcon } from 'lucide-react'
-import { createArtist } from '../../api/artists'
+import { InfoIcon, UserIcon, LayoutDashboardIcon } from 'lucide-react'
+import { createAuthor } from '../../../api/authors'
 
-export const Route = createFileRoute('/admin/create-artist')({
+export const Route = createFileRoute('/admin/create/author')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';
@@ -25,27 +25,27 @@ export const Route = createFileRoute('/admin/create-artist')({
       });
     }
   },
-  component: CreateArtist,
+  component: CreateAuthor,
 });
 
-interface CreateArtistFormValues {
+interface CreateAuthorFormValues {
   firstname: string;
   lastname: string;
   email: string;
   phone: string;
-  portfoliourl: string;
+  royaltyrate: number;
 }
 
-function CreateArtist() {
+function CreateAuthor() {
   const navigate = useNavigate();
   
   // TanStack Query Mutation
   const { mutate, isPending, error: mutationError } = useMutation({
-    mutationFn: createArtist,
+    mutationFn: createAuthor,
     onSuccess: (data) => {
-      console.log("Artist created successfully:", data);
-      alert(`Artist "${data.firstName} ${data.lastName}" created successfully!`);
-      navigate({ to: '/admin/manage-artists' });
+      console.log("Author created successfully:", data);
+      alert(`Author "${data.firstName} ${data.lastName}" created successfully!`);
+      navigate({ to: '/admin/manage/authors' });
     },
   });
 
@@ -56,8 +56,8 @@ function CreateArtist() {
       lastname: '',
       email: '',
       phone: '',
-      portfoliourl: 'https://',
-    } as CreateArtistFormValues,
+      royaltyrate: 10, // Default royalty rate
+    } as CreateAuthorFormValues,
     onSubmit: async ({ value }) => {
       console.log('Form Submitted:', value);
       mutate(value);
@@ -67,8 +67,8 @@ function CreateArtist() {
   return (
     <div className="container mx-auto p-4 md:p-8 max-w-4xl">
       <div className="flex items-center mb-6">
-        <PaintbrushIcon className="h-8 w-8 mr-2 text-primary" />
-        <h1 className="text-3xl font-bold">Artist Creation</h1>
+        <UserIcon className="h-8 w-8 mr-2 text-primary" />
+        <h1 className="text-3xl font-bold">Author Creation</h1>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -77,26 +77,26 @@ function CreateArtist() {
           <CardHeader>
             <CardTitle className="flex items-center">
               <InfoIcon className="h-5 w-5 mr-2 text-primary" />
-              Artist Guide
+              Author Guide
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm">
             <div>
-              <h3 className="font-medium mb-1">Artist Information</h3>
-              <p className="text-muted-foreground">Fill in the basic details for the new cover artist.</p>
+              <h3 className="font-medium mb-1">Author Information</h3>
+              <p className="text-muted-foreground">Fill in the basic details for the new author.</p>
             </div>
             <div>
-              <h3 className="font-medium mb-1">Portfolio URL</h3>
-              <p className="text-muted-foreground">Include a link to the artist's portfolio website. Must start with "https://".</p>
+              <h3 className="font-medium mb-1">Royalty Rate</h3>
+              <p className="text-muted-foreground">Set the percentage of sales the author receives as royalties.</p>
             </div>
             <div className="pt-4 border-t">
               <Button 
                 variant="outline" 
                 className="w-full" 
-                onClick={() => navigate({ to: '/admin/manage-artists' })}
+                onClick={() => navigate({ to: '/admin/manage/authors' })}
               >
                 <LayoutDashboardIcon className="mr-2 h-4 w-4" />
-                Back to Artists
+                Back to Authors
               </Button>
             </div>
           </CardContent>
@@ -105,8 +105,8 @@ function CreateArtist() {
         {/* Main form */}
         <Card className="md:col-span-2">
           <CardHeader>
-            <CardTitle>Create New Artist</CardTitle>
-            <CardDescription>Fill in the details for the new cover artist.</CardDescription>
+            <CardTitle>Create New Author</CardTitle>
+            <CardDescription>Fill in the details for the new author.</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -230,15 +230,15 @@ function CreateArtist() {
                 </form.Field>
               </fieldset>
 
-              {/* Portfolio URL Field */}
+              {/* Royalty Rate Field */}
               <fieldset disabled={isPending} className="space-y-2">
-                <Label htmlFor="portfoliourl-input">Portfolio URL</Label>
+                <Label htmlFor="royaltyrate-input">Royalty Rate (%)</Label>
                 <form.Field
-                  name="portfoliourl"
+                  name="royaltyrate"
                   validators={{
                     onChange: ({ value }) => {
-                      if (!value) return 'Portfolio URL is required';
-                      if (!value.startsWith('https://')) return 'URL must start with "https://"';
+                      if (value < 0) return 'Royalty rate cannot be negative';
+                      if (value > 100) return 'Royalty rate cannot exceed 100%';
                       return undefined;
                     }
                   }}
@@ -246,17 +246,17 @@ function CreateArtist() {
                   {(field) => (
                     <>
                       <Input
-                        id="portfoliourl-input"
-                        type="url"
+                        id="royaltyrate-input"
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="100"
                         value={field.state.value}
                         onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="e.g., https://www.portfolio-example.com"
+                        onChange={(e) => field.handleChange(e.target.valueAsNumber || 0)}
+                        placeholder="e.g., 15"
                         className={field.state.meta.errors?.length ? "border-destructive" : ""}
                       />
-                      <p className="text-[0.8rem] text-muted-foreground mt-1">
-                        Must include the full URL with "https://" prefix
-                      </p>
                       {field.state.meta.errors?.length ? (
                         <p className="text-sm font-medium text-destructive mt-1">
                           {field.state.meta.errors.join(', ')}
@@ -272,7 +272,7 @@ function CreateArtist() {
                 {mutationError && (
                   <div className="p-3 mb-4 bg-destructive/10 border border-destructive rounded-md">
                     <p className="text-sm font-medium text-destructive">
-                      Error creating artist: {mutationError.message}
+                      Error creating author: {mutationError.message}
                     </p>
                   </div>
                 )}
@@ -286,7 +286,7 @@ function CreateArtist() {
                       disabled={!canSubmit || isSubmitting || isPending} 
                       className="w-full"
                     >
-                      {isPending ? "Creating..." : "Create Artist"}
+                      {isPending ? "Creating..." : "Create Author"}
                     </Button>
                   )}
                 </form.Subscribe>

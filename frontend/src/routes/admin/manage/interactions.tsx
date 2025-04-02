@@ -6,7 +6,7 @@ import {
   updateUserBookInteraction, 
   deleteUserBookInteraction,
   type UserBookInteraction 
-} from '../../api/userBookInteractions';
+} from '../../../api/userBookInteractions';
 import { 
   Table, 
   TableBody, 
@@ -14,15 +14,15 @@ import {
   TableHead, 
   TableHeader, 
   TableRow 
-} from '../../components/ui/table';
+} from '../../../components/ui/table';
 import { 
   Card, 
   CardContent, 
   CardDescription, 
   CardHeader, 
   CardTitle 
-} from '../../components/ui/card';
-import { Button } from '../../components/ui/button';
+} from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { 
   Dialog, 
   DialogContent, 
@@ -30,14 +30,14 @@ import {
   DialogFooter, 
   DialogHeader, 
   DialogTitle 
-} from '../../components/ui/dialog';
-import { Label } from '../../components/ui/label';
-import { Checkbox } from '../../components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+} from '../../../components/ui/dialog';
+import { Label } from '../../../components/ui/label';
+import { Checkbox } from '../../../components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../../components/ui/select';
 import { AlertCircle, Trash2, Edit, Star } from 'lucide-react';
-import { checkUserRoleFromToken } from '../../lib/authUtils';
+import { checkUserRoleFromToken } from '../../../lib/authUtils';
 
-export const Route = createFileRoute('/admin/manage-interactions')({
+export const Route = createFileRoute('/admin/manage/interactions')({
   beforeLoad: async ({ location }) => {
     const userRole = checkUserRoleFromToken();
     const isAdmin = userRole === 'Admin';

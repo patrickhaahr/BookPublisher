@@ -26,7 +26,7 @@ function Register() {
       password: '',
       confirmPassword: '',
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value }) => {  
       // Remove confirmPassword before sending to API
       const { confirmPassword, ...registrationData } = value;
       mutate(registrationData);
@@ -40,7 +40,7 @@ function Register() {
       // Handle successful registration
       console.log('Registration successful:', data);
       // Log user in automatically after registration
-      login(data.accessToken, data.refreshToken);
+      login(data.accessToken, data.refreshToken, data.userId);
       // Redirect to home page
       navigate({ to: '/' });
     },
